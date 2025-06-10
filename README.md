@@ -12,8 +12,6 @@ erDiagram
     users {
         string id "uuid"
         string name "名前"
-        string email "メールアドレス"
-        string password "パスワード"
         Date created_at "登録日時"
         Date updated_at "更新日時"
     }
