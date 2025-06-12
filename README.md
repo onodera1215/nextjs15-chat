@@ -9,6 +9,7 @@
 ```mermaid
 erDiagram
     users ||--o{ user_rooms : "has many"
+    users ||--o{ messages : "has many"
     users {
         string id "uuid"
         string name "名前"
