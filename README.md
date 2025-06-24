@@ -89,6 +89,12 @@ type MessageRead {
   messageId: String!
   readAt: Date!
 }
+
+type CreateMessageRead {
+  userId: String!
+  messageId: String!
+  readAt: Date!
+}
 ```
 
 ### ミューテーション
@@ -97,6 +103,12 @@ type MessageRead {
 
 ```graphql
 mutation createUser(createUserInput: CreateUserInput!): User!
+```
+
+#### 既読情報登録
+
+```graphql
+mutation createMessageRead(createMessageReadInput: CreateMessageReadInput!): MessageRead!
 ```
 
 #### メッセージ登録
