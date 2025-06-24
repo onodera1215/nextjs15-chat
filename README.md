@@ -23,7 +23,6 @@ erDiagram
         string user_id "ユーザーid"
         string room_id "ルームid"
         Date created_at "登録日時"
-        Date updated_at "更新日時"
     }
 
     rooms ||--o{ user_rooms : "has many"
@@ -33,7 +32,6 @@ erDiagram
         string name "ルーム名"
         string description "説明文"
         Date created_at "登録日時"
-        Date updated_at "更新日時"
     }
 
     messages ||--o{ message_reads : "has many"
@@ -49,10 +47,82 @@ erDiagram
     message_reads {
         string room_id "メッセージid"
         string user_id "ユーザーid"
-        string message "メッセージ"
         Date created_at "登録日時"
-        Date updated_at "更新日時"
     }
 
 
+```
+
+## GraphQL
+
+#### 型情報
+
+```graphql
+type CreateUserInput {
+  name: String!
+}
+
+type User {
+  id: String!
+  name: String!
+}
+
+type createMessageInput {
+  body: String!
+  senderId: String!
+}
+
+type Message {
+  id: String!
+  body: String!
+  sender: User!
+  readUsers: [User]!
+}
+
+type SearchOption {
+  offset: Int!
+  limit: Int!
+}
+
+type MessageRead {
+  userId: String!
+  messageId: String!
+  readAt: Date!
+}
+```
+
+### ミューテーション
+
+#### ユーザー登録
+
+```graphql
+mutation createUser(createUserInput: CreateUserInput!): User!
+```
+
+#### メッセージ登録
+
+```graphql
+mutation createMessage(createMessageInput: CreateMessageInput): Message!
+```
+
+### クエリ
+
+#### メッセージ取得
+
+```graphql
+query messages(searchOption: SearchOption!): [Message]!
+```
+
+### サブスクリプション
+
+#### メッセージ取得
+
+```graphql
+subscription messageAdded(roomId: String!): Message!
+```
+
+#### 既読情報取得
+
+```graphql
+subscription messageRead(roomId: String!): MessageRead!
 ```
