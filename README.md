@@ -10,6 +10,7 @@
 erDiagram
     users ||--o{ user_rooms : "has many"
     users ||--o{ messages : "has many"
+    users ||--o{ message_reads : "has many"
     users {
         string id "uuid"
         string name "名前"
@@ -35,6 +36,7 @@ erDiagram
         Date updated_at "更新日時"
     }
 
+    messages ||--o{ message_reads : "has many"
     messages {
         string id "uuid"
         string room_id "ルームid"
@@ -43,5 +45,14 @@ erDiagram
         Date created_at "登録日時"
         Date updated_at "更新日時"
     }
+
+    message_reads {
+        string room_id "メッセージid"
+        string user_id "ユーザーid"
+        string message "メッセージ"
+        Date created_at "登録日時"
+        Date updated_at "更新日時"
+    }
+
 
 ```
