@@ -80,6 +80,7 @@ type Message {
 }
 
 type SearchOption {
+  roomId: String
   offset: Int!
   limit: Int!
 }
