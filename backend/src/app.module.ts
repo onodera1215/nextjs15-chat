@@ -5,6 +5,7 @@ import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin
 import { MessageResolver } from './message/message.resolver';
 import { UserResolver } from './user/user.resolver';
 import { join } from 'path';
+import { PrismaService } from './prisma/prisma.service';
 
 @Module({
   imports: [
@@ -15,6 +16,6 @@ import { join } from 'path';
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
     }),
   ],
-  providers: [MessageResolver, UserResolver],
+  providers: [MessageResolver, UserResolver, PrismaService],
 })
 export class AppModule {}
