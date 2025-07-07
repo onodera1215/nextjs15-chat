@@ -6,6 +6,8 @@ import { MessageResolver } from './message/message.resolver';
 import { UserResolver } from './user/user.resolver';
 import { join } from 'path';
 import { PrismaService } from './prisma/prisma.service';
+import { PrismaModule } from './prisma/prisma.module';
+import { MessageModule } from './message/message.module';
 
 @Module({
   imports: [
@@ -15,6 +17,8 @@ import { PrismaService } from './prisma/prisma.service';
       playground: false,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
     }),
+    PrismaModule,
+    MessageModule,
   ],
   providers: [MessageResolver, UserResolver, PrismaService],
 })
