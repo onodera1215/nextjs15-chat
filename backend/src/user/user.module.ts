@@ -1,17 +1,17 @@
 import { Module } from '@nestjs/common';
-import { UserService } from './user.service';
 import { UserRepository } from './infrastructure/user.repository';
 import { UserResolver } from './user.resolver';
+import { CreateUserUsecase } from './usecase/create-user.usecase';
 
 @Module({
   providers: [
-    UserService,
+    CreateUserUsecase,
     UserResolver,
     {
       provide: 'IUserRepository',
       useClass: UserRepository,
     },
   ],
-  exports: [UserService],
+  exports: [CreateUserUsecase],
 })
 export class UserModule {}

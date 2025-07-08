@@ -1,8 +1,8 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { UserStatusEnum } from './user-status.enum';
+import { RoomStatusEnum } from './room-status.enum';
 
 @ObjectType()
-export class UserNode {
+export class RoomNode {
   @Field(() => ID)
   id: string;
 
@@ -10,10 +10,10 @@ export class UserNode {
   name: string;
 
   @Field(() => String)
-  email: string;
+  description: string;
 
-  @Field(() => UserStatusEnum)
-  status: UserStatusEnum;
+  @Field(() => RoomStatusEnum)
+  status: RoomStatusEnum;
 
   @Field(() => Date)
   createdAt: Date;

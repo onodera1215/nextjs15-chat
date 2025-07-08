@@ -6,8 +6,15 @@ type UserNode {
   id: ID!
   name: String!
   email: String!
+  status: UserStatus!
   createdAt: DateTime!
   updatedAt: DateTime!
+}
+
+"""ユーザーステータス"""
+enum UserStatus {
+  ACTIVE
+  INACTIVE
 }
 
 """
@@ -20,6 +27,21 @@ type Message {
   sender: UserNode!
   createdAt: DateTime!
   updatedAt: DateTime!
+}
+
+type RoomNode {
+  id: ID!
+  name: String!
+  description: String!
+  status: RoomStatusEnum!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""ルームステータス"""
+enum RoomStatusEnum {
+  ACTIVE
+  INACTIVE
 }
 
 type Query {
@@ -35,9 +57,16 @@ input SearchOptionInput {
 
 type Mutation {
   createUser(input: CreateUserInput!): UserNode!
+  createRoom(input: CreateRoomInput!): RoomNode!
 }
 
 input CreateUserInput {
   name: String!
   email: String!
+}
+
+input CreateRoomInput {
+  name: String!
+  description: String!
+  status: RoomStatusEnum!
 }
