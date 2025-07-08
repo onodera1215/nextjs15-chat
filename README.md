@@ -68,6 +68,19 @@ graph TD
   Message <-->Room
 ```
 
+#### ノードとエッジについて
+
+図の関係にある
+
+```mermaid
+graph TD
+  NodeA
+  NodeB
+
+
+  NodeA <--> |Edge|NodeB
+```
+
 #### 型情報
 
 ```graphql
