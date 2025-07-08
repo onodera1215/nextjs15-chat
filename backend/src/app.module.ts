@@ -8,6 +8,9 @@ import { join } from 'path';
 import { PrismaService } from './prisma/prisma.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { MessageModule } from './message/message.module';
+import { UserModule } from './user/user.module';
+import { RoomResolver } from './room/room.resolver';
+import { RoomModule } from './room/room.module';
 
 @Module({
   imports: [
@@ -19,7 +22,9 @@ import { MessageModule } from './message/message.module';
     }),
     PrismaModule,
     MessageModule,
+    UserModule,
+    RoomModule,
   ],
-  providers: [MessageResolver, UserResolver, PrismaService],
+  providers: [MessageResolver, UserResolver, PrismaService, RoomResolver],
 })
 export class AppModule {}

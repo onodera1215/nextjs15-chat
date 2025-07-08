@@ -1,19 +1,15 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { User } from 'src/user/models/user.model';
+import { UserNode } from 'src/user/gql-models/user.model';
 
 @ObjectType()
 export class Message {
   @Field(() => String)
   id: string;
 
-  @Field(() => String)
   roomId: string;
 
-  @Field(() => User)
-  sender: User;
-
-  @Field(() => [User])
-  readUsers: User[];
+  @Field(() => UserNode)
+  sender: UserNode;
 
   @Field(() => Date)
   createdAt: Date;

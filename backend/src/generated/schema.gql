@@ -2,16 +2,10 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type User {
-  id: String!
+type UserNode {
+  id: ID!
   name: String!
-}
-
-type Message {
-  id: String!
-  roomId: String!
-  sender: User!
-  readUsers: [User!]!
+  email: String!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -20,6 +14,13 @@ type Message {
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
+
+type Message {
+  id: String!
+  sender: UserNode!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
 
 type Query {
   messages(input: SearchOptionInput!): [Message!]!
@@ -30,4 +31,13 @@ input SearchOptionInput {
   roomId: String!
   limit: Float
   offset: Float
+}
+
+type Mutation {
+  createUser(input: CreateUserInput!): UserNode!
+}
+
+input CreateUserInput {
+  name: String!
+  email: String!
 }
