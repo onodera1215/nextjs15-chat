@@ -55,43 +55,79 @@ erDiagram
 
 ## GraphQL
 
+#### グラフモデル
+
+```mermaid
+graph TD
+  User
+  Message
+  Room
+
+  User <--> Message
+  User <--> Room
+  Message <-->Room
+```
+
 #### 型情報
 
 ```graphql
-type CreateUserInput {
+# input
+input CreateUserInput {
   name: String!
 }
 
-type User {
-  id: String!
-  name: String!
-}
-
-type createMessageInput {
-  body: String!
-  senderId: String!
-}
-
-type Message {
-  id: String!
-  body: String!
-  sender: User!
-  readUsers: [User]!
-}
-
-type SearchOption {
-  roomId: String
-  offset: Int!
-  limit: Int!
-}
-
-type MessageRead {
+input CreateMessageReadInput {
   userId: String!
   messageId: String!
   readAt: Date!
 }
 
-type CreateMessageRead {
+input CreateMessageInput {
+  body: String!
+  senderId: String!
+}
+
+input SearchMessageOptionInput {
+  roomId: ID
+  userId: ID
+  offset: Int!
+  limit: Int!
+}
+
+input SearchRoomOptionInput {
+  roomId: ID
+  userId: ID
+  offset: Int!
+  limit: Int!
+}
+
+# object
+type UserNode {
+  id: ID!
+  name: String!
+  messages(searchMessageOption: SearchMessageOptionInput!): [Message!]!
+  rooms(searchRoomOption: SearchRoomOptionInput!): [Room!]!
+  createdAt: Date!
+  updatedAt: Date!
+}
+
+type MessageNode {
+  id: ID!
+  body: String!
+  readUsers: [User]!
+  sender: User!
+  room: Room!
+  createdAt: Date!
+  updatedAt: Date!
+}
+
+type UserRoomEdge {
+  userId: ID!
+  roomId: ID!
+  joinedAt: Date!
+}
+
+type MessageReadEdge {
   userId: String!
   messageId: String!
   readAt: Date!
@@ -123,7 +159,7 @@ mutation createMessage(createMessageInput: CreateMessageInput): Message!
 #### メッセージ取得
 
 ```graphql
-query messages(searchOption: SearchOption!): [Message]!
+query messages(searchMessageOption: SearchMessageOptionInput!): [Message]!
 ```
 
 ### サブスクリプション
