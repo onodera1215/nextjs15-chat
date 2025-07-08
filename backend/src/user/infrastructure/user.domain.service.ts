@@ -1,9 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { IUserRepository } from './user.repository.interface';
-import { UserStatusEnum } from './gql-models/user-status.enum';
+import { IUserRepository } from '../user.repository.interface';
+import { UserStatusEnum } from '../gql-models/user-status.enum';
+import { IUserDomainService } from '../user.domain.service.interface';
 
-@Injectable()
-export class UserDomainService {
+export class UserDomainService implements IUserDomainService {
   constructor(private readonly userRepository: IUserRepository) {}
 
   async isActiveUser(email: string): Promise<boolean> {
