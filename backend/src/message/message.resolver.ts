@@ -5,11 +5,6 @@ import { MessageService } from './message.service';
 
 @Resolver()
 export class MessageResolver {
-  /**
-   *
-   * 一旦べたがきでDBとの疎通確認
-   */
-
   constructor(private service: MessageService) {}
 
   @Query(() => [Message])
