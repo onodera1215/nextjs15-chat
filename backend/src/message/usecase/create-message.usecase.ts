@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { CreateMessageInput } from '../inputs/create-message.input';
 import { IMessageRepository } from '../message.repository.interface';
+import { CreateMessageInput } from '../models/create-message.input';
 
 @Injectable()
 export class CreateMessageUsecase {

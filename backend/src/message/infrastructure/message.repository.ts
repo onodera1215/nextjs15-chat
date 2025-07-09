@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { IMessageRepository } from '../message.repository.interface';
 import { MessageDomain } from '../message.domain';
-import { CreateMessageInput } from '../inputs/create-message.input';
-import { SearchOptionInput } from '../inputs/search-option.input';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateMessageInput } from '../models/create-message.input';
+import { SearchOptionInput } from '../models/search-option.input';
 
 @Injectable()
 export class MessageRepository implements IMessageRepository {

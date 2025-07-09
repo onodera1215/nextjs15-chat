@@ -11,6 +11,7 @@ import { MessageModule } from './message/message.module';
 import { UserModule } from './user/user.module';
 import { RoomResolver } from './room/room.resolver';
 import { RoomModule } from './room/room.module';
+import { PubsubModule } from './pubsub/pubsub.module';
 
 @Module({
   imports: [
@@ -19,11 +20,15 @@ import { RoomModule } from './room/room.module';
       autoSchemaFile: join(process.cwd(), 'src/generated/schema.gql'),
       playground: false,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
+      subscriptions: {
+        'graphql-ws': true,
+      },
     }),
     PrismaModule,
     MessageModule,
     UserModule,
     RoomModule,
+    PubsubModule,
   ],
   providers: [MessageResolver, UserResolver, PrismaService, RoomResolver],
 })

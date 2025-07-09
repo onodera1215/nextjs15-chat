@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { SearchOptionInput } from '../inputs/search-option.input';
 import { IMessageRepository } from '../message.repository.interface';
+import { SearchOptionInput } from '../models/search-option.input';
 
 @Injectable()
 export class GetsMessageUsecase {

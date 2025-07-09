@@ -1,15 +1,20 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { SearchOptionInput } from './inputs/search-option.input';
+import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
 import { Message } from './models/message.model';
-import { CreateMessageInput } from './inputs/create-message.input';
 import { CreateMessageUsecase } from './usecase/create-message.usecase';
 import { GetsMessageUsecase } from './usecase/gets-message.usecase';
+import { Inject } from '@nestjs/common';
+import { PubSub } from 'graphql-subscriptions';
+import { SearchOptionInput } from './models/search-option.input';
+import { CreateMessageInput } from './models/create-message.input';
 
 @Resolver()
 export class MessageResolver {
   constructor(
     private readonly createMessageUsecase: CreateMessageUsecase,
     private readonly getsMessageUsecase: GetsMessageUsecase,
+
+    @Inject('GqlPubSub')
+    private readonly gqlPubSub: PubSub,
   ) {}
 
   @Query(() => [Message])
@@ -19,6 +24,15 @@ export class MessageResolver {
 
   @Mutation(() => Message)
   async createMessage(@Args('input') input: CreateMessageInput) {
-    return await this.createMessageUsecase.execute(input);
+    // メッセージ登録
+    const message = await this.createMessageUsecase.execute(input);
+    // パブリッシュ
+    await this.gqlPubSub.publish('messageCreated', { messageCreated: message });
+    return message;
+  }
+
+  @Subscription(() => Message)
+  messageCreated() {
+    return this.gqlPubSub.asyncIterableIterator<Message>('messageCreated');
   }
 }

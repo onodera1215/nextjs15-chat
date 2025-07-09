@@ -12,9 +12,6 @@ export class Message {
   @Field(() => String)
   roomId: string;
 
-  @Field(() => UserNode)
-  sender: UserNode;
-
   @Field(() => Date)
   createdAt: Date;
 
