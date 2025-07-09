@@ -8,14 +8,14 @@ import { PrismaService } from 'src/prisma/prisma.service';
 @Injectable()
 export class MessageRepository implements IMessageRepository {
   constructor(private readonly prismaService: PrismaService) {}
-  async createMessage(
-    createMessageInput: CreateMessageInput,
-  ): Promise<MessageDomain> {
+
+  async createMessage(data: CreateMessageInput): Promise<MessageDomain> {
     const message = await this.prismaService.message.create({
-      data: createMessageInput,
+      data,
     });
     return new MessageDomain(message);
   }
+
   async getMessages(
     searchOptionInput: SearchOptionInput,
   ): Promise<MessageDomain[]> {
