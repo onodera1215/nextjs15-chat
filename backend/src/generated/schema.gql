@@ -24,6 +24,8 @@ scalar DateTime
 
 type Message {
   id: String!
+  body: String!
+  roomId: String!
   sender: UserNode!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -56,8 +58,15 @@ input SearchOptionInput {
 }
 
 type Mutation {
+  createMessage(input: CreateMessageInput!): Message!
   createUser(input: CreateUserInput!): UserNode!
   createRoom(input: CreateRoomInput!): RoomNode!
+}
+
+input CreateMessageInput {
+  body: String!
+  roomId: String!
+  senderId: String!
 }
 
 input CreateUserInput {

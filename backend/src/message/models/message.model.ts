@@ -6,6 +6,10 @@ export class Message {
   @Field(() => String)
   id: string;
 
+  @Field(() => String)
+  body: string;
+
+  @Field(() => String)
   roomId: string;
 
   @Field(() => UserNode)

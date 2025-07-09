@@ -1,9 +1,19 @@
 import { Module } from '@nestjs/common';
-import { MessageService } from './message.service';
 import { MessageResolver } from './message.resolver';
+import { CreateMessageUsecase } from './usecase/create-message.usecase';
+import { GetsMessageUsecase } from './usecase/gets-message.usecase';
+import { MessageRepository } from './infrastructure/message.repository';
 
 @Module({
-  providers: [MessageService, MessageResolver],
-  exports: [MessageService],
+  providers: [
+    GetsMessageUsecase,
+    CreateMessageUsecase,
+    MessageResolver,
+    {
+      provide: 'IMessageRepository',
+      useClass: MessageRepository,
+    },
+  ],
+  exports: [GetsMessageUsecase, CreateMessageUsecase],
 })
 export class MessageModule {}
