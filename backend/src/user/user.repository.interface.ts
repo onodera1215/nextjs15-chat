@@ -1,7 +1,7 @@
 import { CreateUserInput } from './gql-models/create-user.input';
-import { UserNode } from './gql-models/user.model';
+import { UserDomain } from './user.domain';
 
 export interface IUserRepository {
-  createUser(input: CreateUserInput): Promise<UserNode>;
-  findByEmail(email: string): Promise<UserNode | null>;
+  createUser(input: CreateUserInput): Promise<UserDomain>;
+  findByEmail(email: string): Promise<UserDomain | null>;
 }

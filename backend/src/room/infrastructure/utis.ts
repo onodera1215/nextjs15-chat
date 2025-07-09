@@ -1,10 +1,10 @@
 import { Room } from 'prisma/generated';
-import { RoomNode } from '../gql-model/room.model';
 import { RoomStatusEnum } from '../gql-model/room-status.enum';
+import { RoomDomain } from '../room.domain';
 
-export function fromPrismaRoomToRoomNode(room: Room): RoomNode {
-  return {
+export function fromPrismaRoomToRoomDomain(room: Room): RoomDomain {
+  return new RoomDomain({
     ...room,
     status: RoomStatusEnum[room.status as keyof typeof RoomStatusEnum],
-  };
+  });
 }

@@ -1,11 +1,9 @@
 import { registerEnumType } from '@nestjs/graphql';
-
-export enum RoomStatusEnum {
-  ACTIVE = 'ACTIVE',
-  INACTIVE = 'INACTIVE',
-}
+import { RoomStatusEnum } from '../room.domain';
 
 registerEnumType(RoomStatusEnum, {
   name: 'RoomStatusEnum',
   description: 'ルームステータス',
 });
+
+export { RoomStatusEnum };

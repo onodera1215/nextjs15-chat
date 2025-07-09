@@ -1,11 +1,9 @@
 import { registerEnumType } from '@nestjs/graphql';
-
-export enum UserStatusEnum {
-  ACTIVE = 'ACTIVE',
-  INACTIVE = 'INACTIVE',
-}
+import { UserStatusEnum } from '../user.domain';
 
 registerEnumType(UserStatusEnum, {
   name: 'UserStatus',
   description: 'ユーザーステータス',
 });
+
+export { UserStatusEnum };

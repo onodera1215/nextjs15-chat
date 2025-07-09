@@ -2,20 +2,24 @@ import { Injectable } from '@nestjs/common';
 import { IRoomRepository } from '../room.repository.interface';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateRoomInput } from '../gql-model/room.input';
-import { RoomNode } from '../gql-model/room.model';
-import { fromPrismaRoomToRoomNode } from './utis';
+import { fromPrismaRoomToRoomDomain } from './utis';
+import { RoomDomain, RoomStatusEnum } from '../room.domain';
 
 @Injectable()
 export class RoomRepository implements IRoomRepository {
   constructor(private readonly prisma: PrismaService) {}
+  async isNameAlreadyExists(name: string): Promise<boolean> {
+    const room = await this.prisma.room.findFirst({
+      where: { name, status: RoomStatusEnum.ACTIVE },
+    });
+    return !!room;
+  }
 
-  async createRoom(input: CreateRoomInput): Promise<RoomNode> {
+  async createRoom(data: CreateRoomInput): Promise<RoomDomain> {
     const room = await this.prisma.room.create({
-      data: {
-        ...input,
-      },
+      data,
     });
 
-    return fromPrismaRoomToRoomNode(room);
+    return fromPrismaRoomToRoomDomain(room);
   }
 }

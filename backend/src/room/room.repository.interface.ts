@@ -1,6 +1,7 @@
 import { CreateRoomInput } from './gql-model/room.input';
-import { RoomNode } from './gql-model/room.model';
+import { RoomDomain } from './room.domain';
 
 export interface IRoomRepository {
-  createRoom(input: CreateRoomInput): Promise<RoomNode>;
+  createRoom(input: CreateRoomInput): Promise<RoomDomain>;
+  isNameAlreadyExists(name: string): Promise<boolean>;
 }

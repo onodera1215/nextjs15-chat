@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { IUserRepository } from '../user.repository.interface';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { UserNode } from '../gql-models/user.model';
 import { CreateUserInput } from '../gql-models/create-user.input';
 import { UserStatusEnum } from '../gql-models/user-status.enum';
-import { fromPrismaUserToUserNode } from './utils';
+import { fromPrismaUserToUserDomain } from './utils';
+import { UserDomain } from '../user.domain';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createUser(input: CreateUserInput): Promise<UserNode> {
+  async createUser(input: CreateUserInput): Promise<UserDomain> {
     const user = await this.prisma.user.create({
       data: {
         ...input,
@@ -18,16 +18,16 @@ export class UserRepository implements IUserRepository {
       },
     });
 
-    return fromPrismaUserToUserNode(user);
+    return fromPrismaUserToUserDomain(user);
   }
 
-  async findByEmail(email: string): Promise<UserNode | null> {
+  async findByEmail(email: string): Promise<UserDomain | null> {
     const user = await this.prisma.user.findUnique({
       where: { email },
     });
     if (!user) {
       return null;
     }
-    return fromPrismaUserToUserNode(user);
+    return fromPrismaUserToUserDomain(user);
   }
 }
