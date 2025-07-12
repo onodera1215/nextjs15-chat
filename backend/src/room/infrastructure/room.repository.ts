@@ -55,4 +55,14 @@ export class RoomRepository implements IRoomRepository {
     });
     return rooms.map(fromPrismaRoomToRoomDomain);
   }
+
+  async findById(id: string): Promise<RoomDomain | null> {
+    const room = await this.prisma.room.findUnique({
+      where: { id, status: RoomStatusEnum.ACTIVE },
+    });
+    if (!room) {
+      return null;
+    }
+    return fromPrismaRoomToRoomDomain(room);
+  }
 }

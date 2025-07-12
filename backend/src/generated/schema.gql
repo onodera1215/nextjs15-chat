@@ -8,27 +8,13 @@ type Message {
   roomId: String!
   createdAt: DateTime!
   updatedAt: DateTime!
+  room: RoomNode!
 }
 
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
-
-type UserNode {
-  id: ID!
-  name: String!
-  email: String!
-  status: UserStatus!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-"""ユーザーステータス"""
-enum UserStatus {
-  ACTIVE
-  INACTIVE
-}
 
 type RoomNode {
   id: ID!
@@ -41,6 +27,21 @@ type RoomNode {
 
 """ルームステータス"""
 enum RoomStatusEnum {
+  ACTIVE
+  INACTIVE
+}
+
+type UserNode {
+  id: ID!
+  name: String!
+  email: String!
+  status: UserStatus!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""ユーザーステータス"""
+enum UserStatus {
   ACTIVE
   INACTIVE
 }

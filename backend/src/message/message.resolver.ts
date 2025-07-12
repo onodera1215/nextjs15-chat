@@ -1,4 +1,12 @@
-import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
+import {
+  Args,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+  Subscription,
+} from '@nestjs/graphql';
 import { Message } from './models/message.model';
 import { CreateMessageUsecase } from './usecase/create-message.usecase';
 import { GetsMessageUsecase } from './usecase/gets-message.usecase';
@@ -6,12 +14,15 @@ import { Inject } from '@nestjs/common';
 import { PubSub } from 'graphql-subscriptions';
 import { SearchOptionInput } from './models/search-option.input';
 import { CreateMessageInput } from './models/create-message.input';
+import { RoomNode } from 'src/room/gql-model/room.model';
+import { GetRoomUsecase } from 'src/room/usecase/get-room.usecase';
 
-@Resolver()
+@Resolver(() => Message)
 export class MessageResolver {
   constructor(
     private readonly createMessageUsecase: CreateMessageUsecase,
     private readonly getsMessageUsecase: GetsMessageUsecase,
+    private readonly getRoomUsecase: GetRoomUsecase,
 
     @Inject('GqlPubSub')
     private readonly gqlPubSub: PubSub,
@@ -20,6 +31,11 @@ export class MessageResolver {
   @Query(() => [Message])
   async messages(@Args('input') input: SearchOptionInput) {
     return await this.getsMessageUsecase.execute(input);
+  }
+
+  @ResolveField(() => RoomNode)
+  async room(@Parent() message: Message) {
+    return await this.getRoomUsecase.execute(message.roomId);
   }
 
   @Mutation(() => Message)
