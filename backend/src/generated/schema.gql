@@ -47,6 +47,7 @@ enum RoomStatusEnum {
 
 type Query {
   messages(input: SearchOptionInput!): [Message!]!
+  rooms(input: SearchRoomOptionInput!): [RoomNode!]!
 }
 
 """クエリ検索用オプション"""
@@ -54,6 +55,13 @@ input SearchOptionInput {
   roomId: String!
   limit: Float
   offset: Float
+}
+
+input SearchRoomOptionInput {
+  roomId: String
+  name: String
+  createdAt: DateTime
+  updatedAt: DateTime
 }
 
 type Mutation {
