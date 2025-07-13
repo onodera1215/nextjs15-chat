@@ -34,3 +34,5 @@ jobs:
         with:
           path: ./backend
           config: ./fly.toml
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
