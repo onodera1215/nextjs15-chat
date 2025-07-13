@@ -6,8 +6,6 @@ on:
   pull_request:
     types: [opened, reopened, synchronize, closed]
 
-env:
-
 jobs:
   review_app:
     runs-on: ubuntu-latest
