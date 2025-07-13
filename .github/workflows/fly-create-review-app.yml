@@ -1,4 +1,4 @@
-# PR作成時に branch-name.domain.com でアプリをデプロイするGitHub Actions
+# PR作成時にプレビュー用のアプリをデプロイするGitHub Actions
 # https://fly.io/docs/blueprints/review-apps-guide/
 name: Deploy Review App
 on:
@@ -22,6 +22,7 @@ jobs:
       FLY_REGION: nrt
       FLY_ORG: personal
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      TMP_APP_NAME: pr-${{ github.event.number }}-nextjs-chat-tmp-app
     steps:
       - name: Get code
         uses: actions/checkout@v4
@@ -35,7 +36,7 @@ jobs:
         run: fly version
 
       - name: Determine App Name
-        run: echo "APP_NAME=pr-${{ github.event.number }}-tmp-app" >> $GITHUB_ENV
+        run: echo "APP_NAME=$TMP_APP_NAME" >> $GITHUB_ENV
 
       - name: Create app
         working-directory: ./backend

@@ -1,7 +1,6 @@
-# PRｋクローズにプレビューアプリを削除する
+# PRクローズ時にプレビューアプリを削除する
 name: Delete Review App
 on:
-  # プルリクイベントで発動
   pull_request:
     types: [closed]
 
@@ -21,6 +20,7 @@ jobs:
       FLY_REGION: nrt
       FLY_ORG: personal
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      TMP_APP_NAME: pr-${{ github.event.number }}-nextjs-chat-tmp-app
     steps:
       - name: Install Fly
         run: |
@@ -31,4 +31,4 @@ jobs:
 
       - name: Destroy Fly.io app
         working-directory: ./backend
-        run: fly apps destroy --yes pr-${{ github.event.number }}-tmp-app
+        run: fly apps destroy --yes $TMP_APP_NAME
