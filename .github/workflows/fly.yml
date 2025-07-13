@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-      - develop # githubactionsの動作確認用なのでmainにマージしたら消す
 jobs:
   deploy:
     name: Deploy app
