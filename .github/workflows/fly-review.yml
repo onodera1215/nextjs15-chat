@@ -35,6 +35,6 @@ jobs:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
         with:
           path: ./backend
-          config: ./backend/fly.toml
+          config: ./fly.toml
           org: personal
           region: nrt
