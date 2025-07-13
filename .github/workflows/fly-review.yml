@@ -1,0 +1,37 @@
+# PR作成時に branch-name.domain.com でアプリをデプロイするGitHub Actions
+# https://fly.io/docs/blueprints/review-apps-guide/
+name: Deploy Review App
+on:
+  # プルリクイベントで発動
+  pull_request:
+    types: [opened, reopened, synchronize, closed]
+
+env:
+  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+  FLY_REGION: nrt
+  FLY_ORG: personal
+
+jobs:
+  review_app:
+    runs-on: ubuntu-latest
+    outputs:
+      url: ${{ steps.deploy.outputs.url }}
+    # キーを指定して並行処理を制御
+    concurrency:
+      group: pr-${{ github.event.number }}
+      # 同じPRの並行処理をキャンセル
+      cancel-in-progress: true
+
+    environment:
+      name: review
+      url: ${{ steps.deploy.outputs.url }}
+    steps:
+      - name: Get code
+        uses: actions/checkout@v4
+
+      - name: Deploy PR app to Fly.io
+        id: deploy
+        uses: superfly/fly-pr-review-apps@1.2.1
+        with:
+          working-directory: ./backend
+          args: deploy --remote-only
