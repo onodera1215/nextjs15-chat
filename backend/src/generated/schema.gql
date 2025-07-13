@@ -2,13 +2,15 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Message {
+type MessageNode {
   id: String!
   body: String!
   roomId: String!
+  senderId: String!
   createdAt: DateTime!
   updatedAt: DateTime!
   room: RoomNode!
+  sender: UserNode!
 }
 
 """
@@ -47,7 +49,7 @@ enum UserStatus {
 }
 
 type Query {
-  messages(input: SearchOptionInput!): [Message!]!
+  messages(input: SearchOptionInput!): [MessageNode!]!
   rooms(input: SearchRoomOptionInput!): [RoomNode!]!
 }
 
@@ -66,7 +68,7 @@ input SearchRoomOptionInput {
 }
 
 type Mutation {
-  createMessage(input: CreateMessageInput!): Message!
+  createMessage(input: CreateMessageInput!): MessageNode!
   createUser(input: CreateUserInput!): UserNode!
   createRoom(input: CreateRoomInput!): RoomNode!
 }
@@ -89,5 +91,5 @@ input CreateRoomInput {
 }
 
 type Subscription {
-  messageCreated: Message!
+  messageCreated: MessageNode!
 }

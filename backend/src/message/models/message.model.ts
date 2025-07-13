@@ -1,8 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { UserNode } from 'src/user/gql-models/user.model';
 
 @ObjectType()
-export class Message {
+export class MessageNode {
   @Field(() => String)
   id: string;
 
@@ -11,6 +10,9 @@ export class Message {
 
   @Field(() => String)
   roomId: string;
+
+  @Field(() => String)
+  senderId: string;
 
   @Field(() => Date)
   createdAt: Date;

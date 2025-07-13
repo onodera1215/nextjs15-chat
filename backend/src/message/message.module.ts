@@ -3,9 +3,10 @@ import { MessageResolver } from './message.resolver';
 import { CreateMessageUsecase } from './usecase/create-message.usecase';
 import { GetsMessageUsecase } from './usecase/gets-message.usecase';
 import { MessageRepository } from './infrastructure/message.repository';
-import { GetRoomsUsecase } from 'src/room/usecase/get-rooms.usecase';
 import { RoomRepository } from 'src/room/infrastructure/room.repository';
 import { GetRoomUsecase } from 'src/room/usecase/get-room.usecase';
+import { GetUserUsecase } from 'src/user/usecase/get-user.usecase';
+import { UserRepository } from 'src/user/infrastructure/user.repository';
 
 @Module({
   providers: [
@@ -13,7 +14,7 @@ import { GetRoomUsecase } from 'src/room/usecase/get-room.usecase';
     CreateMessageUsecase,
     MessageResolver,
     GetRoomUsecase,
-    GetRoomsUsecase,
+    GetUserUsecase,
     {
       provide: 'IMessageRepository',
       useClass: MessageRepository,
@@ -21,6 +22,10 @@ import { GetRoomUsecase } from 'src/room/usecase/get-room.usecase';
     {
       provide: 'IRoomRepository',
       useClass: RoomRepository,
+    },
+    {
+      provide: 'IUserRepository',
+      useClass: UserRepository,
     },
   ],
   exports: [GetsMessageUsecase, CreateMessageUsecase],
