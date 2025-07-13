@@ -39,7 +39,7 @@ jobs:
         run: echo "APP_NAME=pr-${{ github.event.number }}-tmp-app" >> $GITHUB_ENV
 
       - name: Create app
-        run: fly apps create $APP_NAME --org $FLY_ORG --region $FLY_REGION --no-deploy"
+        run: fly apps create $APP_NAME --org $FLY_ORG --region $FLY_REGION --no-deploy
 
       - name: Set Secrets
         run: fly secrets set DATABASE_URL="${{ secrets.DATABASE_URL }}" -a $APP_NAME
