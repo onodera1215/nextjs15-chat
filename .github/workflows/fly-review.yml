@@ -29,6 +29,9 @@ jobs:
       - name: Setup Flyctl
         uses: superfly/flyctl-actions/setup-flyctl@master
 
+      - name: Check fly version
+        run: fly version
+
       - name: Set Fly secrets
         run: fly secrets set DATABASE_URL="${{ secrets.DATABASE_URL }}"
         working-directory: ./backend
