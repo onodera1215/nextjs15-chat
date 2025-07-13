@@ -31,6 +31,7 @@ jobs:
 
       - name: Set Fly secrets
         run: fly secrets set DATABASE_URL="${{ secrets.DATABASE_URL }}"
+        working-directory: ./backend
 
       - name: Deploy PR app to Fly.io
         id: deploy
