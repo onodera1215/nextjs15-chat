@@ -24,7 +24,9 @@ export class MessageResolver {
   constructor(
     private readonly createMessageUsecase: CreateMessageUsecase,
     private readonly getsMessageUsecase: GetsMessageUsecase,
+    // フィールドリゾルバーでroom取得するときに使う
     private readonly getRoomUsecase: GetRoomUsecase,
+    // フィールドリゾルバーでsender取得するときに使う
     private readonly getUserUsecase: GetUserUsecase,
 
     @Inject('GqlPubSub')

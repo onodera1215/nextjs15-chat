@@ -12,6 +12,7 @@ import { UserModule } from './user/user.module';
 import { RoomResolver } from './room/room.resolver';
 import { RoomModule } from './room/room.module';
 import { PubsubModule } from './pubsub/pubsub.module';
+import { LoggerModule } from './logger/logger.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { PubsubModule } from './pubsub/pubsub.module';
     UserModule,
     RoomModule,
     PubsubModule,
+    LoggerModule,
   ],
   providers: [MessageResolver, UserResolver, PrismaService, RoomResolver],
 })
