@@ -38,13 +38,14 @@ jobs:
         id: vars
         run: echo "APP_NAME=pr-${{ github.event.number }}-tmp-app" >> $GITHUB_ENV
 
+      - name: Change directory
+        run: cd ./backend
+
       - name: Create app
         run: fly launch --no-deploy --name $APP_NAME --org $FLY_ORG --region $FLY_REGION
-        working-directory: ./backend
 
       - name: Set Secrets
         run: fly secrets set DATABASE_URL="${{ secrets.DATABASE_URL }}" -a $APP_NAME
 
       - name: Deploy
-        working-directory: ./backend
         run: fly deploy --remote --app $APP_NAME
