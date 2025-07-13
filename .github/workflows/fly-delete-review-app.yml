@@ -27,7 +27,8 @@ jobs:
           curl -L https://fly.io/install.sh | sh
           echo "$HOME/.fly/bin" >> $GITHUB_PATH
 
+      - uses: actions/checkout@v4
+
       - name: Destroy Fly.io app
-        run: fly apps destroy --yes --app pr-${{ github.event.number }}-tmp-app
-        env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        working-directory: ./backend
+        run: fly apps destroy --yes pr-${{ github.event.number }}-tmp-app
