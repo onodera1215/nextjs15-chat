@@ -35,17 +35,12 @@ jobs:
       - name: Check fly version
         run: fly version
 
-      - name: check secrets
-        run: |
-          echo "${FLY_DEV_DB_APP: -5}" # データベースのアプリ名を確認
-          echo "${TMP_APP_NAME: -5}" # データベースのアプリ名を確認
-
         # データベースの起動
       - name: Start dev database
         working-directory: ./fly.io/postgres
         run: |
-          MACHINE_ID=$(fly m list --app "$FLY_DEV_DB_APP" --json | jq -r '.machines[] | select(.state=="stopped") | .id' | head -n1)
-          fly m start "$MACHINE_ID" --app "$FLY_DEV_DB_APP"
+          MACHINE_ID=$(fly m list --app "${{ secrets.FLY_DEV_DB_APP }}" --json | jq -r '.machines[] | select(.state=="stopped") | .id' | head -n1)
+          fly m start "$MACHINE_ID" --app "${{ secrets.FLY_DEV_DB_APP }}"
 
       - name: Create app
         working-directory: ./backend
