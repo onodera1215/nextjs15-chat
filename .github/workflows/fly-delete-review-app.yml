@@ -32,3 +32,9 @@ jobs:
       - name: Destroy Fly.io app
         working-directory: ./backend
         run: fly apps destroy --yes $TMP_APP_NAME
+
+        # データベースの停止
+      - name: Stop dev database
+        run: |
+          MACHINE_ID=$(fly machines list --app "$FLY_DEV_DB_APP" --json | jq -r '.[] | select(.state=="stopped") | .id' | head -n1)
+          fly machines stop "$MACHINE_ID" --app "$FLY_DEV_DB_APP"

@@ -22,7 +22,7 @@ jobs:
       FLY_REGION: nrt
       FLY_ORG: personal
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      TMP_APP_NAME: pr-${{ github.event.number }}-nextjs-chat-tmp-app
+      APP_NAME: pr-${{ github.event.number }}-${{ secrets.TMP_APP_NAME}}
     steps:
       - name: Get code
         uses: actions/checkout@v4
@@ -35,15 +35,18 @@ jobs:
       - name: Check fly version
         run: fly version
 
-      - name: Determine App Name
-        run: echo "APP_NAME=$TMP_APP_NAME" >> $GITHUB_ENV
-
       - name: Create app
         working-directory: ./backend
         run: fly launch --no-deploy --copy-config --name $APP_NAME --org $FLY_ORG --region $FLY_REGION
 
       - name: Set Secrets
         run: fly secrets set DATABASE_URL="${{ secrets.DATABASE_URL }}" -a $APP_NAME
+
+        # データベースの起動
+      - name: Start dev database
+        run: |
+          MACHINE_ID=$(fly machines list --app "$FLY_DEV_DB_APP" --json | jq -r '.[] | select(.state=="stopped") | .id' | head -n1)
+          fly machines start "$MACHINE_ID" --app "$FLY_DEV_DB_APP"
 
       - name: Deploy
         working-directory: ./backend
