@@ -4,7 +4,7 @@ name: Deploy Review App
 on:
   # プルリクイベントで発動
   pull_request:
-    types: [opened, reopened, synchronize]
+    types: [reopened]
 
 jobs:
   review_app:
