@@ -44,7 +44,7 @@ jobs:
 
       - name: Create app
         working-directory: ./backend
-        run: fly app create $APP_NAME --org $FLY_ORG --region $FLY_REGION
+        run: fly app create $APP_NAME --org $FLY_ORG
 
       - name: Deploy app
         working-directory: ./backend
