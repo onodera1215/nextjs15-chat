@@ -46,10 +46,6 @@ jobs:
         working-directory: ./backend
         run: fly app create $APP_NAME --org $FLY_ORG
 
-      - name: Deploy app
-        working-directory: ./backend
-        run: fly deploy --remote-only --app $APP_NAME
-
       - name: Set Secrets
         run: fly secrets set DATABASE_URL="${{ secrets.DATABASE_URL }}" --app $APP_NAME
 
