@@ -38,6 +38,7 @@ jobs:
       - name: check secrets
         run: |
           echo "${FLY_DEV_DB_APP: -5}" # データベースのアプリ名を確認
+          echo "${TMP_APP_NAME: -5}" # データベースのアプリ名を確認
 
         # データベースの起動
       - name: Start dev database
