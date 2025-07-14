@@ -37,7 +37,7 @@ jobs:
 
       - name: Create app
         working-directory: ./backend
-        run: fly launch --no-deploy --copy-config --name $APP_NAME --org $FLY_ORG --region $FLY_REGION
+        run: fly launch --no-deploy --copy-config --name $APP_NAME --org $FLY_ORG --region $FLY_REGION --remote-only
 
       - name: Set Secrets
         run: fly secrets set DATABASE_URL="${{ secrets.DATABASE_URL }}" -a $APP_NAME
