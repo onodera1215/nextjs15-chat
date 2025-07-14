@@ -35,6 +35,10 @@ jobs:
       - name: Check fly version
         run: fly version
 
+      - name: check secrets
+        run: |
+          echo $FLY_DEV_DB_APP
+
         # データベースの起動
       - name: Start dev database
         working-directory: ./fly.io/postgres
