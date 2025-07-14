@@ -35,18 +35,18 @@ jobs:
       - name: Check fly version
         run: fly version
 
+        # データベースの起動
+      - name: Start dev database
+        run: |
+          MACHINE_ID=$(fly m list --app "$FLY_DEV_DB_APP" --json | jq -r '.[] | select(.state=="stopped") | .id' | head -n1)
+          fly m start "$MACHINE_ID" --app "$FLY_DEV_DB_APP"
+
       - name: Create app
         working-directory: ./backend
         run: fly deploy --remote-only
 
       - name: Set Secrets
         run: fly secrets set DATABASE_URL="${{ secrets.DATABASE_URL }}" -a $APP_NAME
-
-        # データベースの起動
-      - name: Start dev database
-        run: |
-          MACHINE_ID=$(fly m list --app "$FLY_DEV_DB_APP" --json | jq -r '.[] | select(.state=="stopped") | .id' | head -n1)
-          fly m start "$MACHINE_ID" --app "$FLY_DEV_DB_APP"
 
       - name: Deploy
         working-directory: ./backend
