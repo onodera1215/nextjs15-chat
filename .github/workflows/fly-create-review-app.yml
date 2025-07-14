@@ -39,7 +39,7 @@ jobs:
       - name: Start dev database
         working-directory: ./fly.io/postgres
         run: |
-          MACHINE_ID=$(fly m list --app "$FLY_DEV_DB_APP" --json | jq -r '.[] | select(.state=="stopped") | .id' | head -n1)
+          MACHINE_ID=$(fly m list --app "$FLY_DEV_DB_APP" --json | jq -r '.machines[] | select(.state=="stopped") | .id' | head -n1)
           fly m start "$MACHINE_ID" --app "$FLY_DEV_DB_APP"
 
       - name: Create app
