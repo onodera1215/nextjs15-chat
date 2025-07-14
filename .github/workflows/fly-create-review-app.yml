@@ -37,7 +37,7 @@ jobs:
 
       - name: Create app
         working-directory: ./backend
-        run: fly launch --no-deploy --copy-config --name $APP_NAME --org $FLY_ORG --region $FLY_REGION --remote-only
+        run: fly deploy --remote-only
 
       - name: Set Secrets
         run: fly secrets set DATABASE_URL="${{ secrets.DATABASE_URL }}" -a $APP_NAME
@@ -45,8 +45,8 @@ jobs:
         # データベースの起動
       - name: Start dev database
         run: |
-          MACHINE_ID=$(fly machines list --app "$FLY_DEV_DB_APP" --json | jq -r '.[] | select(.state=="stopped") | .id' | head -n1)
-          fly machines start "$MACHINE_ID" --app "$FLY_DEV_DB_APP"
+          MACHINE_ID=$(fly m list --app "$FLY_DEV_DB_APP" --json | jq -r '.[] | select(.state=="stopped") | .id' | head -n1)
+          fly m start "$MACHINE_ID" --app "$FLY_DEV_DB_APP"
 
       - name: Deploy
         working-directory: ./backend
