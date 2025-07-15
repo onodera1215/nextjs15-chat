@@ -18,7 +18,7 @@ import { LoggerModule } from './logger/logger.module';
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), 'src/generated/schema.gql'),
+      autoSchemaFile: join(process.cwd(), 'src/graphql/schema.gql'),
       playground: false,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
       subscriptions: {

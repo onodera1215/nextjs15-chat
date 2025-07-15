@@ -57,7 +57,7 @@ export class RoomRepository implements IRoomRepository {
   }
 
   async findById(id: string): Promise<RoomDomain | null> {
-    const room = await this.prisma.room.findUnique({
+    const room = await this.prisma.room.findFirst({
       where: { id, status: RoomStatusEnum.ACTIVE },
     });
     if (!room) {
