@@ -50,7 +50,6 @@ enum UserStatus {
 
 type Query {
   messages(input: SearchOptionInput!): [MessageNode!]!
-  rooms(input: SearchRoomOptionInput!): [RoomNode!]!
 }
 
 """クエリ検索用オプション"""
@@ -60,34 +59,14 @@ input SearchOptionInput {
   offset: Float
 }
 
-input SearchRoomOptionInput {
-  roomId: String
-  name: String
-  createdAt: DateTime
-  updatedAt: DateTime
-}
-
 type Mutation {
   createMessage(input: CreateMessageInput!): MessageNode!
-  createUser(input: CreateUserInput!): UserNode!
-  createRoom(input: CreateRoomInput!): RoomNode!
 }
 
 input CreateMessageInput {
   body: String!
   roomId: String!
   senderId: String!
-}
-
-input CreateUserInput {
-  name: String!
-  email: String!
-}
-
-input CreateRoomInput {
-  name: String!
-  description: String!
-  status: RoomStatusEnum!
 }
 
 type Subscription {
