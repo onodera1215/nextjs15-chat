@@ -27,6 +27,9 @@ jobs:
       - name: Get code
         uses: actions/checkout@v4
 
+      - name: Start synchronize review workflow
+        run: echo "Starting synchronize review workflow for PR $TMP_APP_NAME"
+
       - name: Install Fly
         run: |
           curl -L https://fly.io/install.sh | sh
