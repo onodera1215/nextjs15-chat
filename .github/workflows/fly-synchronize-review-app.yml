@@ -35,12 +35,11 @@ jobs:
       - name: Check fly version
         run: fly version
 
-        # データベースの起動
-      - name: Start dev database
+        # データベースのMACHINEIDを取得
+      - name: Get dev database MACHINE_ID
         working-directory: ./fly.io/postgres
         run: |
           MACHINE_ID=$(fly m list --app "${{ secrets.FLY_DEV_DB_APP }}" --json | jq -r '.[] | select(.state=="stopped") | .id' | head -n1)
-          fly m start "$MACHINE_ID" --app "${{ secrets.FLY_DEV_DB_APP }}"
 
       - name: Set Secrets
         run: fly secrets set DATABASE_URL="${{ secrets.DATABASE_URL }}" --app $APP_NAME
