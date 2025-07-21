@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "./generated"
+  output   = "../node_modules/@prisma/generated"
 }
 
 datasource db {
@@ -14,11 +14,71 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+
+  @@map("user_status")
+}
+
+enum RoomStatus {
+  ACTIVE
+  INACTIVE
+
+  @@map("room_status")
+}
+
 model User {
-  id    String  @id // UUIDの発番はアプリケーションで行う
-  email String  @unique
-  name  String?
+  id        String     @id @default(cuid())
+  email     String     @unique
+  name      String
+  status    UserStatus
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  rooms    UserRoom[]
+  messages Message[]
+
+  @@map("users")
+}
+
+model UserRoom {
+  roomId    String
+  userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  @@map("users")
+
+  room Room @relation(fields: [roomId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([roomId, userId])
+  @@map("user_rooms")
+}
+
+model Room {
+  id          String     @id @default(cuid())
+  name        String
+  description String
+  status      RoomStatus
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  users    UserRoom[]
+  messages Message[]
+
+  @@map("rooms")
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  body      String
+  senderId  String
+  roomId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sender User @relation(fields: [senderId], references: [id])
+  room   Room @relation(fields: [roomId], references: [id])
+
+  @@map("messages")
 }

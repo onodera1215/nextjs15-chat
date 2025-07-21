@@ -1,22 +1,64 @@
-import { Args, Query, Resolver } from '@nestjs/graphql';
-import { SearchOptionInput } from './inputs/searchOption.input';
-import { Message } from './models/message.model';
-import { PrismaService } from 'src/prisma/prisma.service';
+import {
+  Args,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+  Subscription,
+} from '@nestjs/graphql';
+import { MessageNode } from './models/message.model';
+import { CreateMessageUsecase } from './usecase/create-message.usecase';
+import { GetsMessageUsecase } from './usecase/gets-message.usecase';
+import { Inject } from '@nestjs/common';
+import { PubSub } from 'graphql-subscriptions';
+import { SearchOptionInput } from './models/search-option.input';
+import { CreateMessageInput } from './models/create-message.input';
+import { RoomNode } from 'src/room/gql-model/room.model';
+import { GetRoomUsecase } from 'src/room/usecase/get-room.usecase';
+import { GetUserUsecase } from 'src/user/usecase/get-user.usecase';
+import { UserNode } from 'src/user/gql-models/user.model';
 
-@Resolver()
+@Resolver(() => MessageNode)
 export class MessageResolver {
-  /**
-   *
-   * 一旦べたがきでDBとの疎通確認
-   */
+  constructor(
+    private readonly createMessageUsecase: CreateMessageUsecase,
+    private readonly getsMessageUsecase: GetsMessageUsecase,
+    // フィールドリゾルバーでroom取得するときに使う
+    private readonly getRoomUsecase: GetRoomUsecase,
+    // フィールドリゾルバーでsender取得するときに使う
+    private readonly getUserUsecase: GetUserUsecase,
 
-  constructor(private prisma: PrismaService) {}
+    @Inject('GqlPubSub')
+    private readonly gqlPubSub: PubSub,
+  ) {}
 
-  @Query(() => [Message])
+  @Query(() => [MessageNode])
   async messages(@Args('input') input: SearchOptionInput) {
-    console.log('input: ', input);
-    const users = await this.prisma.user.findMany();
-    console.log('users: ', users);
-    return [];
+    return await this.getsMessageUsecase.execute(input);
+  }
+
+  @ResolveField(() => RoomNode)
+  async room(@Parent() message: MessageNode) {
+    return await this.getRoomUsecase.execute(message.roomId);
+  }
+
+  @ResolveField(() => UserNode)
+  async sender(@Parent() message: MessageNode) {
+    return await this.getUserUsecase.execute(message.senderId);
+  }
+
+  @Mutation(() => MessageNode)
+  async createMessage(@Args('input') input: CreateMessageInput) {
+    // メッセージ登録
+    const message = await this.createMessageUsecase.execute(input);
+    // パブリッシュ
+    await this.gqlPubSub.publish('messageCreated', { messageCreated: message });
+    return message;
+  }
+
+  @Subscription(() => MessageNode)
+  messageCreated() {
+    return this.gqlPubSub.asyncIterableIterator<MessageNode>('messageCreated');
   }
 }

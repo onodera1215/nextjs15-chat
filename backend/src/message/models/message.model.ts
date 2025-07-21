@@ -1,19 +1,18 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { User } from 'src/user/models/user.model';
 
 @ObjectType()
-export class Message {
+export class MessageNode {
   @Field(() => String)
   id: string;
 
   @Field(() => String)
+  body: string;
+
+  @Field(() => String)
   roomId: string;
 
-  @Field(() => User)
-  sender: User;
-
-  @Field(() => [User])
-  readUsers: User[];
+  @Field(() => String)
+  senderId: string;
 
   @Field(() => Date)
   createdAt: Date;

@@ -1,0 +1,95 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type MessageNode {
+  id: String!
+  body: String!
+  roomId: String!
+  senderId: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  room: RoomNode!
+  sender: UserNode!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type RoomNode {
+  id: ID!
+  name: String!
+  description: String!
+  status: RoomStatusEnum!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""ルームステータス"""
+enum RoomStatusEnum {
+  ACTIVE
+  INACTIVE
+}
+
+type UserNode {
+  id: ID!
+  name: String!
+  email: String!
+  status: UserStatus!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""ユーザーステータス"""
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
+
+type Query {
+  messages(input: SearchOptionInput!): [MessageNode!]!
+  rooms(input: SearchRoomOptionInput!): [RoomNode!]!
+}
+
+"""クエリ検索用オプション"""
+input SearchOptionInput {
+  roomId: String!
+  limit: Float
+  offset: Float
+}
+
+input SearchRoomOptionInput {
+  roomId: String
+  name: String
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type Mutation {
+  createMessage(input: CreateMessageInput!): MessageNode!
+  createUser(input: CreateUserInput!): UserNode!
+  createRoom(input: CreateRoomInput!): RoomNode!
+}
+
+input CreateMessageInput {
+  body: String!
+  roomId: String!
+  senderId: String!
+}
+
+input CreateUserInput {
+  name: String!
+  email: String!
+}
+
+input CreateRoomInput {
+  name: String!
+  description: String!
+  status: RoomStatusEnum!
+}
+
+type Subscription {
+  messageCreated: MessageNode!
+}

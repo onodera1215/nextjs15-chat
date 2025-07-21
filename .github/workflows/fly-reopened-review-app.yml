@@ -1,0 +1,53 @@
+# PR作成時にプレビュー用のアプリをデプロイするGitHub Actions
+# https://fly.io/docs/blueprints/review-apps-guide/
+name: Deploy Review App
+on:
+  # プルリクイベントで発動
+  pull_request:
+    types: [reopened]
+
+jobs:
+  review_app:
+    runs-on: ubuntu-latest
+    outputs:
+      url: ${{ steps.deploy.outputs.url }}
+    # キーを指定して並行処理を制御
+    concurrency:
+      group: pr-${{ github.event.number }}
+      # 同じPRの並行処理をキャンセル
+      cancel-in-progress: true
+
+    env:
+      FLY_API_TOKEN: ${{ secrets.FLY_ORGANIZATION_TOKEN }}
+      FLY_REGION: nrt
+      FLY_ORG: personal
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      APP_NAME: pr-${{ github.event.number }}-${{ secrets.TMP_APP_NAME}}
+    steps:
+      - name: Get code
+        uses: actions/checkout@v4
+
+      - name: Install Fly
+        run: |
+          curl -L https://fly.io/install.sh | sh
+          echo "$HOME/.fly/bin" >> $GITHUB_PATH
+
+      - name: Check fly version
+        run: fly version
+
+        # データベースのMACHINEIDを取得
+      - name: Get dev database MACHINE_ID
+        working-directory: ./fly.io/postgres
+        run: |
+          MACHINE_ID=$(fly m list --app "${{ secrets.FLY_DEV_DB_APP }}" --config fly.dev.toml --json | jq -r '.[] | select(.state=="stopped") | .id' | head -n1)
+
+      - name: Create app
+        working-directory: ./backend
+        run: fly app create $APP_NAME --org $FLY_ORG
+
+      - name: Set Secrets
+        run: fly secrets set DATABASE_URL="${{ secrets.DATABASE_URL }}" --app $APP_NAME
+
+      - name: Deploy
+        working-directory: ./backend
+        run: fly deploy --remote-only --app $APP_NAME
