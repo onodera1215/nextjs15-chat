@@ -7,7 +7,11 @@ services:
     environment:
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}
     volumes:
-      - ./backend:/app
+      - ./backend:/backend
+  frontend:
+    build: ./frontend
+    volumes:
+      - ./frontend:/frontend
   database:
     build: ./fly.io/postgres
     environment:
