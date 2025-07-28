@@ -1,10 +1,10 @@
 FROM node:24
 
-WORKDIR /app
+WORKDIR /backend
 
 RUN apt-get update && \
     npm i -g @nestjs/cli && \
-    chown -R node:node /app && \ 
+    chown -R node:node /backend && \ 
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
