@@ -3,7 +3,7 @@ services:
   backend:
     build: ./backend
     ports:
-      - "3000:3000"
+      - "3010:3000"
     environment:
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}
     volumes:
@@ -12,6 +12,8 @@ services:
     build: ./frontend
     volumes:
       - ./frontend:/frontend
+    ports:
+      - "3030:3000"
   database:
     build: ./fly.io/postgres
     environment:
