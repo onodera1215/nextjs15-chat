@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Header from "@/components/molecules/Header";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -23,12 +24,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja">
+    <html
+      lang="ja"
+      data-google-analytics-opt-out=""
+    >
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <main className="grid grid-rows-[10%_1fr] h-screen">
-          <header>header</header>
+          <Header />
           <div className="grid grid-cols-12">
             <div className="col-span-2 max-md:hidden">sidebar</div>
             <div className="col-span-10">
