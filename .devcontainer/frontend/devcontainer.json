@@ -29,7 +29,9 @@
 		"vscode": {
 			"extensions": [
 				"esbenp.prettier-vscode",
-				"dbaeumer.vscode-eslint"
+				"dbaeumer.vscode-eslint",
+				"bradlc.vscode-tailwindcss",
+				"zarifprogrammer.tailwind-snippets"
 			],
 			"settings": {
 				"editor.formatOnSave": true,

@@ -1,4 +1,4 @@
 "use client";
 export default function Header() {
-    return <header className="bg-background">header</header>
+    return <header className="bg-surface">header</header>
 }
