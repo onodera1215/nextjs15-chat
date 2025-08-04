@@ -34,12 +34,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <main className="grid grid-rows-[8vh_1fr] md:grid-rows-[8vh_1fr] h-screen">
-          <Header title="Slack Copy" />
+          <Header />
           <div className="grid grid-cols-12">
-            <div className="col-span-2 max-md:block bg-surface">
+            <div className="col-span-3 max-md:block bg-surface">
               <Sidebar />
             </div>
-            <div className="col-span-10">
+            <div className="col-span-9">
               <Content>
                 {children}
               </Content>

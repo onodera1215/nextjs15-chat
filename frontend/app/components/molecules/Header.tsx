@@ -1,10 +1,21 @@
 "use client";
 
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import Logo from "../../public/logo.png";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function Header() {
     return <header className="bg-surface grid grid-cols-12">
-        <div className=" col-span-4">
+        <div className="col-span-4">
+            <Link href="/">
+                <div className="flex items-center justify-start h-full">
+                    <Image src={Logo} alt="Logo" className="h-12 w-auto ml-6" />
+                    <div>
+                        <h1 className="text-2xl font-bold text-primary ml-4">Whisp</h1>
+                    </div>
+                </div>
+            </Link>
         </div>
         <div className="flex items-center col-span-4">
             <div className="relative w-full max-w-md">
@@ -22,8 +33,8 @@ export default function Header() {
 
         </div>
         <div className="flex items-center col-span-4 justify-end mr-2">
-            <button className="text-sm bg-primary text-primary-light px-4 py-2 rounded-md">ログイン</button>
-            <button className="text-sm bg-primary text-primary-light px-4 py-2 rounded-md ml-2">サインアップ</button>
+            <Link href="/login" className="text-sm bg-background-light text-primary px-4 py-2 rounded-md">ログイン</Link>
+            <Link href="/signup" className="text-sm bg-background-light text-primary px-4 py-2 rounded-md ml-2">サインアップ</Link>
         </div>
     </header>
 }
