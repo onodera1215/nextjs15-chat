@@ -1,36 +1,35 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# フロントエンドページ構成
 
-## Getting Started
+## 配色について
 
-First, run the development server:
+見た目のデザインは slack を参考に作ってみる。
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+slack は 10 色くらいの色を使い分けてるみたい。
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+| カテゴリ名       | Slack 風の色        | HEX 値    | 用途の例                                         |
+| ---------------- | ------------------- | --------- | ------------------------------------------------ |
+| `primary`        | Aubergine（ナス色） | `#4A154B` | メインのブランドカラー（サイドバーや強調部）     |
+| `primary-light`  | 明るめの Aubergine  | `#7B3F73` | ホバーや薄背景など                               |
+| `secondary`      | ブルー              | `#36C5F0` | ボタン・リンク・アクセント                       |
+| `accent`         | グリーン            | `#2BAC76` | 成功メッセージやアクション                       |
+| `danger`         | レッド              | `#E01E5A` | エラー・削除などの強調表示                       |
+| `warning`        | イエロー            | `#ECB22E` | 注意・警告                                       |
+| `background`     | ライトグレー        | `#F8F8F8` | メインの背景色                                   |
+| `surface`        | ホワイト            | `#FFFFFF` | コンテンツボックス、モーダルなどの内側           |
+| `text-primary`   | ダークグレー        | `#1D1C1D` | メインテキスト（可読性重視）                     |
+| `text-secondary` | グレー              | `#616061` | サブテキスト、補足情報                           |
+| `text-inverse`   | ホワイト            | `#FFFFFF` | ダーク背景上のテキスト（例: サイドバー内の文字） |
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+↓ カスタムテーマの配色ピックアップ用のサイトでも１０色使ってそう  
+https://slackthemes.net/#/aubergine
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+なので色はカテゴリ名で決められるいろにする。
 
-## Learn More
+## ページ構成
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- ログインページ
+- ルーム
+  - デフォルト
+  - (任意で追加したルーム)
+- プロフィール
+- 設定ページなど
