@@ -33,7 +33,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <main className="grid grid-rows-[10vh_1fr] md:grid-rows-[8vh_1fr] h-screen">
+        <main className="grid grid-rows-[8vh_1fr] md:grid-rows-[8vh_1fr] h-screen">
           <Header title="Slack Copy" />
           <div className="grid grid-cols-12">
             <div className="col-span-2 max-md:block bg-surface">

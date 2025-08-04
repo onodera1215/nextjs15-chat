@@ -3,6 +3,7 @@
 /* Light theme */
 :root {
   --color-background: #f7f7f7;
+  --color-background-light: #fff;
   --color-surface: #cee3f8;
   --color-secondary: #b3cce6;
   --color-danger: #ff3000;
@@ -21,6 +22,7 @@
 /* Dark theme */
 .dark {
   --color-background: #1a1a1a;
+  --color-background-light: #2a2a2a;
   --color-surface: #2a2a2a;
   --color-secondary: #3a3a3a;
   --color-danger: #ff3000;
@@ -38,6 +40,7 @@
 
 @theme {
   --color-background: var(--color-background);
+  --color-background-light: var(--color-background-light);
   --color-surface: var(--color-surface);
   --color-secondary: var(--color-secondary);
   --color-danger: var(--color-danger);
