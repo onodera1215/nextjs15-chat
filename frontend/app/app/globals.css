@@ -2,30 +2,38 @@
 
 /* Light theme */
 :root {
-  --color-background: oklch(0 0% 97%); /* #F7F7F7 */
-  --color-surface: oklch(210 61% 87%); /* #CEE3F8 */
-  --color-secondary: oklch(210 44% 80%); /* #B3CCE6 */
-  --color-danger: oklch(14 100% 50%); /* #FF3000 */
-  --color-accent: oklch(210 44% 80%); /* #B3CCE6 */
-  --color-text-primary: oklch(210 50% 40%); /* #336699 */
-  --color-text-secondary: oklch(174 45% 42%); /* #38978D */
-  --color-warning: oklch(27 100% 50%); /* #FF7500 */
-  --color-primary-light: oklch(210 61% 87%); /* #CEE3F8 */
-  --color-primary: oklch(210 50% 40%); /* #336699 */
+  --color-background: #f7f7f7;
+  --color-surface: #cee3f8;
+  --color-secondary: #b3cce6;
+  --color-danger: #ff3000;
+  --color-accent: #b3cce6;
+  --color-text-primary: #222;
+  --color-text-secondary: #aaa;
+  --color-warning: #ff7500;
+  --color-primary-light: #cee3f8;
+  --color-primary: #336699;
+  --font-size-xs: 2.5vw;
+  --font-size-sm: 3vw;
+  --font-size-base: 4vw;
+  --font-size-lg: 5vw;
 }
 
 /* Dark theme */
 .dark {
-  --color-background: oklch(210 20% 12%);
-  --color-surface: oklch(210 20% 18%);
-  --color-secondary: oklch(210 30% 28%);
-  --color-danger: oklch(14 100% 60%);
-  --color-accent: oklch(210 30% 28%);
-  --color-text-primary: oklch(210 30% 88%);
-  --color-text-secondary: oklch(174 35% 75%);
-  --color-warning: oklch(27 100% 65%);
-  --color-primary-light: oklch(210 30% 28%);
-  --color-primary: oklch(210 50% 60%);
+  --color-background: #1a1a1a;
+  --color-surface: #2a2a2a;
+  --color-secondary: #3a3a3a;
+  --color-danger: #ff3000;
+  --color-accent: #3a3a3a;
+  --color-text-primary: #f0f0f0;
+  --color-text-secondary: #e0e0e0;
+  --color-warning: #ffb300;
+  --color-primary-light: #3a3a3a;
+  --color-primary: #3a3a3a;
+  --font-size-xs: 2.5vw;
+  --font-size-sm: 3vw;
+  --font-size-base: 4vw;
+  --font-size-lg: 5vw;
 }
 
 @theme {
@@ -39,4 +47,8 @@
   --color-warning: var(--color-warning);
   --color-primary-light: var(--color-primary-light);
   --color-primary: var(--color-primary);
+  --font-size-xs: var(--font-size-xs);
+  --font-size-sm: var(--font-size-sm);
+  --font-size-base: var(--font-size-base);
+  --font-size-lg: var(--font-size-lg);
 }

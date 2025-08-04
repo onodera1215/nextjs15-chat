@@ -31,7 +31,7 @@
 				"esbenp.prettier-vscode",
 				"dbaeumer.vscode-eslint",
 				"bradlc.vscode-tailwindcss",
-				"zarifprogrammer.tailwind-snippets"
+				"zarifprogrammer.tailwind-snippetslzg"
 			],
 			"settings": {
 				"editor.formatOnSave": true,

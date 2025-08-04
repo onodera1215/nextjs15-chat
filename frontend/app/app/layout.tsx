@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Header from "@/components/molecules/Header";
 import "./globals.css";
+import Sidebar from "@/components/molecules/Sidebar";
+import Content from "@/components/molecules/Content";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,12 +33,16 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <main className="grid grid-rows-[10%_1fr] h-screen">
-          <Header />
+        <main className="grid grid-rows-[10vh_1fr] md:grid-rows-[8vh_1fr] h-screen">
+          <Header title="Slack Copy" />
           <div className="grid grid-cols-12">
-            <div className="col-span-2 max-md:hidden">sidebar</div>
+            <div className="col-span-2 max-md:block bg-surface">
+              <Sidebar />
+            </div>
             <div className="col-span-10">
-              {children}
+              <Content>
+                {children}
+              </Content>
             </div>
           </div>
         </main>
