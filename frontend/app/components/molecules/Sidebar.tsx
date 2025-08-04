@@ -1,27 +1,18 @@
-import { HomeIcon } from "@heroicons/react/24/outline";
+import { BellAlertIcon, HomeIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import SidebarNavigationButton from "../atoms/SidebaNavigationButtons";
+import { UserCircle } from "lucide-react";
 
 export default function Sidebar() {
     return (
-        <aside className="bg-surface h-full">
-            <div className="grid grid-cols-6 mb-4 h-full">
+        <aside className="bg-surface h-full relative">
+            <div className="grid grid-cols-5 mb-4 h-full">
                 <nav className="col-span-2">
-
-
-                    <div className="flex flex-col">
-                        <div className="flex items-center justify-center w-full">
-                            <Link
-                                href="#"
-                                className="text-primary m-1 rounded-[0.5rem] border border-surface-500 hover:bg-secondary transform transition-transform duration-200 hover:scale-110 flex flex-col items-center px-2 py-1"
-                            >
-                                <HomeIcon className="h-7 w-7 mb-[0.5]" />
-                                <p>ホーム</p>
-                            </Link>
-                        </div>
-                    </div>
-
+                    <SidebarNavigationButton icon={<HomeIcon />} title="ホーム" />
+                    <SidebarNavigationButton icon={<UserCircle />} title="プロフィール" />
+                    <SidebarNavigationButton icon={<BellAlertIcon />} title="アクティビティ" />
                 </nav>
-                <nav className="col-span-4 bg-background h-full rounded-tl-lg p-4">
+                <nav className="col-span-3 bg-background h-full rounded-tl-lg p-4 ">
                     <ul className="space-y-2">
                         <li>
                             <Link href="#" className="text-primary hover:none">ホーム</Link>
@@ -54,8 +45,8 @@ export default function Sidebar() {
                         </li>
                     </ul>
                 </nav>
-
             </div>
+            <div className="absolute right-0 top-0 h-full w-px bg-gray-300 shadow-md"></div>
         </aside>
     );
 }
