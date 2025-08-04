@@ -10,9 +10,9 @@ export default function Sidebar() {
         <aside className="bg-surface h-full relative">
             <div className="grid grid-cols-10 mb-4 h-full">
                 <nav className="col-span-3">
-                    <SidebarNavigationButton icon={<HomeIcon />} title="ホーム" />
-                    <SidebarNavigationButton icon={<UserCircle />} title="プロフィール" />
-                    <SidebarNavigationButton icon={<BellAlertIcon />} title="アクティビティ" />
+                    <SidebarNavigationButton url="/home" icon={<HomeIcon />} title="ホーム" />
+                    <SidebarNavigationButton url="/profile" icon={<UserCircle />} title="プロフィール" />
+                    <SidebarNavigationButton url="/activity" icon={<BellAlertIcon />} title="アクティビティ" />
                 </nav>
                 <nav className="col-span-7 bg-background h-full rounded-tl-lg py-4 ">
                     <ul className="space-y-2 px-2">
@@ -20,8 +20,7 @@ export default function Sidebar() {
                             <SidebarHeading title="チャンネル" url="#" />
                             <SidebarChannels
                                 channels={[
-                                    { title: "general", url: "#" },
-                                    { title: "random", url: "#" },
+                                    { title: "default", url: "/room/default" },
                                 ]}
                             />
                         </li>

@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Logo from '@/public/logo.png';
 export default function NotFoundPage() {
   return <>
-    <div className="flex items-center justify-center h-screen">
+    <div className="flex items-center justify-center h-full">
       <div>
         <h1 className="text-4xl font-bold">404 - Not Found</h1>
         <div className="w-[20vw]">
@@ -15,5 +15,5 @@ export default function NotFoundPage() {
         <p>お探しのページが見つかりません。URLを確認してください。</p>
       </div>
     </div>
-  </>;
+  </>
 }

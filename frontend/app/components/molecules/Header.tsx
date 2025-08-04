@@ -8,7 +8,7 @@ import Link from "next/link";
 export default function Header() {
     return <header className="bg-surface grid grid-cols-12">
         <div className="col-span-4">
-            <Link href="/">
+            <Link href="/home">
                 <div className="flex items-center justify-start h-full">
                     <Image src={Logo} alt="Logo" className="h-12 w-auto ml-6" />
                     <div>
@@ -33,7 +33,7 @@ export default function Header() {
 
         </div>
         <div className="flex items-center col-span-4 justify-end mr-2">
-            <Link href="/login" className="text-sm bg-background-light text-primary px-4 py-2 rounded-md">ログイン</Link>
+            <Link href="/" className="text-sm bg-background-light text-primary px-4 py-2 rounded-md">ログイン</Link>
             <Link href="/signup" className="text-sm bg-background-light text-primary px-4 py-2 rounded-md ml-2">サインアップ</Link>
         </div>
     </header>
