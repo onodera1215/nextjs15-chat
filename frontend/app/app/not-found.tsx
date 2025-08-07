@@ -1,6 +1,21 @@
 
 import Image from 'next/image';
 import Logo from '@/public/logo.png';
+import { Metadata, ResolvingMetadata } from 'next';
+import { GenerateMetadataProps } from '@/types';
+
+
+export async function generateMetadata(
+  _: GenerateMetadataProps,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const meta = await parent
+  return {
+    title: `${meta.title?.absolute} | ページが見つかりません`,
+    description: "ページが見つかりません",
+  }
+}
+
 export default function NotFoundPage() {
   return <>
     <div className="flex items-center justify-center h-screen">

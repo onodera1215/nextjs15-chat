@@ -1,15 +1,10 @@
-import type { Metadata } from "next";
 import Header from "@/components/molecules/Header";
 import "../globals.css";
 import Sidebar from "@/components/molecules/Sidebar";
 import Content from "@/components/molecules/Content";
 
 
-export const metadata: Metadata = {
-  description: "Next.jsを使ったすんごいチャットアプリケーション😎",
-};
-
-export default function RootLayout({
+export default function AuthPageLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

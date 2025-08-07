@@ -1,6 +1,18 @@
 import AuthenticatedPageTitle from "@/components/atoms/AuthenticatedPageTitle";
+import { GenerateMetadataProps } from "@/types";
+import { Metadata, ResolvingMetadata } from "next";
 import Image from "next/image";
-
+export async function generateMetadata(
+    _: GenerateMetadataProps,
+    parent: ResolvingMetadata
+): Promise<Metadata> {
+    const meta = await parent;
+    const roomName = "ルーム名"; // ここでルーム名を取得するロジックを追加する必要があります
+    return {
+        title: `${meta.title?.absolute} | ${roomName}`,
+        description: `${roomName}のチャットルーム`,
+    }
+}
 
 export default function RoomPage({ params,
 }: {
