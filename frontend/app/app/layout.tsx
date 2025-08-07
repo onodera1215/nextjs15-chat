@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Next.jsのすんごいチャットアプリ",
-  description: "Next.jsを使ったすんごいチャットアプリケーション😎",
+  title: "Whisp",
+  description: "Next.jsを使ったシンプルなチャットアプリケーション",
 };
 
 export default function RootLayout({
