@@ -2,6 +2,7 @@ import Image from "next/image";
 import Logo from "@/public/logo.png";
 import { GenerateMetadataProps } from "@/types";
 import { Metadata, ResolvingMetadata } from "next";
+import GoogleSignInButton from "@/components/atoms/GoogleSignInButton";
 
 export async function generateMetadata(
   _: GenerateMetadataProps,
@@ -14,6 +15,8 @@ export async function generateMetadata(
   }
 }
 
+console.log(process.env)
+
 export default function LoginPage() {
   return (
     <>
@@ -23,21 +26,9 @@ export default function LoginPage() {
             <Image src={Logo} alt="Logo" className="mx-auto mb-2 w-24 h-24" />
             <h1 className="text-lg mb-6 text-center font-bold">Login</h1>
           </div>
-          <form action="">
-            <div className="mb-4">
-              <label htmlFor="email" className="block text-sm font-medium mb-2">メールアドレス</label>
-              <input type="text" name="email" id="email" className="border border-gray-300 rounded-md p-2 w-full" />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="password" className="block text-sm font-medium mb-2">パスワード</label>
-              <input type="text" name="password" id="password" className="border border-gray-300 rounded-md p-2 w-full" />
-            </div>
-            <div className="flex justify-center">
-              <button type="submit" className="w-2/3 bg-surface text-primary py-2 rounded-md hover:bg-secondary transition-colors">
-                ログイン
-              </button>
-            </div>
-          </form>
+          <div className="flex items-center justify-center mb-4">
+            <GoogleSignInButton />
+          </div>
         </div>
       </div>
     </>
