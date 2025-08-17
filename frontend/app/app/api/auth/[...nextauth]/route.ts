@@ -11,12 +11,11 @@ export const authOptions: {
     session: { strategy: "jwt" },
     providers: [
       Google({
-        clientId: process.env.GOOGLE_CLIENT_ID!,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+        clientId: process.env.AUTH_GOOGLE_ID!,
+        clientSecret: process.env.AUTH_GOOGLE_SECRET!,
       }),
     ],
     callbacks: {
-      // token は NextAuth の JWT 型（上で拡張済み）
       async jwt({ token }) {
         const payload = {
           sub: token.sub as string | undefined, // Googleのsubject
@@ -54,5 +53,6 @@ export const authOptions: {
   },
 };
 
-const handler = NextAuth(authOptions.config);
-export { handler as GET, handler as POST };
+export const {
+  handlers: { GET, POST },
+} = NextAuth(authOptions.config);
