@@ -1,4 +1,4 @@
-import { User } from '@prisma/generated';
+import { User } from '@prisma/client';
 import { UserStatusEnum } from '../gql-models/user-status.enum';
 import { UserDomain } from '../user.domain';
 

@@ -5,7 +5,7 @@ import { CreateRoomInput } from '../gql-model/room.input';
 import { fromPrismaRoomToRoomDomain } from './utis';
 import { RoomDomain, RoomStatusEnum } from '../room.domain';
 import { SearchRoomOptionInput } from '../gql-model/search-room-option.input';
-import { Prisma } from '@prisma/generated';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class RoomRepository implements IRoomRepository {

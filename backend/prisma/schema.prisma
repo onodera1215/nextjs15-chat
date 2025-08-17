@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../node_modules/@prisma/generated"
 }
 
 datasource db {
@@ -31,7 +30,6 @@ enum RoomStatus {
 model User {
   id        String     @id @default(cuid())
   email     String     @unique
-  password  String
   name      String
   status    UserStatus
   createdAt DateTime   @default(now())

@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/generated';
+import { PrismaClient } from '@prisma/client';
 import { RoomStatusEnum } from '../src/room/room.domain';
 import { UserStatusEnum } from '../src/user/user.domain';
 
