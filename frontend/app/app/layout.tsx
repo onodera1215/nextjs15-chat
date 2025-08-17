@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Header from "@/components/molecules/Header";
 import "./globals.css";
+import Sidebar from "@/components/molecules/Sidebar";
+import Content from "@/components/molecules/Content";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Whisp",
-  description: "Next.jsを使ったシンプルなチャットアプリケーション",
+  title: "Next.jsのすんごいチャットアプリ",
+  description: "Next.jsを使ったすんごいチャットアプリケーション😎",
 };
 
 export default function RootLayout({
@@ -30,7 +33,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <Content>
+          {children}
+        </Content>
       </body>
     </html>
   );

@@ -3,6 +3,8 @@ import Logo from "@/public/logo.png";
 import { GenerateMetadataProps } from "@/types";
 import { Metadata, ResolvingMetadata } from "next";
 import GoogleSignInButton from "@/components/atoms/GoogleSignInButton";
+import { getClient, query } from "@/lib/server/utils";
+import gql from "graphql-tag";
 
 export async function generateMetadata(
   _: GenerateMetadataProps,
@@ -15,9 +17,20 @@ export async function generateMetadata(
   }
 }
 
-console.log(process.env)
+const roomQuery = gql`query GetRooms($input: SearchRoomOptionInput!) {
+  rooms(input: $input) {
+    id
+    name
+  }
+}`;
 
-export default function LoginPage() {
+
+export default async function LoginPage() {
+
+  const { data } = await query({ query: roomQuery, variables: { input: {} } });
+
+  console.log(data);
+
   return (
     <>
       <div className="flex items-center justify-center h-screen w-full">
