@@ -28,15 +28,15 @@ export const authOptions: NextAuthConfig = {
         issuer: process.env.NEST_JWT_ISS,
       };
 
-      const nestAccessToken = jwt.sign(payload, PRIVATE_KEY, signOptions);
-      return { ...token, nestAccessToken };
+      const accessToken = jwt.sign(payload, PRIVATE_KEY, signOptions);
+      return { ...token, accessToken };
     },
 
     // NextAuth の定義に合わせた引数。戻り値は Session 全体を返す
     async session({ session, token }) {
       const newSession = {
         ...session,
-        nestAccessToken: token.nestAccessToken,
+        accessToken: token.accessToken,
         user: { id: (token.sub as string | undefined) ?? session.user.id },
         roles: (token.roles as string[] | undefined) ?? session.user.roles,
       };
@@ -49,6 +49,4 @@ export const authOptions: NextAuthConfig = {
   },
 };
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
-  providers: [Google],
-});
+export const { handlers, signIn, signOut, auth } = NextAuth(authOptions);
