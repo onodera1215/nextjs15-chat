@@ -13,6 +13,10 @@ import { RoomResolver } from './room/room.resolver';
 import { RoomModule } from './room/room.module';
 import { PubsubModule } from './pubsub/pubsub.module';
 import { LoggerModule } from './logger/logger.module';
+import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
+
+const publicKey = process.env.NEST_JWT_PUBLIC_KEY!;
 
 @Module({
   imports: [
@@ -24,6 +28,11 @@ import { LoggerModule } from './logger/logger.module';
       subscriptions: {
         'graphql-ws': true,
       },
+    }),
+    PassportModule,
+    JwtModule.register({
+      publicKey,
+      signOptions: { algorithm: 'RS256' },
     }),
     PrismaModule,
     MessageModule,
