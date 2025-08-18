@@ -1,4 +1,3 @@
-import { auth } from "@/auth";
 import AuthenticatedPageTitle from "@/components/atoms/AuthenticatedPageTitle";
 import { GenerateMetadataProps } from "@/types";
 import { Metadata, ResolvingMetadata } from "next";
