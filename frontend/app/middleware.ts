@@ -3,7 +3,7 @@ import { authOptions } from "@/auth";
 
 export const { auth } = NextAuth(authOptions);
 
-const publicRoutes = ["/", "/login", "/register", "/api/public", "/api/auth/"];
+const publicRoutes = ["/", "/register", "/api/auth/"];
 
 // middleware のロジック全体を auth 関数でラップする
 const middleware = auth(async (req) => {
