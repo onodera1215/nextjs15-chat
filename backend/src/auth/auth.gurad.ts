@@ -8,16 +8,9 @@ import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { JwtService } from '@nestjs/jwt';
 import { IS_PUBLIC_KEY } from './public.decorator';
+import { JwtPayload } from 'src/types';
 
 const secret = process.env.NEST_JWT_PUBLIC_KEY!;
-
-// TODO フロント・バックで使い回したい
-type JwtPayload = {
-  sub?: string;
-  email?: string;
-  name?: string;
-  roles?: string[];
-};
 
 @Injectable()
 export class GqlAuthGuard implements CanActivate {
@@ -63,7 +56,7 @@ export class GqlAuthGuard implements CanActivate {
       );
 
       // リクエストにユーザーペイロードをアタッチ
-      request['user'] = payload;
+      request['payload'] = payload;
       return true;
     } catch (error) {
       throw new UnauthorizedException('Invalid token: ' + error);

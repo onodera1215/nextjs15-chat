@@ -8,7 +8,7 @@ export default function GoogleSignInButton() {
     >
       <div className="flex justify-between items-center mt-5 border-1 p-2 rounded-md">
         <GoogleIcon className="w-6 h-6" />
-        <button type="submit">
+        <button type="submit" className="p-3 hover:cursor-pointer">
           Signin with Google</button>
       </div>
     </form>

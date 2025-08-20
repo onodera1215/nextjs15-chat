@@ -1,6 +1,14 @@
 import "server-only";
 import NextAuth, { NextAuthConfig } from "next-auth";
 import Google from "next-auth/providers/google";
+import gql from "graphql-tag";
+import { query } from "./lib/server/utils";
+
+const isRegisteredUserQuery = gql`
+  query IsRegisteredUser {
+    IsRegisteredUser
+  }
+`;
 
 export const authOptions: NextAuthConfig = {
   session: { strategy: "jwt" },
@@ -23,6 +31,8 @@ export const authOptions: NextAuthConfig = {
     },
 
     async redirect({ baseUrl }) {
+      const session = await auth();
+      const res = await query({ query: isRegisteredUserQuery });
       // バックエンド側でログイン処理　or 登録完了処理が終わったらリダイレクト失敗したらエラーページに遷移。
       return new URL("/home", baseUrl).toString();
     },
