@@ -4,6 +4,7 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import Logo from "../../public/logo.png";
 import Image from "next/image";
 import Link from "next/link";
+import { Logout } from "@/lib/server/utils";
 
 export default function Header() {
     return <header className="bg-surface grid grid-cols-12">
@@ -35,6 +36,9 @@ export default function Header() {
         <div className="flex items-center col-span-4 justify-end mr-2">
             <Link href="/" className="text-sm bg-background-light text-primary px-4 py-2 rounded-md">ログイン</Link>
             <Link href="/signup" className="text-sm bg-background-light text-primary px-4 py-2 rounded-md ml-2">サインアップ</Link>
+            <form action={Logout}>
+                <button type="submit" className="text-sm bg-background-light text-primary px-4 py-2 rounded-md ml-2">ログアウト</button>
+            </form>
         </div>
     </header>
 }

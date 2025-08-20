@@ -1,4 +1,6 @@
+"use server";
 import "server-only";
+import { signIn, signOut } from "@/auth";
 
 import { HttpLink } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
@@ -19,12 +21,12 @@ export const { getClient, query, PreloadQuery } = registerApolloClient(
       uri: process.env.NEST_GQL_URL,
     });
 
-    const accessToken = session?.accessToken ?? "";
+    const nestAccessToken = session?.nestAccessToken ?? "";
     const authLink = setContext((_, { headers }) => {
       return {
         headers: {
           ...headers,
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${nestAccessToken}`,
         },
       };
     });
@@ -35,3 +37,17 @@ export const { getClient, query, PreloadQuery } = registerApolloClient(
     });
   }
 );
+
+/**
+ * googleのOAuth認証用
+ */
+export async function googleSignIn() {
+  await signIn("google", { redirectTo: "/home" });
+}
+
+/**
+ * ログアウト用
+ */
+export async function Logout() {
+  await signOut();
+}
