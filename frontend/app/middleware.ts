@@ -1,26 +1,21 @@
 import { auth } from "@/auth";
 
 export default auth((req) => {
-  console.log("auth: ", req.auth);
+  const { pathname } = req.nextUrl;
+  if (pathname !== "/" && !req.auth) {
+    // ユーザーが認証されていない場合、トップページにリダイレクト
+    return Response.redirect(new URL("/", req.url));
+  }
 });
 
 export const config = {
+  // mathcherにマッチしたパスだけミドルウェアが実行される
   matcher: [
-    // 以下のパスではミドルウェアを実行しない
-    // '/api/public/:path*', // パブリックなAPIルート
-    // '/login', // ログインページ
-    // 他にも除外したいパスを追加可能
-
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - /api/public (public API routes)
-     * - /login (login page)
-     * - /register (register page)
-     */
-    "/",
+    "/activity/:path*",
+    "/home/:path*",
+    "/profile/:path*",
+    "/room/:path*",
+    // これは否定先読みでここに書かれたパスは除外される
     "/((?!_next/static|_next/image|favicon.ico|api/public|login|register).*)",
   ],
 };
