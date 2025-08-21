@@ -1,8 +1,9 @@
+'use client';
 
 import { googleSignIn } from "@/lib/server/utils"
 import GoogleIcon from "./GoogleIcon"
 
-export default async function GoogleSignInButton() {
+export default function GoogleSignInButton() {
   return (
     <form
       action={googleSignIn}

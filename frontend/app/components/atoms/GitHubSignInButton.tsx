@@ -1,8 +1,9 @@
+'use client';
 
 import { githubSignIn } from "@/lib/server/utils"
 import GoogleIcon from "./GoogleIcon"
 
-export default async function GithubSignInButton() {
+export default function GithubSignInButton() {
   return (
     <form
       action={githubSignIn}
