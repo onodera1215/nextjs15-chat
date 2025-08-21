@@ -2,7 +2,7 @@ import "server-only";
 import NextAuth, { NextAuthConfig } from "next-auth";
 import Google from "next-auth/providers/google";
 import GitHub from "next-auth/providers/github";
-import jwt, { SignOptions } from "jsonwebtoken";
+import { SignJWT, importPKCS8 } from "jose";
 
 const PRIVATE_KEY = process.env.NEST_JWT_PRIVATE_KEY!;
 
@@ -20,13 +20,13 @@ export const authOptions: NextAuthConfig = {
     async session({ session, token }) {
       console.log("Session callback - token:", token);
       console.log("Session callback - session:", session);
-      
+
       const newSession = {
         ...session,
         nestAccessToken: token.nestAccessToken,
-        user: { 
+        user: {
           ...session.user,
-          id: (token.sub as string | undefined) ?? session.user.id 
+          id: (token.sub as string | undefined) ?? session.user.id,
         },
         roles: (token.roles as string[] | undefined) ?? session.user.roles,
       };
@@ -37,37 +37,40 @@ export const authOptions: NextAuthConfig = {
       console.log("JWT callback - user:", user);
       console.log("JWT callback - account:", account);
       console.log("JWT callback - token before:", token);
-      
+
       // 初回ログイン時にユーザー情報をトークンに保存
       if (user) {
         token.id = user.id;
         token.email = user.email;
         token.name = user.name;
       }
-      
-      const payload = {
-        sub: token.sub as string | undefined,
-        email: token.email as string | undefined,
-        name: token.name as string | undefined,
-        roles: token.roles as string[] | undefined,
-      };
 
-      const signOptions: SignOptions = {
-        algorithm: "RS256",
-        expiresIn: "15m",
-        audience: process.env.NEST_JWT_AUD,
-        issuer: process.env.NEST_JWT_ISS,
-      };
+      // NEST_JWT_PRIVATE_KEYが設定されている場合のみ、nestAccessTokenを生成
+      if (PRIVATE_KEY) {
+        try {
+          const privateKey = await importPKCS8(PRIVATE_KEY, "RS256");
 
-      const nestAccessToken = jwt.sign(payload, PRIVATE_KEY, signOptions);
+          const nestAccessToken = await new SignJWT({
+            sub: token.sub as string | undefined,
+            email: token.email as string | undefined,
+            name: token.name as string | undefined,
+            roles: token.roles as string[] | undefined,
+          })
+            .setProtectedHeader({ alg: "RS256" })
+            .setIssuedAt()
+            .setExpirationTime("15m")
+            .setAudience(process.env.NEST_JWT_AUD!)
+            .setIssuer(process.env.NEST_JWT_ISS!)
+            .sign(privateKey);
 
-      const finalToken = {
-        ...token,
-        nestAccessToken,
-      };
-      
-      console.log("JWT callback - token after:", finalToken);
-      return finalToken;
+          token.nestAccessToken = nestAccessToken;
+        } catch (error) {
+          console.error("JWT signing error:", error);
+        }
+      }
+
+      console.log("JWT callback - token after:", token);
+      return token;
     },
     async redirect({ baseUrl }) {
       return new URL("/home", baseUrl).toString();
