@@ -18,9 +18,6 @@ export const authOptions: NextAuthConfig = {
   callbacks: {
     // NextAuth の定義に合わせた引数。戻り値は Session 全体を返す
     async session({ session, token }) {
-      console.log("Session callback - token:", token);
-      console.log("Session callback - session:", session);
-
       const newSession = {
         ...session,
         nestAccessToken: token.nestAccessToken,
@@ -30,14 +27,9 @@ export const authOptions: NextAuthConfig = {
         },
         roles: (token.roles as string[] | undefined) ?? session.user.roles,
       };
-      console.log("Session callback - newSession:", newSession);
       return newSession;
     },
     async jwt({ token, user, account }) {
-      console.log("JWT callback - user:", user);
-      console.log("JWT callback - account:", account);
-      console.log("JWT callback - token before:", token);
-
       // 初回ログイン時にユーザー情報をトークンに保存
       if (user) {
         token.id = user.id;
@@ -69,7 +61,6 @@ export const authOptions: NextAuthConfig = {
         }
       }
 
-      console.log("JWT callback - token after:", token);
       return token;
     },
     async redirect({ baseUrl }) {

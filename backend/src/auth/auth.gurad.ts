@@ -30,9 +30,10 @@ export class GqlAuthGuard implements CanActivate {
     }
 
     const ctx = GqlExecutionContext.create(context);
-    const request = ctx.getContext<{
-      request: { headers: { authorization?: string } };
-    }>().request;
+    const gqlContext = ctx.getContext<{
+      req: { headers: { authorization?: string } };
+    }>();
+    const request = gqlContext.req as { headers: { authorization?: string } };
     const splitedAutorization: string[] | undefined =
       request.headers.authorization?.split(' ');
     if (
