@@ -18,7 +18,6 @@ export class RoomResolver {
     return await this.createRoomUsecase.execute(input);
   }
 
-  @Public()
   @Query(() => [RoomNode])
   async rooms(
     @Args('input') input: SearchRoomOptionInput,
