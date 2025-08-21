@@ -46,6 +46,13 @@ export async function googleSignIn() {
 }
 
 /**
+ * githubのOAuth認証用
+ */
+export async function githubSignIn() {
+  await signIn("github", { redirectTo: "/home" });
+}
+
+/**
  * ログアウト用
  */
 export async function Logout() {

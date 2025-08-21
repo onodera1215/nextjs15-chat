@@ -3,6 +3,7 @@ import NextAuth, { NextAuthConfig } from "next-auth";
 import Google from "next-auth/providers/google";
 import gql from "graphql-tag";
 import { query } from "./lib/server/utils";
+import GitHub from "next-auth/providers/github";
 
 const isRegisteredUserQuery = gql`
   query IsRegisteredUser {
@@ -17,6 +18,7 @@ export const authOptions: NextAuthConfig = {
       clientId: process.env.AUTH_GOOGLE_ID!,
       clientSecret: process.env.AUTH_GOOGLE_SECRET!,
     }),
+    GitHub
   ],
   callbacks: {
     // NextAuth の定義に合わせた引数。戻り値は Session 全体を返す

@@ -1,10 +1,10 @@
 'use server';
-
 import Image from "next/image";
 import Logo from "@/public/logo.png";
 import { GenerateMetadataProps } from "@/types";
 import { Metadata, ResolvingMetadata } from "next";
 import GoogleSignInButton from "@/components/atoms/GoogleSignInButton";
+import GithubSignInButton from "@/components/atoms/GitHubSignInButton";
 
 export async function generateMetadata(
   _: GenerateMetadataProps,
@@ -29,6 +29,9 @@ export default async function LoginPage() {
           </div>
           <div className="flex items-center justify-center mb-4">
             <GoogleSignInButton />
+          </div>
+          <div className="flex items-center justify-center mb-4">
+            <GithubSignInButton />
           </div>
         </div>
       </div>
