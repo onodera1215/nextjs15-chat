@@ -1,7 +1,5 @@
 # Next.js を利用した chat アプリケーション開発
 
-test
-
 ---
 
 ## ERD
@@ -16,8 +14,11 @@ erDiagram
     users {
         string id "uuid"
         string name "名前"
+        string email "メールアドレス"
+        string passsword "パスワード"
         Date created_at "登録日時"
         Date updated_at "更新日時"
+        Date deleted_at "削除日時"
     }
 
     user_rooms
@@ -34,6 +35,7 @@ erDiagram
         string name "ルーム名"
         string description "説明文"
         Date created_at "登録日時"
+        Date updated_at "更新日時"
     }
 
     messages ||--o{ message_reads : "has many"
@@ -44,6 +46,7 @@ erDiagram
         string message "メッセージ"
         Date created_at "登録日時"
         Date updated_at "更新日時"
+        Date deleted_at "削除日時"
     }
 
     message_reads {

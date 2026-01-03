@@ -4,6 +4,7 @@ import { CreateRoomInput } from './gql-model/room.input';
 import { CreateRoomUsecase } from './usecase/create-room.usecase';
 import { GetRoomsUsecase } from './usecase/get-rooms.usecase';
 import { SearchRoomOptionInput } from './gql-model/search-room-option.input';
+import { Public } from 'src/auth/public.decorator';
 
 @Resolver()
 export class RoomResolver {

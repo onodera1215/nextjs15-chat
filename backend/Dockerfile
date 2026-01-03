@@ -12,6 +12,6 @@ COPY --chown=node:node . .
 
 USER node
 
-RUN npm ci && npm run build
+RUN npm ci && npx prisma generate && npm run build
 
 CMD ["npm", "run", "start:prod"]

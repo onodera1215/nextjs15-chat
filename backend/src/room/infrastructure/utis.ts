@@ -1,4 +1,4 @@
-import { Room } from '@prisma/generated';
+import { Room } from '@prisma/client';
 import { RoomStatusEnum } from '../gql-model/room-status.enum';
 import { RoomDomain } from '../room.domain';
 

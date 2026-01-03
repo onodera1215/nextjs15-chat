@@ -1,6 +1,8 @@
 import AuthenticatedPageTitle from "@/components/atoms/AuthenticatedPageTitle";
+import { query } from "@/lib/server/utils";
 import { GenerateMetadataProps } from "@/types";
 import { Metadata, ResolvingMetadata } from "next";
+import { GetRoomsQuery } from "./gql.query";
 
 export async function generateMetadata(
   _: GenerateMetadataProps,
@@ -12,7 +14,14 @@ export async function generateMetadata(
     description: "ホーム",
   }
 }
-export default function HomePage() {
+export default async function HomePage() {
+  const res = await query({
+    query: GetRoomsQuery,
+    variables: { input: {} },
+  });
+
+  console.log("rooms:", res.data.rooms);
+
   return (
     <AuthenticatedPageTitle title="ホーム" />
   );

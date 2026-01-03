@@ -1,10 +1,10 @@
 'use server';
-
 import Image from "next/image";
 import Logo from "@/public/logo.png";
 import { GenerateMetadataProps } from "@/types";
 import { Metadata, ResolvingMetadata } from "next";
-import Link from "next/link";
+import GoogleSignInButton from "@/components/atoms/GoogleSignInButton";
+import GithubSignInButton from "@/components/atoms/GitHubSignInButton";
 
 export async function generateMetadata(
   _: GenerateMetadataProps,
@@ -12,8 +12,8 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const meta = await parent
   return {
-    title: `${meta.title?.absolute} | ホーム`,
-    description: "ホームページです。",
+    title: `${meta.title?.absolute} | ログイン`,
+    description: "ログインページです。アカウントをお持ちでない方は、登録してください。",
   }
 }
 
@@ -28,7 +28,10 @@ export default async function LoginPage() {
             <h1 className="text-lg mb-6 text-center font-bold">Login</h1>
           </div>
           <div className="flex items-center justify-center mb-4">
-            <Link className="bg-primary-light p-2 rounded-md" href="/login">ログイン</Link>
+            <GoogleSignInButton />
+          </div>
+          <div className="flex items-center justify-center mb-4">
+            <GithubSignInButton />
           </div>
         </div>
       </div>

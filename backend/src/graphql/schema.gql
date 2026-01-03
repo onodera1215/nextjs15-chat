@@ -51,6 +51,9 @@ enum UserStatus {
 type Query {
   messages(input: SearchOptionInput!): [MessageNode!]!
   rooms(input: SearchRoomOptionInput!): [RoomNode!]!
+
+  """ユーザーが登録済みかどうかを判定します。"""
+  isRegisteredUser: Boolean!
 }
 
 """クエリ検索用オプション"""

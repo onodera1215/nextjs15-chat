@@ -14,14 +14,14 @@ export async function generateMetadata(
     }
 }
 
-export default function RoomPage({ params,
+export default async function RoomPage({ params,
 }: {
-    params: { roomId: string };
+    params: Promise<{ roomId: string }>;
 }) {
+    const { roomId } = await params;
     return (
         <div className="p-2">
-            <AuthenticatedPageTitle title={params.roomId} />
-
+            <AuthenticatedPageTitle title={roomId} />
             <section className="m-4">
                 <section className="border border-gray-300 rounded-lg p-4 mb-4">
                     <div className="flex justify-start items-center">
@@ -49,7 +49,6 @@ export default function RoomPage({ params,
                     </article>
                 </section>
             </section>
-
         </div>
     );
 }
