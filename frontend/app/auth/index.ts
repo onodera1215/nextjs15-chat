@@ -3,6 +3,7 @@ import NextAuth, { NextAuthConfig } from "next-auth";
 import Google from "next-auth/providers/google";
 import GitHub from "next-auth/providers/github";
 import { SignJWT, importPKCS8 } from "jose";
+import { postWithoutCache } from "@/lib/server/utils";
 
 const PRIVATE_KEY = process.env.NEST_JWT_PRIVATE_KEY!;
 
@@ -66,8 +67,7 @@ export const authOptions: NextAuthConfig = {
     async redirect({ baseUrl }) {
       return new URL("/home", baseUrl).toString();
     },
-    async signIn({ user, account, profile, email }) {
-      console.log("signIn:", user, account, profile, email);
+    async signIn({ user }) {
       return true;
     },
   },

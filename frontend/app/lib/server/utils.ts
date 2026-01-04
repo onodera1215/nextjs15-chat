@@ -1,14 +1,12 @@
-"use server";
 import "server-only";
-import { signIn, signOut } from "@/auth";
-
-import { HttpLink } from "@apollo/client";
 import { SetContextLink } from "@apollo/client/link/context";
 import {
   registerApolloClient,
   ApolloClient,
   InMemoryCache,
 } from "@apollo/client-integration-nextjs";
+import { TypedDocumentString } from "@/graphql/graphql";
+import { HttpLink } from "@apollo/client";
 import { auth } from "@/auth";
 
 /**
@@ -40,22 +38,54 @@ export const { getClient, query, PreloadQuery } = registerApolloClient(
 );
 
 /**
- * googleのOAuth認証用
+ * serversideでGraphQLクエリを実行します。
+ * @param {TypedDocumentString<TResult, TVariables>} query
+ * @param {[TVariables | undefined]} param
+ * @returns {Promise<TResult>}
  */
-export async function googleSignIn() {
-  await signIn("google", { redirectTo: "/home" });
+export async function executeGql<TResult, TVariables = undefined>(
+  query: TypedDocumentString<TResult, TVariables>,
+  ...[variables]: TVariables extends Record<string, never> ? [] : [TVariables]
+) {
+  const response = await fetch(process.env.NEST_GQL_URL!, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/graphql-response+json",
+    },
+    body: JSON.stringify({
+      query,
+      variables,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error("GraphQL query failed");
+  }
+
+  return response.json() as TResult;
 }
 
-/**
- * githubのOAuth認証用
- */
-export async function githubSignIn() {
-  await signIn("github", { redirectTo: "/home" });
+async function fetchWithoutCache<T>(path: string, init?: RequestInit) {
+  const url = process.env.BACKEND_URL!;
+  const response = await fetch(url + path, { ...init, cache: "no-store" });
+  return (await response.json()) as T;
 }
 
-/**
- * ログアウト用
- */
-export async function Logout() {
-  await signOut();
+export async function postWithoutCache<T, S = undefined>(
+  path: string,
+  body?: S
+) {
+  return (await fetchWithoutCache(path, {
+    body: JSON.stringify(body),
+    method: "POST",
+    headers: { "Content-Type": "application/json", accept: "application/json" },
+  })) as T;
+}
+
+export async function getWithoutCache<T>(path: string) {
+  return (await fetchWithoutCache(path, {
+    method: "GET",
+    headers: { accept: "application/json" },
+  })) as T;
 }
