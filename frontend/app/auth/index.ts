@@ -3,7 +3,10 @@ import NextAuth, { NextAuthConfig } from "next-auth";
 import Google from "next-auth/providers/google";
 import GitHub from "next-auth/providers/github";
 import { SignJWT, importPKCS8 } from "jose";
-import { postWithoutCache } from "@/lib/server/utils";
+import {
+  executeMutationCreateUser,
+  executeQueryIsRegisteredUser,
+} from "./features";
 
 const PRIVATE_KEY = process.env.NEST_JWT_PRIVATE_KEY!;
 
@@ -68,6 +71,26 @@ export const authOptions: NextAuthConfig = {
       return new URL("/home", baseUrl).toString();
     },
     async signIn({ user }) {
+      if (!user.email) {
+        return false;
+      }
+      const { isRegisteredUser, error } = await executeQueryIsRegisteredUser(
+        user.email
+      );
+      if (error && error.length > 0) {
+        return false;
+      }
+      if (!user.id || !user.email || !user.name) {
+        return false;
+      }
+      if (!isRegisteredUser) {
+        const { userNode, errors } = await executeMutationCreateUser({
+          email: user.email,
+          name: user.name,
+          oauthProviderId: user.id,
+        });
+        return !!userNode && !errors;
+      }
       return true;
     },
   },

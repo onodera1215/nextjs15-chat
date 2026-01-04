@@ -14,7 +14,6 @@ export class GetUserUsecase {
 
   async execute(userId: string): Promise<UserNode | null> {
     // debug ログ出力
-    this.loggerService.debug(`Getting user with id: ${userId}`);
     return await this.userRepository.findById(userId);
   }
 }

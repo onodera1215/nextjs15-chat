@@ -37,6 +37,7 @@ type UserNode {
   id: ID!
   name: String!
   email: String!
+  oauthProviderId: String!
   status: UserStatus!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -50,10 +51,10 @@ enum UserStatus {
 
 type Query {
   messages(input: SearchOptionInput!): [MessageNode!]!
-  rooms(input: SearchRoomOptionInput!): [RoomNode!]!
 
   """ユーザーが登録済みかどうかを判定します。"""
-  isRegisteredUser: Boolean!
+  isRegisteredUser(input: IsRegisteredUserInput!): Boolean!
+  rooms(input: SearchRoomOptionInput!): [RoomNode!]!
 }
 
 """クエリ検索用オプション"""
@@ -61,6 +62,11 @@ input SearchOptionInput {
   roomId: String!
   limit: Float
   offset: Float
+}
+
+input IsRegisteredUserInput {
+  email: String!
+  oauthProviderId: String!
 }
 
 input SearchRoomOptionInput {
@@ -85,6 +91,7 @@ input CreateMessageInput {
 input CreateUserInput {
   name: String!
   email: String!
+  oauthProviderId: String!
 }
 
 input CreateRoomInput {

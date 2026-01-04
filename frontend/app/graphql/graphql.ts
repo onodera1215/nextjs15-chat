@@ -1,4 +1,5 @@
 /* eslint-disable */
+import { DocumentTypeDecoration } from '@graphql-typed-document-node/core';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = T | null | undefined;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -32,6 +33,12 @@ export type CreateRoomInput = {
 export type CreateUserInput = {
   email: Scalars['String']['input'];
   name: Scalars['String']['input'];
+  oauthProviderId: Scalars['String']['input'];
+};
+
+export type IsRegisteredUserInput = {
+  email: Scalars['String']['input'];
+  oauthProviderId: Scalars['String']['input'];
 };
 
 export type MessageNode = {
@@ -74,6 +81,11 @@ export type Query = {
   isRegisteredUser: Scalars['Boolean']['output'];
   messages: Array<MessageNode>;
   rooms: Array<RoomNode>;
+};
+
+
+export type QueryIsRegisteredUserArgs = {
+  input: IsRegisteredUserInput;
 };
 
 
@@ -127,6 +139,7 @@ export type UserNode = {
   email: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
+  oauthProviderId: Scalars['String']['output'];
   status: UserStatus;
   updatedAt: Scalars['DateTime']['output'];
 };
@@ -136,6 +149,27 @@ export enum UserStatus {
   Active = 'ACTIVE',
   Inactive = 'INACTIVE'
 }
+
+export type GetRoomsQueryVariables = Exact<{
+  input: SearchRoomOptionInput;
+}>;
+
+
+export type GetRoomsQuery = { __typename?: 'Query', rooms: Array<{ __typename?: 'RoomNode', id: string, name: string }> };
+
+export type CreateUserMutationVariables = Exact<{
+  input: CreateUserInput;
+}>;
+
+
+export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'UserNode', id: string, name: string, email: string, oauthProviderId: string, status: UserStatus, createdAt: any, updatedAt: any } };
+
+export type IsRegisteredUserQueryVariables = Exact<{
+  input: IsRegisteredUserInput;
+}>;
+
+
+export type IsRegisteredUserQuery = { __typename?: 'Query', isRegisteredUser: boolean };
 
 export class TypedDocumentString<TResult, TVariables>
   extends String
@@ -155,3 +189,30 @@ export class TypedDocumentString<TResult, TVariables>
     return this.value;
   }
 }
+
+export const GetRoomsDocument = new TypedDocumentString(`
+    query GetRooms($input: SearchRoomOptionInput!) {
+  rooms(input: $input) {
+    id
+    name
+  }
+}
+    `) as unknown as TypedDocumentString<GetRoomsQuery, GetRoomsQueryVariables>;
+export const CreateUserDocument = new TypedDocumentString(`
+    mutation CreateUser($input: CreateUserInput!) {
+  createUser(input: $input) {
+    id
+    name
+    email
+    oauthProviderId
+    status
+    createdAt
+    updatedAt
+  }
+}
+    `) as unknown as TypedDocumentString<CreateUserMutation, CreateUserMutationVariables>;
+export const IsRegisteredUserDocument = new TypedDocumentString(`
+    query IsRegisteredUser($input: IsRegisteredUserInput!) {
+  isRegisteredUser(input: $input)
+}
+    `) as unknown as TypedDocumentString<IsRegisteredUserQuery, IsRegisteredUserQueryVariables>;

@@ -41,9 +41,9 @@ export const { getClient, query, PreloadQuery } = registerApolloClient(
  * serversideでGraphQLクエリを実行します。
  * @param {TypedDocumentString<TResult, TVariables>} query
  * @param {[TVariables | undefined]} param
- * @returns {Promise<TResult>}
+ * @returns {Promise<{data: TResult, errors: unknown[] | undefined}>}
  */
-export async function executeGql<TResult, TVariables = undefined>(
+export async function executeGql<TResult, TVariables = Record<string, never>>(
   query: TypedDocumentString<TResult, TVariables>,
   ...[variables]: TVariables extends Record<string, never> ? [] : [TVariables]
 ) {
@@ -51,7 +51,7 @@ export async function executeGql<TResult, TVariables = undefined>(
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Accept: "application/graphql-response+json",
+      Accept: "application/json",
     },
     body: JSON.stringify({
       query,
@@ -59,33 +59,38 @@ export async function executeGql<TResult, TVariables = undefined>(
     }),
   });
 
-  if (!response.ok) {
-    throw new Error("GraphQL query failed");
-  }
+  if (!response.ok) throw new Error("GraphQL query failed");
 
-  return response.json() as TResult;
+  // GraphQLの典型レスポンスは { data, errors } なので本当はここも整えるのが理想
+  const { data, errors } = (await response.json()) as {
+    data: TResult;
+    errors: unknown[] | undefined;
+  };
+
+  return { data, errors };
 }
 
 async function fetchWithoutCache<T>(path: string, init?: RequestInit) {
-  const url = process.env.BACKEND_URL!;
-  const response = await fetch(url + path, { ...init, cache: "no-store" });
-  return (await response.json()) as T;
+  const url = process.env.BFF_URL! + path;
+  const response = await fetch(url, { ...init, cache: "no-store" });
+  const data = await response.json();
+  return { data: data.data, errors: data?.errors } as {
+    data: T;
+    errors: unknown[] | undefined;
+  };
 }
 
 export async function postWithoutCache<T, S = undefined>(
   path: string,
   body?: S
 ) {
-  return (await fetchWithoutCache(path, {
+  const { data, errors } = await fetchWithoutCache<{
+    data: T;
+    errors: unknown[] | undefined;
+  }>(path, {
     body: JSON.stringify(body),
     method: "POST",
     headers: { "Content-Type": "application/json", accept: "application/json" },
-  })) as T;
-}
-
-export async function getWithoutCache<T>(path: string) {
-  return (await fetchWithoutCache(path, {
-    method: "GET",
-    headers: { accept: "application/json" },
-  })) as T;
+  });
+  return { data, errors };
 }
