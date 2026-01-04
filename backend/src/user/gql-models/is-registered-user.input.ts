@@ -6,5 +6,5 @@ export class IsRegisteredUserInput {
   email: string;
 
   @Field(() => String)
-  oauthProviderId: string;
+  oauthProvider: string;
 }

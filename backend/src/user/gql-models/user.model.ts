@@ -13,7 +13,7 @@ export class UserNode {
   email: string;
 
   @Field(() => String)
-  oauthProviderId;
+  oauthProvider;
 
   @Field(() => UserStatusEnum)
   status: UserStatusEnum;

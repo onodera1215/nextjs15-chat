@@ -13,6 +13,7 @@ export class UserResolver {
     private readonly isRegisteredUserUsecase: IsRegisteredUserUsecase,
   ) {}
 
+  @Public()
   @Mutation(() => UserNode)
   async createUser(@Args('input') input: CreateUserInput): Promise<UserNode> {
     return await this.createUserUsecase.execute(input);

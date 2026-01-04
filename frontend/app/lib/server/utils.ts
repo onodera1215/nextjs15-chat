@@ -43,9 +43,9 @@ export const { getClient, query, PreloadQuery } = registerApolloClient(
  * @param {[TVariables | undefined]} param
  * @returns {Promise<{data: TResult, errors: unknown[] | undefined}>}
  */
-export async function executeGql<TResult, TVariables = Record<string, never>>(
+export async function executeGql<TResult, TVariables = unknown>(
   query: TypedDocumentString<TResult, TVariables>,
-  ...[variables]: TVariables extends Record<string, never> ? [] : [TVariables]
+  variables: TVariables
 ) {
   const response = await fetch(process.env.NEST_GQL_URL!, {
     method: "POST",
@@ -61,7 +61,6 @@ export async function executeGql<TResult, TVariables = Record<string, never>>(
 
   if (!response.ok) throw new Error("GraphQL query failed");
 
-  // GraphQLの典型レスポンスは { data, errors } なので本当はここも整えるのが理想
   const { data, errors } = (await response.json()) as {
     data: TResult;
     errors: unknown[] | undefined;
@@ -74,7 +73,7 @@ async function fetchWithoutCache<T>(path: string, init?: RequestInit) {
   const url = process.env.BFF_URL! + path;
   const response = await fetch(url, { ...init, cache: "no-store" });
   const data = await response.json();
-  return { data: data.data, errors: data?.errors } as {
+  return { data: data, errors: data?.errors } as {
     data: T;
     errors: unknown[] | undefined;
   };
@@ -84,7 +83,7 @@ export async function postWithoutCache<T, S = undefined>(
   path: string,
   body?: S
 ) {
-  const { data, errors } = await fetchWithoutCache<{
+  const result = await fetchWithoutCache<{
     data: T;
     errors: unknown[] | undefined;
   }>(path, {
@@ -92,5 +91,5 @@ export async function postWithoutCache<T, S = undefined>(
     method: "POST",
     headers: { "Content-Type": "application/json", accept: "application/json" },
   });
-  return { data, errors };
+  return { data: result.data, errors: result?.errors };
 }

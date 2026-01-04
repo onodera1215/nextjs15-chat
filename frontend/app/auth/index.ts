@@ -70,24 +70,25 @@ export const authOptions: NextAuthConfig = {
     async redirect({ baseUrl }) {
       return new URL("/home", baseUrl).toString();
     },
-    async signIn({ user }) {
-      if (!user.email) {
+    async signIn({ user, account }) {
+      if (!user.email || !account) {
         return false;
       }
-      const { isRegisteredUser, error } = await executeQueryIsRegisteredUser(
-        user.email
-      );
+      const { isRegisteredUser, error } = await executeQueryIsRegisteredUser({
+        email: user.email,
+        oauthProvider: account.provider,
+      });
       if (error && error.length > 0) {
         return false;
       }
-      if (!user.id || !user.email || !user.name) {
+      if (!account.provider || !user.email || !user.name) {
         return false;
       }
       if (!isRegisteredUser) {
         const { userNode, errors } = await executeMutationCreateUser({
           email: user.email,
           name: user.name,
-          oauthProviderId: user.id,
+          oauthProvider: account.provider,
         });
         return !!userNode && !errors;
       }

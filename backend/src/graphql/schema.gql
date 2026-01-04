@@ -37,7 +37,7 @@ type UserNode {
   id: ID!
   name: String!
   email: String!
-  oauthProviderId: String!
+  oauthProvider: String!
   status: UserStatus!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -66,7 +66,7 @@ input SearchOptionInput {
 
 input IsRegisteredUserInput {
   email: String!
-  oauthProviderId: String!
+  oauthProvider: String!
 }
 
 input SearchRoomOptionInput {
@@ -91,7 +91,7 @@ input CreateMessageInput {
 input CreateUserInput {
   name: String!
   email: String!
-  oauthProviderId: String!
+  oauthProvider: String!
 }
 
 input CreateRoomInput {

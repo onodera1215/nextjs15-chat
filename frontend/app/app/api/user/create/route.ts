@@ -8,7 +8,7 @@ const CreateUserMutation = graphql(`
       id
       name
       email
-      oauthProviderId
+      oauthProvider
       status
       createdAt
       updatedAt

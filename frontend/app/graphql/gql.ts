@@ -16,12 +16,12 @@ import * as types from './graphql';
  */
 type Documents = {
     "\n  query GetRooms($input: SearchRoomOptionInput!) {\n    rooms(input: $input) {\n      id\n      name\n    }\n  }\n": typeof types.GetRoomsDocument,
-    "\n  mutation CreateUser($input: CreateUserInput!) {\n    createUser(input: $input) {\n      id\n      name\n      email\n      oauthProviderId\n      status\n      createdAt\n      updatedAt\n    }\n  }\n": typeof types.CreateUserDocument,
+    "\n  mutation CreateUser($input: CreateUserInput!) {\n    createUser(input: $input) {\n      id\n      name\n      email\n      oauthProvider\n      status\n      createdAt\n      updatedAt\n    }\n  }\n": typeof types.CreateUserDocument,
     "\n  query IsRegisteredUser($input: IsRegisteredUserInput!) {\n    isRegisteredUser(input: $input)\n  }\n": typeof types.IsRegisteredUserDocument,
 };
 const documents: Documents = {
     "\n  query GetRooms($input: SearchRoomOptionInput!) {\n    rooms(input: $input) {\n      id\n      name\n    }\n  }\n": types.GetRoomsDocument,
-    "\n  mutation CreateUser($input: CreateUserInput!) {\n    createUser(input: $input) {\n      id\n      name\n      email\n      oauthProviderId\n      status\n      createdAt\n      updatedAt\n    }\n  }\n": types.CreateUserDocument,
+    "\n  mutation CreateUser($input: CreateUserInput!) {\n    createUser(input: $input) {\n      id\n      name\n      email\n      oauthProvider\n      status\n      createdAt\n      updatedAt\n    }\n  }\n": types.CreateUserDocument,
     "\n  query IsRegisteredUser($input: IsRegisteredUserInput!) {\n    isRegisteredUser(input: $input)\n  }\n": types.IsRegisteredUserDocument,
 };
 
@@ -32,7 +32,7 @@ export function graphql(source: "\n  query GetRooms($input: SearchRoomOptionInpu
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation CreateUser($input: CreateUserInput!) {\n    createUser(input: $input) {\n      id\n      name\n      email\n      oauthProviderId\n      status\n      createdAt\n      updatedAt\n    }\n  }\n"): typeof import('./graphql').CreateUserDocument;
+export function graphql(source: "\n  mutation CreateUser($input: CreateUserInput!) {\n    createUser(input: $input) {\n      id\n      name\n      email\n      oauthProvider\n      status\n      createdAt\n      updatedAt\n    }\n  }\n"): typeof import('./graphql').CreateUserDocument;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

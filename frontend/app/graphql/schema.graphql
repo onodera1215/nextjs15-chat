@@ -19,7 +19,7 @@ input CreateRoomInput {
 input CreateUserInput {
   email: String!
   name: String!
-  oauthProviderId: String!
+  oauthProvider: String!
 }
 
 """
@@ -29,7 +29,7 @@ scalar DateTime
 
 input IsRegisteredUserInput {
   email: String!
-  oauthProviderId: String!
+  oauthProvider: String!
 }
 
 type MessageNode {
@@ -94,7 +94,7 @@ type UserNode {
   email: String!
   id: ID!
   name: String!
-  oauthProviderId: String!
+  oauthProvider: String!
   status: UserStatus!
   updatedAt: DateTime!
 }

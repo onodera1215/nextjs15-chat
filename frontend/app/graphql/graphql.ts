@@ -33,12 +33,12 @@ export type CreateRoomInput = {
 export type CreateUserInput = {
   email: Scalars['String']['input'];
   name: Scalars['String']['input'];
-  oauthProviderId: Scalars['String']['input'];
+  oauthProvider: Scalars['String']['input'];
 };
 
 export type IsRegisteredUserInput = {
   email: Scalars['String']['input'];
-  oauthProviderId: Scalars['String']['input'];
+  oauthProvider: Scalars['String']['input'];
 };
 
 export type MessageNode = {
@@ -139,7 +139,7 @@ export type UserNode = {
   email: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
-  oauthProviderId: Scalars['String']['output'];
+  oauthProvider: Scalars['String']['output'];
   status: UserStatus;
   updatedAt: Scalars['DateTime']['output'];
 };
@@ -162,7 +162,7 @@ export type CreateUserMutationVariables = Exact<{
 }>;
 
 
-export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'UserNode', id: string, name: string, email: string, oauthProviderId: string, status: UserStatus, createdAt: any, updatedAt: any } };
+export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'UserNode', id: string, name: string, email: string, oauthProvider: string, status: UserStatus, createdAt: any, updatedAt: any } };
 
 export type IsRegisteredUserQueryVariables = Exact<{
   input: IsRegisteredUserInput;
@@ -204,7 +204,7 @@ export const CreateUserDocument = new TypedDocumentString(`
     id
     name
     email
-    oauthProviderId
+    oauthProvider
     status
     createdAt
     updatedAt

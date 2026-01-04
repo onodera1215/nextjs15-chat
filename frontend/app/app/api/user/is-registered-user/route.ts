@@ -9,7 +9,7 @@ const IsRegisteredUserQuery = graphql(`
 `);
 
 export async function POST(request: Request) {
-  const input: IsRegisteredUserInput = await request.json();
+  const { input }: { input: IsRegisteredUserInput } = await request.json();
   const { data, errors } = await executeGql<
     { isRegisteredUser: boolean },
     { input: IsRegisteredUserInput }

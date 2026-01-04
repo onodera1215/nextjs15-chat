@@ -5,7 +5,7 @@ export enum UserStatusEnum {
 
 export class UserDomain {
   id: string;
-  oauthProviderId: string;
+  oauthProvider: string;
   email: string;
   name: string;
   status: UserStatusEnum;
@@ -14,7 +14,7 @@ export class UserDomain {
 
   constructor({
     id,
-    oauthProviderId,
+    oauthProvider,
     email,
     name,
     status,
@@ -22,7 +22,7 @@ export class UserDomain {
     updatedAt,
   }: {
     id: string;
-    oauthProviderId: string;
+    oauthProvider: string;
     email: string;
     name: string;
     status: UserStatusEnum;
@@ -30,7 +30,7 @@ export class UserDomain {
     updatedAt: Date;
   }) {
     this.id = id;
-    this.oauthProviderId = oauthProviderId;
+    this.oauthProvider = oauthProvider;
     this.email = email;
     this.name = name;
     this.status = status;
@@ -42,7 +42,7 @@ export class UserDomain {
     return this.status === UserStatusEnum.ACTIVE;
   }
 
-  isTheSameOauthProvider(oauthProviderId: string): boolean {
-    return this.oauthProviderId === oauthProviderId;
+  isTheSameOauthProvider(oauthProvider: string): boolean {
+    return this.oauthProvider === oauthProvider;
   }
 }

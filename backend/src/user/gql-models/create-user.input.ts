@@ -9,5 +9,5 @@ export class CreateUserInput {
   email: string;
 
   @Field(() => String)
-  oauthProviderId: string;
+  oauthProvider: string;
 }

@@ -9,7 +9,7 @@ export class IsRegisteredUserUsecase {
     private readonly userRepository: IUserRepository,
   ) {}
   async execute(input: IsRegisteredUserInput): Promise<boolean> {
-    const { email, oauthProviderId } = input;
+    const { email, oauthProvider } = input;
     const user = await this.userRepository.findByEmail(email);
     if (!user) {
       return false;
@@ -17,7 +17,7 @@ export class IsRegisteredUserUsecase {
 
     // 登録状況を取得
     const isActive = user.isActive();
-    const isTheSameOauthProvider = user.isTheSameOauthProvider(oauthProviderId);
+    const isTheSameOauthProvider = user.isTheSameOauthProvider(oauthProvider);
 
     if (isActive && !isTheSameOauthProvider) {
       throw new BadRequestException(
