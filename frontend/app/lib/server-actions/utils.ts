@@ -18,6 +18,6 @@ export async function githubSignIn() {
 /**
  * ログアウト用
  */
-export async function Logout() {
+export async function logout() {
   await signOut();
 }

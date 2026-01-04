@@ -2,8 +2,8 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import Logo from "../../public/logo.png";
 import Image from "next/image";
 import Link from "next/link";
-import { Logout } from "@/lib/server/utils";
 import { auth } from "@/auth";
+import { logout } from "@/lib/server-actions/utils";
 
 export default async function Header() {
     const session = await auth();
@@ -36,7 +36,7 @@ export default async function Header() {
         </div>
         <div className="flex items-center col-span-4 justify-end mr-2">
             {!isLoggedIn && <Link href="/" className="text-sm bg-background-light text-primary px-4 py-2 rounded-md">ログイン</Link>}
-            {isLoggedIn && <form action={Logout}>
+            {isLoggedIn && <form action={logout}>
                 <button type="submit" className="text-sm bg-background-light text-primary px-4 py-2 rounded-md ml-2">ログアウト</button>
             </form>}
         </div>
