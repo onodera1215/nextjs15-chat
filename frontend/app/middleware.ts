@@ -1,9 +1,6 @@
 import { auth } from "@/auth";
 
 export default auth((req) => {
-  console.log("Middleware - pathname:", req.nextUrl.pathname);
-  console.log("Middleware - req.auth:", req.auth);
-
   const { pathname } = req.nextUrl;
   if (!["/", "/login"].includes(pathname) && !req.auth) {
     // ユーザーが認証されていない場合、トップページにリダイレクト

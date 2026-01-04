@@ -5,6 +5,7 @@ export enum UserStatusEnum {
 
 export class UserDomain {
   id: string;
+  oauhthProviderId?: string | null;
   email: string;
   name: string;
   status: UserStatusEnum;
@@ -13,6 +14,7 @@ export class UserDomain {
 
   constructor({
     id,
+    oauthProviderId,
     email,
     name,
     status,
@@ -20,6 +22,7 @@ export class UserDomain {
     updatedAt,
   }: {
     id: string;
+    oauthProviderId?: string | null;
     email: string;
     name: string;
     status: UserStatusEnum;
@@ -27,6 +30,7 @@ export class UserDomain {
     updatedAt: Date;
   }) {
     this.id = id;
+    this.oauhthProviderId = oauthProviderId;
     this.email = email;
     this.name = name;
     this.status = status;

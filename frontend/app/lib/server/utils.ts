@@ -12,7 +12,7 @@ import {
 import { auth } from "@/auth";
 
 /**
- * RSC用のApollo Clientを登録します。
+ * backend用のApollo Clientを登録します。
  */
 export const { getClient, query, PreloadQuery } = registerApolloClient(
   async () => {

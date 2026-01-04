@@ -29,7 +29,7 @@ export const authOptions: NextAuthConfig = {
       };
       return newSession;
     },
-    async jwt({ token, user, account }) {
+    async jwt({ token, user }) {
       // 初回ログイン時にユーザー情報をトークンに保存
       if (user) {
         token.id = user.id;
@@ -65,6 +65,10 @@ export const authOptions: NextAuthConfig = {
     },
     async redirect({ baseUrl }) {
       return new URL("/home", baseUrl).toString();
+    },
+    async signIn({ user, account, profile, email }) {
+      console.log("signIn:", user, account, profile, email);
+      return true;
     },
   },
 };
