@@ -3,7 +3,7 @@ import "server-only";
 import { signIn, signOut } from "@/auth";
 
 import { HttpLink } from "@apollo/client";
-import { setContext } from "@apollo/client/link/context";
+import { SetContextLink } from "@apollo/client/link/context";
 import {
   registerApolloClient,
   ApolloClient,
@@ -22,7 +22,8 @@ export const { getClient, query, PreloadQuery } = registerApolloClient(
     });
 
     const nestAccessToken = session?.nestAccessToken ?? "";
-    const authLink = setContext((_, { headers }) => {
+    const authLink = new SetContextLink((prevContext) => {
+      const { headers } = prevContext;
       return {
         headers: {
           ...headers,
