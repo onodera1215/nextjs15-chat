@@ -5,6 +5,7 @@ import { CreateUserUsecase } from './usecase/create-user.usecase';
 import { Public } from 'src/auth/public.decorator';
 import { IsRegisteredUserInput } from './gql-models/is-registered-user.input';
 import { IsRegisteredUserUsecase } from './usecase/is-registered-user.usecase';
+import { IsRegisteredUserModel } from './gql-models/is-registered-user.model';
 
 @Resolver()
 export class UserResolver {
@@ -23,12 +24,12 @@ export class UserResolver {
    * @returns ユーザーが登録済みの場合はtrue、それ以外はfalse
    */
   @Public()
-  @Query(() => Boolean, {
+  @Query(() => IsRegisteredUserModel, {
     description: 'ユーザーが登録済みかどうかを判定します。',
   })
   async isRegisteredUser(
     @Args('input') input: IsRegisteredUserInput,
-  ): Promise<boolean> {
+  ): Promise<IsRegisteredUserModel> {
     return await this.isRegisteredUserUsecase.execute(input);
   }
 }

@@ -22,7 +22,7 @@ export default async function LoginPage() {
   return (
     <>
       <div className="flex items-center justify-center h-screen w-full">
-        <div className="rounded-lg border-1 p-8 w-[30vw]">
+        <div className="rounded-lg border p-8 w-[30vw]">
           <div className="flex flex-col items-center mb-2">
             <Image src={Logo} alt="Logo" className="mx-auto mb-2 w-24 h-24" />
             <h1 className="text-lg mb-6 text-center font-bold">Login</h1>

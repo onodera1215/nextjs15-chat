@@ -1,6 +1,7 @@
 import {
   CreateUserInput,
   IsRegisteredUserInput,
+  IsRegisteredUserModel,
   UserNode,
 } from "@/graphql/graphql";
 import { postWithoutCache } from "@/lib/server/utils";
@@ -10,7 +11,7 @@ export async function executeQueryIsRegisteredUser(
 ) {
   const { data, errors } = await postWithoutCache<
     {
-      isRegisteredUser: boolean;
+      isRegisteredUser: IsRegisteredUserModel;
     },
     { input: IsRegisteredUserInput }
   >("/api/user/is-registered-user", {
@@ -28,5 +29,6 @@ export async function executeMutationCreateUser(input: CreateUserInput) {
   >("/api/user/create", {
     input,
   });
+
   return { userNode: data.createUser, errors };
 }

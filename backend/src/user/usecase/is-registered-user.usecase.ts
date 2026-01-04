@@ -1,6 +1,7 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { IUserRepository } from 'src/user/user.repository.interface';
 import { IsRegisteredUserInput } from '../gql-models/is-registered-user.input';
+import { IsRegisteredUserModel } from '../gql-models/is-registered-user.model';
 
 @Injectable()
 export class IsRegisteredUserUsecase {
@@ -8,23 +9,23 @@ export class IsRegisteredUserUsecase {
     @Inject('IUserRepository')
     private readonly userRepository: IUserRepository,
   ) {}
-  async execute(input: IsRegisteredUserInput): Promise<boolean> {
+  async execute(input: IsRegisteredUserInput): Promise<IsRegisteredUserModel> {
     const { email, oauthProvider } = input;
     const user = await this.userRepository.findByEmail(email);
     if (!user) {
-      return false;
+      return {
+        isRegistered: false,
+        isRegisteredInAnotherProvider: false,
+      };
     }
 
     // 登録状況を取得
     const isActive = user.isActive();
     const isTheSameOauthProvider = user.isTheSameOauthProvider(oauthProvider);
 
-    if (isActive && !isTheSameOauthProvider) {
-      throw new BadRequestException(
-        '既に異なるOAuthプロバイダーで登録されているメールアドレスです',
-      );
-    }
-
-    return isActive && isTheSameOauthProvider;
+    return {
+      isRegistered: isActive && isTheSameOauthProvider,
+      isRegisteredInAnotherProvider: isActive && !isTheSameOauthProvider,
+    };
   }
 }

@@ -12,6 +12,9 @@ const PRIVATE_KEY = process.env.NEST_JWT_PRIVATE_KEY!;
 
 export const authOptions: NextAuthConfig = {
   session: { strategy: "jwt" },
+  pages: {
+    error: "/auth/error",
+  },
   providers: [
     Google({
       clientId: process.env.AUTH_GOOGLE_ID!,
@@ -74,17 +77,23 @@ export const authOptions: NextAuthConfig = {
       if (!user.email || !account) {
         return false;
       }
-      const { isRegisteredUser, error } = await executeQueryIsRegisteredUser({
+      const { isRegisteredUser, errors } = await executeQueryIsRegisteredUser({
         email: user.email,
         oauthProvider: account.provider,
       });
-      if (error && error.length > 0) {
+      if (errors && errors.length > 0) {
         return false;
       }
       if (!account.provider || !user.email || !user.name) {
         return false;
       }
-      if (!isRegisteredUser) {
+      if (isRegisteredUser.isRegisteredInAnotherProvider) {
+        return false;
+      }
+      if (
+        !isRegisteredUser.isRegistered &&
+        !isRegisteredUser.isRegisteredInAnotherProvider
+      ) {
         const { userNode, errors } = await executeMutationCreateUser({
           email: user.email,
           name: user.name,
@@ -92,7 +101,13 @@ export const authOptions: NextAuthConfig = {
         });
         return !!userNode && !errors;
       }
-      return true;
+      if (
+        isRegisteredUser.isRegistered &&
+        !isRegisteredUser.isRegisteredInAnotherProvider
+      ) {
+        return true;
+      }
+      return false;
     },
   },
 };

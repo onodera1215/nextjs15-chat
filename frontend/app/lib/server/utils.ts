@@ -91,5 +91,8 @@ export async function postWithoutCache<T, S = undefined>(
     method: "POST",
     headers: { "Content-Type": "application/json", accept: "application/json" },
   });
-  return { data: result.data, errors: result?.errors };
+  return { data: result.data, errors: result?.errors } as {
+    data: T;
+    errors: unknown[] | undefined;
+  };
 }
