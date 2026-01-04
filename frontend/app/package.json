@@ -29,7 +29,11 @@
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
+    "@0no-co/graphqlsp": "^1.15.2",
     "@eslint/eslintrc": "^3",
+    "@graphql-codegen/cli": "^6.1.0",
+    "@graphql-codegen/schema-ast": "^5.0.0",
+    "@parcel/watcher": "^2.5.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
