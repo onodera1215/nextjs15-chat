@@ -1,0 +1,107 @@
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
+
+input CreateMessageInput {
+  body: String!
+  roomId: String!
+  senderId: String!
+}
+
+input CreateRoomInput {
+  description: String!
+  name: String!
+  status: RoomStatusEnum!
+}
+
+input CreateUserInput {
+  email: String!
+  name: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type MessageNode {
+  body: String!
+  createdAt: DateTime!
+  id: String!
+  room: RoomNode!
+  roomId: String!
+  sender: UserNode!
+  senderId: String!
+  updatedAt: DateTime!
+}
+
+type Mutation {
+  createMessage(input: CreateMessageInput!): MessageNode!
+  createRoom(input: CreateRoomInput!): RoomNode!
+  createUser(input: CreateUserInput!): UserNode!
+}
+
+type Query {
+  """
+  ユーザーが登録済みかどうかを判定します。
+  """
+  isRegisteredUser: Boolean!
+  messages(input: SearchOptionInput!): [MessageNode!]!
+  rooms(input: SearchRoomOptionInput!): [RoomNode!]!
+}
+
+type RoomNode {
+  createdAt: DateTime!
+  description: String!
+  id: ID!
+  name: String!
+  status: RoomStatusEnum!
+  updatedAt: DateTime!
+}
+
+"""
+ルームステータス
+"""
+enum RoomStatusEnum {
+  ACTIVE
+  INACTIVE
+}
+
+"""
+クエリ検索用オプション
+"""
+input SearchOptionInput {
+  limit: Float
+  offset: Float
+  roomId: String!
+}
+
+input SearchRoomOptionInput {
+  createdAt: DateTime
+  name: String
+  roomId: String
+  updatedAt: DateTime
+}
+
+type Subscription {
+  messageCreated: MessageNode!
+}
+
+type UserNode {
+  createdAt: DateTime!
+  email: String!
+  id: ID!
+  name: String!
+  status: UserStatus!
+  updatedAt: DateTime!
+}
+
+"""
+ユーザーステータス
+"""
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
