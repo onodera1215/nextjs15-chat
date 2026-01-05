@@ -16,6 +16,6 @@ export const config = {
     "/profile/:path*",
     "/room/:path*",
     // これは否定先読みでここに書かれたパスは除外される
-    "/((?!_next/static|_next/image|favicon.ico|api|login|register).*)",
+    "/((?!_next/static|_next/image|favicon.ico|api|login|register|error).*)",
   ],
 };

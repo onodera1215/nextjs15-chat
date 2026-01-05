@@ -13,7 +13,7 @@ const PRIVATE_KEY = process.env.NEST_JWT_PRIVATE_KEY!;
 export const authOptions: NextAuthConfig = {
   session: { strategy: "jwt" },
   pages: {
-    error: "/auth/error",
+    error: "/error",
   },
   providers: [
     Google({
@@ -88,7 +88,7 @@ export const authOptions: NextAuthConfig = {
         return false;
       }
       if (registeredUser.isRegisteredInAnotherProvider) {
-        return false;
+        throw new Error("USER_ALREADY_REGISTERED_IN_ANOTHER_PROVIDER");
       }
       if (
         !registeredUser.isRegistered &&
