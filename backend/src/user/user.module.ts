@@ -3,19 +3,19 @@ import { UserRepository } from './infrastructure/user.repository';
 import { UserResolver } from './user.resolver';
 import { CreateUserUsecase } from './usecase/create-user.usecase';
 import { GetUserUsecase } from './usecase/get-user.usecase';
-import { IsRegisteredUserUsecase } from './usecase/is-registered-user.usecase';
+import { RegisteredUserUsecase } from './usecase/registered-user.usecase';
 
 @Module({
   providers: [
     CreateUserUsecase,
     GetUserUsecase,
     UserResolver,
-    IsRegisteredUserUsecase,
+    RegisteredUserUsecase,
     {
       provide: 'IUserRepository',
       useClass: UserRepository,
     },
   ],
-  exports: [CreateUserUsecase, GetUserUsecase, IsRegisteredUserUsecase],
+  exports: [CreateUserUsecase, GetUserUsecase, RegisteredUserUsecase],
 })
 export class UserModule {}

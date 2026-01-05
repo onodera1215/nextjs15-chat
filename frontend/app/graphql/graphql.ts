@@ -36,17 +36,6 @@ export type CreateUserInput = {
   oauthProvider: Scalars['String']['input'];
 };
 
-export type IsRegisteredUserInput = {
-  email: Scalars['String']['input'];
-  oauthProvider: Scalars['String']['input'];
-};
-
-export type IsRegisteredUserModel = {
-  __typename?: 'IsRegisteredUserModel';
-  isRegistered: Scalars['Boolean']['output'];
-  isRegisteredInAnotherProvider: Scalars['Boolean']['output'];
-};
-
 export type MessageNode = {
   __typename?: 'MessageNode';
   body: Scalars['String']['output'];
@@ -83,15 +72,10 @@ export type MutationCreateUserArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  /** ユーザーが登録済みかどうかを判定します。 */
-  isRegisteredUser: IsRegisteredUserModel;
   messages: Array<MessageNode>;
+  /** ユーザーが登録済みかどうかを判定します。 */
+  registeredUser: RegisteredUserModel;
   rooms: Array<RoomNode>;
-};
-
-
-export type QueryIsRegisteredUserArgs = {
-  input: IsRegisteredUserInput;
 };
 
 
@@ -100,8 +84,24 @@ export type QueryMessagesArgs = {
 };
 
 
+export type QueryRegisteredUserArgs = {
+  input: RegisteredUserInput;
+};
+
+
 export type QueryRoomsArgs = {
   input: SearchRoomOptionInput;
+};
+
+export type RegisteredUserInput = {
+  email: Scalars['String']['input'];
+  oauthProvider: Scalars['String']['input'];
+};
+
+export type RegisteredUserModel = {
+  __typename?: 'RegisteredUserModel';
+  isRegistered: Scalars['Boolean']['output'];
+  isRegisteredInAnotherProvider: Scalars['Boolean']['output'];
 };
 
 export type RoomNode = {
@@ -170,12 +170,12 @@ export type CreateUserMutationVariables = Exact<{
 
 export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'UserNode', id: string, name: string, email: string, oauthProvider: string, status: UserStatus, createdAt: any, updatedAt: any } };
 
-export type IsRegisteredUserQueryVariables = Exact<{
-  input: IsRegisteredUserInput;
+export type RegisteredUserQueryVariables = Exact<{
+  input: RegisteredUserInput;
 }>;
 
 
-export type IsRegisteredUserQuery = { __typename?: 'Query', isRegisteredUser: { __typename?: 'IsRegisteredUserModel', isRegistered: boolean, isRegisteredInAnotherProvider: boolean } };
+export type RegisteredUserQuery = { __typename?: 'Query', registeredUser: { __typename?: 'RegisteredUserModel', isRegistered: boolean, isRegisteredInAnotherProvider: boolean } };
 
 export class TypedDocumentString<TResult, TVariables>
   extends String
@@ -217,11 +217,11 @@ export const CreateUserDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<CreateUserMutation, CreateUserMutationVariables>;
-export const IsRegisteredUserDocument = new TypedDocumentString(`
-    query IsRegisteredUser($input: IsRegisteredUserInput!) {
-  isRegisteredUser(input: $input) {
+export const RegisteredUserDocument = new TypedDocumentString(`
+    query RegisteredUser($input: RegisteredUserInput!) {
+  registeredUser(input: $input) {
     isRegistered
     isRegisteredInAnotherProvider
   }
 }
-    `) as unknown as TypedDocumentString<IsRegisteredUserQuery, IsRegisteredUserQueryVariables>;
+    `) as unknown as TypedDocumentString<RegisteredUserQuery, RegisteredUserQueryVariables>;

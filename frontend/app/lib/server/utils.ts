@@ -83,7 +83,7 @@ export async function postWithoutCache<T, S = undefined>(
   path: string,
   body?: S
 ) {
-  const result = await fetchWithoutCache<{
+  const { data, errors } = await fetchWithoutCache<{
     data: T;
     errors: unknown[] | undefined;
   }>(path, {
@@ -91,7 +91,7 @@ export async function postWithoutCache<T, S = undefined>(
     method: "POST",
     headers: { "Content-Type": "application/json", accept: "application/json" },
   });
-  return { data: result.data, errors: result?.errors } as {
+  return { data, errors } as {
     data: T;
     errors: unknown[] | undefined;
   };

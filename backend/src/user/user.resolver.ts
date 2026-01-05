@@ -3,15 +3,15 @@ import { UserNode } from './gql-models/user.model';
 import { CreateUserInput } from './gql-models/create-user.input';
 import { CreateUserUsecase } from './usecase/create-user.usecase';
 import { Public } from 'src/auth/public.decorator';
-import { IsRegisteredUserInput } from './gql-models/is-registered-user.input';
-import { IsRegisteredUserUsecase } from './usecase/is-registered-user.usecase';
-import { IsRegisteredUserModel } from './gql-models/is-registered-user.model';
+import { RegisteredUserInput } from './gql-models/is-registered-user.input';
+import { RegisteredUserUsecase } from './usecase/registered-user.usecase';
+import { RegisteredUserModel } from './gql-models/is-registered-user.model';
 
 @Resolver()
 export class UserResolver {
   constructor(
     private readonly createUserUsecase: CreateUserUsecase,
-    private readonly isRegisteredUserUsecase: IsRegisteredUserUsecase,
+    private readonly registeredUserUsecase: RegisteredUserUsecase,
   ) {}
 
   @Public()
@@ -21,15 +21,15 @@ export class UserResolver {
   }
 
   /**
-   * @returns ユーザーが登録済みの場合はtrue、それ以外はfalse
+   * @returns ユーザーの登録判定用
    */
   @Public()
-  @Query(() => IsRegisteredUserModel, {
+  @Query(() => RegisteredUserModel, {
     description: 'ユーザーが登録済みかどうかを判定します。',
   })
-  async isRegisteredUser(
-    @Args('input') input: IsRegisteredUserInput,
-  ): Promise<IsRegisteredUserModel> {
-    return await this.isRegisteredUserUsecase.execute(input);
+  async registeredUser(
+    @Args('input') input: RegisteredUserInput,
+  ): Promise<RegisteredUserModel> {
+    return await this.registeredUserUsecase.execute(input);
   }
 }

@@ -5,7 +5,7 @@ import GitHub from "next-auth/providers/github";
 import { SignJWT, importPKCS8 } from "jose";
 import {
   executeMutationCreateUser,
-  executeQueryIsRegisteredUser,
+  executeQueryRegisteredUser,
 } from "./features";
 
 const PRIVATE_KEY = process.env.NEST_JWT_PRIVATE_KEY!;
@@ -77,7 +77,7 @@ export const authOptions: NextAuthConfig = {
       if (!user.email || !account) {
         return false;
       }
-      const { isRegisteredUser, errors } = await executeQueryIsRegisteredUser({
+      const { registeredUser, errors } = await executeQueryRegisteredUser({
         email: user.email,
         oauthProvider: account.provider,
       });
@@ -87,12 +87,12 @@ export const authOptions: NextAuthConfig = {
       if (!account.provider || !user.email || !user.name) {
         return false;
       }
-      if (isRegisteredUser.isRegisteredInAnotherProvider) {
+      if (registeredUser.isRegisteredInAnotherProvider) {
         return false;
       }
       if (
-        !isRegisteredUser.isRegistered &&
-        !isRegisteredUser.isRegisteredInAnotherProvider
+        !registeredUser.isRegistered &&
+        !registeredUser.isRegisteredInAnotherProvider
       ) {
         const { userNode, errors } = await executeMutationCreateUser({
           email: user.email,
@@ -102,8 +102,8 @@ export const authOptions: NextAuthConfig = {
         return !!userNode && !errors;
       }
       if (
-        isRegisteredUser.isRegistered &&
-        !isRegisteredUser.isRegisteredInAnotherProvider
+        registeredUser.isRegistered &&
+        !registeredUser.isRegisteredInAnotherProvider
       ) {
         return true;
       }

@@ -1,7 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
-export class IsRegisteredUserModel {
+export class RegisteredUserModel {
   @Field(() => Boolean)
   isRegistered: boolean;
 

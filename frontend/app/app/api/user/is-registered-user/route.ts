@@ -1,13 +1,10 @@
 import { graphql } from "@/graphql";
-import {
-  IsRegisteredUserInput,
-  IsRegisteredUserModel,
-} from "@/graphql/graphql";
+import { RegisteredUserInput, RegisteredUserModel } from "@/graphql/graphql";
 import { executeGql } from "@/lib/server/utils";
 
-const IsRegisteredUserQuery = graphql(`
-  query IsRegisteredUser($input: IsRegisteredUserInput!) {
-    isRegisteredUser(input: $input) {
+const RegisteredUserQuery = graphql(`
+  query RegisteredUser($input: RegisteredUserInput!) {
+    registeredUser(input: $input) {
       isRegistered
       isRegisteredInAnotherProvider
     }
@@ -15,12 +12,12 @@ const IsRegisteredUserQuery = graphql(`
 `);
 
 export async function POST(request: Request) {
-  const { input }: { input: IsRegisteredUserInput } = await request.json();
+  const { input }: { input: RegisteredUserInput } = await request.json();
   const { data, errors } = await executeGql<
-    { isRegisteredUser: IsRegisteredUserModel },
-    { input: IsRegisteredUserInput }
-  >(IsRegisteredUserQuery, { input });
-  return new Response(JSON.stringify({ data: data.isRegisteredUser, errors }), {
+    { registeredUser: RegisteredUserModel },
+    { input: RegisteredUserInput }
+  >(RegisteredUserQuery, { input });
+  return new Response(JSON.stringify({ data: data.registeredUser, errors }), {
     headers: { "Content-Type": "application/json" },
   });
 }

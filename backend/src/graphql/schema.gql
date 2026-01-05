@@ -49,7 +49,7 @@ enum UserStatus {
   INACTIVE
 }
 
-type IsRegisteredUserModel {
+type RegisteredUserModel {
   isRegistered: Boolean!
   isRegisteredInAnotherProvider: Boolean!
 }
@@ -58,7 +58,7 @@ type Query {
   messages(input: SearchOptionInput!): [MessageNode!]!
 
   """ユーザーが登録済みかどうかを判定します。"""
-  isRegisteredUser(input: IsRegisteredUserInput!): IsRegisteredUserModel!
+  registeredUser(input: RegisteredUserInput!): RegisteredUserModel!
   rooms(input: SearchRoomOptionInput!): [RoomNode!]!
 }
 
@@ -69,7 +69,7 @@ input SearchOptionInput {
   offset: Float
 }
 
-input IsRegisteredUserInput {
+input RegisteredUserInput {
   email: String!
   oauthProvider: String!
 }

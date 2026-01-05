@@ -27,16 +27,6 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-input IsRegisteredUserInput {
-  email: String!
-  oauthProvider: String!
-}
-
-type IsRegisteredUserModel {
-  isRegistered: Boolean!
-  isRegisteredInAnotherProvider: Boolean!
-}
-
 type MessageNode {
   body: String!
   createdAt: DateTime!
@@ -55,10 +45,20 @@ type Mutation {
 }
 
 type Query {
-  """ユーザーが登録済みかどうかを判定します。"""
-  isRegisteredUser(input: IsRegisteredUserInput!): IsRegisteredUserModel!
   messages(input: SearchOptionInput!): [MessageNode!]!
+  """ユーザーが登録済みかどうかを判定します。"""
+  registeredUser(input: RegisteredUserInput!): RegisteredUserModel!
   rooms(input: SearchRoomOptionInput!): [RoomNode!]!
+}
+
+input RegisteredUserInput {
+  email: String!
+  oauthProvider: String!
+}
+
+type RegisteredUserModel {
+  isRegistered: Boolean!
+  isRegisteredInAnotherProvider: Boolean!
 }
 
 type RoomNode {

@@ -1,15 +1,15 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IUserRepository } from 'src/user/user.repository.interface';
-import { IsRegisteredUserInput } from '../gql-models/is-registered-user.input';
-import { IsRegisteredUserModel } from '../gql-models/is-registered-user.model';
+import { RegisteredUserInput } from '../gql-models/is-registered-user.input';
+import { RegisteredUserModel } from '../gql-models/is-registered-user.model';
 
 @Injectable()
-export class IsRegisteredUserUsecase {
+export class RegisteredUserUsecase {
   constructor(
     @Inject('IUserRepository')
     private readonly userRepository: IUserRepository,
   ) {}
-  async execute(input: IsRegisteredUserInput): Promise<IsRegisteredUserModel> {
+  async execute(input: RegisteredUserInput): Promise<RegisteredUserModel> {
     const { email, oauthProvider } = input;
     const user = await this.userRepository.findByEmail(email);
     if (!user) {
