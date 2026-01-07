@@ -10,13 +10,13 @@ export default function AuthPageLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <main className="grid grid-rows-[8vh_1fr] md:grid-rows-[8vh_1fr] h-screen">
+    <main className="grid grid-rows-[8vh_1fr] h-screen">
       <Header />
       <div className="grid grid-cols-12">
-        <div className="col-span-3 max-md:block bg-surface">
+        <div className="hidden lg:col-span-3 lg:block bg-surface ">
           <Sidebar />
         </div>
-        <div className="col-span-9">
+        <div className="lg:col-span-9 block col-span-12">
           <Content>
             {children}
           </Content>
