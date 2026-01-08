@@ -4,6 +4,7 @@ services:
     build: ./backend
     ports:
       - 3010:3000
+      - 6666:5555
     environment:
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}
     volumes:
