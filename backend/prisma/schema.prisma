@@ -28,13 +28,14 @@ enum RoomStatus {
 }
 
 model User {
-  id            String     @id @default(cuid())
-  oauthProvider String     @unique @map("oauth_provider")
-  email         String     @unique
-  name          String
-  status        UserStatus
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  id                     String     @id @default(cuid())
+  oauthProvider          String     @unique @map("oauth_provider")
+  oauthProviderAccountId String     @unique @map("oauth_provider_account_id")
+  email                  String     @unique
+  name                   String
+  status                 UserStatus
+  createdAt              DateTime   @default(now())
+  updatedAt              DateTime   @updatedAt
 
   rooms    UserRoom[]
   messages Message[]

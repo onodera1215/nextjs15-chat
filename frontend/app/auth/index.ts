@@ -37,7 +37,7 @@ export const authOptions: NextAuthConfig = {
       return newSession;
     },
     async jwt({ token, user }) {
-      // 初回ログイン時にユーザー情報をトークンに保存
+      // ログイン時にユーザー情報をトークンに保存
       if (user) {
         token.id = user.id;
         token.email = user.email;
@@ -78,17 +78,17 @@ export const authOptions: NextAuthConfig = {
         return false;
       }
       const { registeredUser, errors } = await executeQueryRegisteredUser({
-        email: user.email,
         oauthProvider: account.provider,
+        oauthProviderAccountId: account.providerAccountId,
       });
+      if (registeredUser.isRegisteredInAnotherProvider) {
+        throw new Error("USER_ALREADY_REGISTERED_IN_ANOTHER_PROVIDER");
+      }
       if (errors && errors.length > 0) {
         return false;
       }
       if (!account.provider || !user.email || !user.name) {
         return false;
-      }
-      if (registeredUser.isRegisteredInAnotherProvider) {
-        throw new Error("USER_ALREADY_REGISTERED_IN_ANOTHER_PROVIDER");
       }
       if (
         !registeredUser.isRegistered &&
@@ -98,6 +98,7 @@ export const authOptions: NextAuthConfig = {
           email: user.email,
           name: user.name,
           oauthProvider: account.provider,
+          oauthProviderAccountId: account.providerAccountId,
         });
         return !!userNode && !errors;
       }

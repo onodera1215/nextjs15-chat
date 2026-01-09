@@ -34,6 +34,7 @@ export type CreateUserInput = {
   email: Scalars['String']['input'];
   name: Scalars['String']['input'];
   oauthProvider: Scalars['String']['input'];
+  oauthProviderAccountId: Scalars['String']['input'];
 };
 
 export type MessageNode = {
@@ -94,8 +95,8 @@ export type QueryRoomsArgs = {
 };
 
 export type RegisteredUserInput = {
-  email: Scalars['String']['input'];
   oauthProvider: Scalars['String']['input'];
+  oauthProviderAccountId: Scalars['String']['input'];
 };
 
 export type RegisteredUserModel = {
@@ -146,6 +147,7 @@ export type UserNode = {
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   oauthProvider: Scalars['String']['output'];
+  oauthProviderAccountId: Scalars['String']['output'];
   status: UserStatus;
   updatedAt: Scalars['DateTime']['output'];
 };

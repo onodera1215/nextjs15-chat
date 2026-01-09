@@ -18,6 +18,7 @@ async function seeder() {
       name: 'デフォルトユーザー',
       email: 'example@domain.com',
       oauthProvider: 'default-oauth-provider-id',
+      oauthProviderAccountId: 'default-oauth-provider-account-id',
       status: UserStatusEnum.ACTIVE,
     },
   });

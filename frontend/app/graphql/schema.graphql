@@ -20,6 +20,7 @@ input CreateUserInput {
   email: String!
   name: String!
   oauthProvider: String!
+  oauthProviderAccountId: String!
 }
 
 """
@@ -52,8 +53,8 @@ type Query {
 }
 
 input RegisteredUserInput {
-  email: String!
   oauthProvider: String!
+  oauthProviderAccountId: String!
 }
 
 type RegisteredUserModel {
@@ -100,6 +101,7 @@ type UserNode {
   id: ID!
   name: String!
   oauthProvider: String!
+  oauthProviderAccountId: String!
   status: UserStatus!
   updatedAt: DateTime!
 }

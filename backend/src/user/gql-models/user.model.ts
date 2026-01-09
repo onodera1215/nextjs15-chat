@@ -15,6 +15,9 @@ export class UserNode {
   @Field(() => String)
   oauthProvider;
 
+  @Field(() => String)
+  oauthProviderAccountId: string;
+
   @Field(() => UserStatusEnum)
   status: UserStatusEnum;
 

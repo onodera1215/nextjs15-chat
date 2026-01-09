@@ -10,8 +10,10 @@ export class RegisteredUserUsecase {
     private readonly userRepository: IUserRepository,
   ) {}
   async execute(input: RegisteredUserInput): Promise<RegisteredUserModel> {
-    const { email, oauthProvider } = input;
-    const user = await this.userRepository.findByEmail(email);
+    const { oauthProviderAccountId, oauthProvider } = input;
+    const user = await this.userRepository.findByOauthProviderAccountId(
+      oauthProviderAccountId,
+    );
     if (!user) {
       return {
         isRegistered: false,

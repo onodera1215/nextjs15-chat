@@ -10,4 +10,7 @@ export class CreateUserInput {
 
   @Field(() => String)
   oauthProvider: string;
+
+  @Field(() => String)
+  oauthProviderAccountId: string;
 }

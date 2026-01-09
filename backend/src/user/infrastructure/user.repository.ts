@@ -21,9 +21,11 @@ export class UserRepository implements IUserRepository {
     return fromPrismaUserToUserDomain(user);
   }
 
-  async findByEmail(email: string): Promise<UserDomain | null> {
+  async findByOauthProviderAccountId(
+    oauthProviderAccountId: string,
+  ): Promise<UserDomain | null> {
     const user = await this.prisma.user.findUnique({
-      where: { email },
+      where: { oauthProviderAccountId },
     });
     if (!user) {
       return null;
@@ -34,6 +36,16 @@ export class UserRepository implements IUserRepository {
   async findById(id: string): Promise<UserDomain | null> {
     const user = await this.prisma.user.findUnique({
       where: { id },
+    });
+    if (!user) {
+      return null;
+    }
+    return fromPrismaUserToUserDomain(user);
+  }
+
+  async findByEmail(email: string): Promise<UserDomain | null> {
+    const user = await this.prisma.user.findUnique({
+      where: { email },
     });
     if (!user) {
       return null;
