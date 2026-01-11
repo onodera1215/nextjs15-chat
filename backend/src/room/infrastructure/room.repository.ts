@@ -25,25 +25,25 @@ export class RoomRepository implements IRoomRepository {
     return fromPrismaRoomToRoomDomain(room);
   }
   async findAllBySearchRoomOption(
-    searchOption: SearchRoomOptionInput,
+    searchOption?: SearchRoomOptionInput,
   ): Promise<RoomDomain[]> {
     const conditions: Prisma.RoomWhereInput[] = [];
     // ルーム名検索
-    if (searchOption.name) {
+    if (searchOption?.name) {
       conditions.push({ name: { contains: searchOption.name } });
     }
     // ルームID検索
-    if (searchOption.roomId) {
+    if (searchOption?.roomId) {
       conditions.push({ id: searchOption.roomId });
     }
     // ルーム作成日検索
-    if (searchOption.createdAt) {
+    if (searchOption?.createdAt) {
       conditions.push({
         createdAt: searchOption.createdAt,
       });
     }
     // ルーム更新日検索
-    if (searchOption.updatedAt) {
+    if (searchOption?.updatedAt) {
       conditions.push({
         updatedAt: searchOption.updatedAt,
       });

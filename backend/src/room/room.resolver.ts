@@ -20,7 +20,7 @@ export class RoomResolver {
 
   @Query(() => [RoomNode])
   async rooms(
-    @Args('input') input: SearchRoomOptionInput,
+    @Args('input', { nullable: true }) input?: SearchRoomOptionInput,
   ): Promise<RoomNode[]> {
     return await this.getRoomsUsecase.execute(input);
   }

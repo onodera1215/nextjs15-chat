@@ -6,12 +6,16 @@ import { Public } from 'src/auth/public.decorator';
 import { RegisteredUserInput } from './gql-models/is-registered-user.input';
 import { RegisteredUserUsecase } from './usecase/registered-user.usecase';
 import { RegisteredUserModel } from './gql-models/is-registered-user.model';
+import { GetUserUsecase } from './usecase/get-user.usecase';
+import { GetUserByEmailUsecase } from './usecase/get-user-by-email.usecase';
 
 @Resolver()
 export class UserResolver {
   constructor(
     private readonly createUserUsecase: CreateUserUsecase,
     private readonly registeredUserUsecase: RegisteredUserUsecase,
+    private readonly getUserUsecase: GetUserUsecase,
+    private readonly getUserByEmailUsecase: GetUserByEmailUsecase,
   ) {}
 
   @Public()
@@ -31,5 +35,19 @@ export class UserResolver {
     @Args('input') input: RegisteredUserInput,
   ): Promise<RegisteredUserModel> {
     return await this.registeredUserUsecase.execute(input);
+  }
+
+  @Query(() => UserNode, {
+    description: '指定したIDのユーザーを取得します。',
+  })
+  async user(@Args('userId') userId: string): Promise<UserNode | null> {
+    return await this.getUserUsecase.execute(userId);
+  }
+
+  @Query(() => UserNode, {
+    description: '指定したemailを持つユーザーを取得します。',
+  })
+  async userByEmail(@Args('email') email: string): Promise<UserNode | null> {
+    return await this.getUserByEmailUsecase.execute(email);
   }
 }

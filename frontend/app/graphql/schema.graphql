@@ -49,7 +49,11 @@ type Query {
   messages(input: SearchOptionInput!): [MessageNode!]!
   """ユーザーが登録済みかどうかを判定します。"""
   registeredUser(input: RegisteredUserInput!): RegisteredUserModel!
-  rooms(input: SearchRoomOptionInput!): [RoomNode!]!
+  rooms(input: SearchRoomOptionInput): [RoomNode!]!
+  """指定したIDのユーザーを取得します。"""
+  user(userId: String!): UserNode!
+  """指定したemailを持つユーザーを取得します。"""
+  userByEmail(email: String!): UserNode!
 }
 
 input RegisteredUserInput {
@@ -93,6 +97,7 @@ input SearchRoomOptionInput {
 
 type Subscription {
   messageCreated: MessageNode!
+  userSignedUp: UserNode!
 }
 
 type UserNode {

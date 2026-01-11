@@ -77,6 +77,10 @@ export type Query = {
   /** ユーザーが登録済みかどうかを判定します。 */
   registeredUser: RegisteredUserModel;
   rooms: Array<RoomNode>;
+  /** 指定したIDのユーザーを取得します。 */
+  user: UserNode;
+  /** 指定したemailを持つユーザーを取得します。 */
+  userByEmail: UserNode;
 };
 
 
@@ -91,7 +95,17 @@ export type QueryRegisteredUserArgs = {
 
 
 export type QueryRoomsArgs = {
-  input: SearchRoomOptionInput;
+  input?: InputMaybe<SearchRoomOptionInput>;
+};
+
+
+export type QueryUserArgs = {
+  userId: Scalars['String']['input'];
+};
+
+
+export type QueryUserByEmailArgs = {
+  email: Scalars['String']['input'];
 };
 
 export type RegisteredUserInput = {
@@ -138,6 +152,7 @@ export type SearchRoomOptionInput = {
 export type Subscription = {
   __typename?: 'Subscription';
   messageCreated: MessageNode;
+  userSignedUp: UserNode;
 };
 
 export type UserNode = {
@@ -159,11 +174,25 @@ export enum UserStatus {
 }
 
 export type GetRoomsQueryVariables = Exact<{
-  input: SearchRoomOptionInput;
+  input?: InputMaybe<SearchRoomOptionInput>;
 }>;
 
 
 export type GetRoomsQuery = { __typename?: 'Query', rooms: Array<{ __typename?: 'RoomNode', id: string, name: string }> };
+
+export type GetUserByEmailQueryVariables = Exact<{
+  email: Scalars['String']['input'];
+}>;
+
+
+export type GetUserByEmailQuery = { __typename?: 'Query', userByEmail: { __typename?: 'UserNode', id: string } };
+
+export type GetUserQueryVariables = Exact<{
+  userId: Scalars['String']['input'];
+}>;
+
+
+export type GetUserQuery = { __typename?: 'Query', user: { __typename?: 'UserNode', id: string, name: string, email: string, oauthProvider: string, oauthProviderAccountId: string, status: UserStatus, createdAt: any, updatedAt: any } };
 
 export type CreateUserMutationVariables = Exact<{
   input: CreateUserInput;
@@ -199,13 +228,34 @@ export class TypedDocumentString<TResult, TVariables>
 }
 
 export const GetRoomsDocument = new TypedDocumentString(`
-    query GetRooms($input: SearchRoomOptionInput!) {
+    query GetRooms($input: SearchRoomOptionInput) {
   rooms(input: $input) {
     id
     name
   }
 }
     `) as unknown as TypedDocumentString<GetRoomsQuery, GetRoomsQueryVariables>;
+export const GetUserByEmailDocument = new TypedDocumentString(`
+    query GetUserByEmail($email: String!) {
+  userByEmail(email: $email) {
+    id
+  }
+}
+    `) as unknown as TypedDocumentString<GetUserByEmailQuery, GetUserByEmailQueryVariables>;
+export const GetUserDocument = new TypedDocumentString(`
+    query GetUser($userId: String!) {
+  user(userId: $userId) {
+    id
+    name
+    email
+    oauthProvider
+    oauthProviderAccountId
+    status
+    createdAt
+    updatedAt
+  }
+}
+    `) as unknown as TypedDocumentString<GetUserQuery, GetUserQueryVariables>;
 export const CreateUserDocument = new TypedDocumentString(`
     mutation CreateUser($input: CreateUserInput!) {
   createUser(input: $input) {

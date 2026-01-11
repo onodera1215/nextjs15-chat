@@ -7,6 +7,6 @@ export interface IRoomRepository {
   isNameAlreadyExists(name: string): Promise<boolean>;
   findById(id: string): Promise<RoomDomain | null>;
   findAllBySearchRoomOption(
-    searchOption: SearchRoomOptionInput,
+    searchOption?: SearchRoomOptionInput,
   ): Promise<RoomDomain[]>;
 }

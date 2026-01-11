@@ -3,13 +3,13 @@ import { IUserRepository } from '../user.repository.interface';
 import { UserNode } from '../gql-models/user.model';
 
 @Injectable()
-export class GetUserUsecase {
+export class GetUserByEmailUsecase {
   constructor(
     @Inject('IUserRepository')
     private readonly userRepository: IUserRepository,
   ) {}
 
-  async execute(userId: string): Promise<UserNode | null> {
-    return await this.userRepository.findById(userId);
+  async execute(email: string): Promise<UserNode | null> {
+    return await this.userRepository.findByEmail(email);
   }
 }

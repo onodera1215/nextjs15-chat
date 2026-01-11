@@ -4,6 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { GqlAuthGuard } from './auth.gurad';
 import { UserRepository } from 'src/user/infrastructure/user.repository';
+import { AuthResolver } from './auth.resolver';
 
 const publicKey = process.env.NEST_JWT_PUBLIC_KEY!;
 
@@ -21,6 +22,7 @@ const publicKey = process.env.NEST_JWT_PUBLIC_KEY!;
       useClass: GqlAuthGuard,
     },
     UserRepository,
+    AuthResolver,
   ],
 })
 export class AuthModule {}

@@ -60,7 +60,13 @@ type Query {
 
   """ユーザーが登録済みかどうかを判定します。"""
   registeredUser(input: RegisteredUserInput!): RegisteredUserModel!
-  rooms(input: SearchRoomOptionInput!): [RoomNode!]!
+
+  """指定したIDのユーザーを取得します。"""
+  user(userId: String!): UserNode!
+
+  """指定したemailを持つユーザーを取得します。"""
+  userByEmail(email: String!): UserNode!
+  rooms(input: SearchRoomOptionInput): [RoomNode!]!
 }
 
 """クエリ検索用オプション"""
@@ -109,4 +115,5 @@ input CreateRoomInput {
 
 type Subscription {
   messageCreated: MessageNode!
+  userSignedUp: UserNode!
 }
