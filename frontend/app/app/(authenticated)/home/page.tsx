@@ -1,6 +1,6 @@
-import AuthenticatedPageTitle from "@/components/atoms/AuthenticatedPageTitle";
 import { GenerateMetadataProps } from "@/types";
 import { Metadata, ResolvingMetadata } from "next";
+import Content from "./content";
 
 export async function generateMetadata(
   _: GenerateMetadataProps,
@@ -14,6 +14,6 @@ export async function generateMetadata(
 }
 export default async function HomePage() {
   return (
-    <AuthenticatedPageTitle title="ホーム" />
+    <Content />
   );
 }
