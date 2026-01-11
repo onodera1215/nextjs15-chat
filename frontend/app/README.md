@@ -33,3 +33,30 @@ https://slackthemes.net/#/aubergine
   - (任意で追加したルーム)
 - プロフィール
 - 設定ページなど
+
+## クライアント側 Store のデータツリー構成
+
+```mermaid
+flowchart TD
+
+    classDef note fill:#fff
+
+    Root[Store] --> EntitiesSlice
+    Root --> SessionSlice
+    Root --> UiSlice
+    Root --> PresenceSlice
+
+    EntitiesSlice --> Users
+    EntitiesSlice --> Rooms
+    EntitiesSlice --> Messages
+
+    SessionSlice --> Auth
+    SessionSlice --> Connection
+
+    EntitiesSlice --- EntitiesSliceNote["永続化データの情報を保持する"]
+    SessionSlice ---  SessionSliceNote["セッションから得られる情報を保存する"]
+    UiSlice --- UiSliceNote["Uiに直接関係する情報を保持する"]
+    PresenceSlice --- PresenceSliceNote["その他現在の状態を保持する"]
+
+    class EntitiesSliceNote,SessionSliceNote,UiSliceNote,PresenceSliceNote note
+```
