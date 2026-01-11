@@ -46,7 +46,11 @@ function createHttpLinkSingleton(token: string) {
 }
 
 let apolloClient: ApolloClient | null = null;
-export function createApolloClient(token: string) {
+export function createApolloClient() {
+  const token = getTokenStorage()?.getToken();
+  if (!token) {
+    throw new Error("Token is not set");
+  }
   const httpLink = createHttpLinkSingleton(token);
   const wsLink = createWsLinkSingleton(token);
 
@@ -72,4 +76,27 @@ export function createApolloClient(token: string) {
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
+}
+
+class InMemoryTokenStorage {
+  constructor(private token: string) {
+    this.token = token;
+  }
+
+  getToken(): string {
+    return this.token;
+  }
+}
+
+let tokenStorage: InMemoryTokenStorage | null = null;
+let token: string | null = null;
+export function setToken(_token: string) {
+  token = _token;
+  tokenStorage = new InMemoryTokenStorage(token);
+}
+export function getTokenStorage() {
+  if (!tokenStorage && token) {
+    tokenStorage = new InMemoryTokenStorage(token);
+  }
+  return tokenStorage;
 }

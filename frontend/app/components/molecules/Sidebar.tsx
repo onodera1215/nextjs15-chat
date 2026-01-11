@@ -6,8 +6,12 @@ import SidebarNavigationButton from "../atoms/SidebaNavigationButtons";
 import { UserCircle } from "lucide-react";
 import SidebarHeading from "../atoms/SidebarHeading";
 import SidebarChannels from "../atoms/SidebarChannels";
+import { useAppSelector } from "@/store/hooks";
+
 
 export default function Sidebar() {
+    const test = useAppSelector(state => state.entityReducer);
+    console.log("Sidebar test:", test);
     return (
         <aside className="bg-surface h-full relative">
             <div className="grid grid-cols-10 mb-4 h-full">

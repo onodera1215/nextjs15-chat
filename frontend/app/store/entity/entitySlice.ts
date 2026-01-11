@@ -1,5 +1,7 @@
 import { MessageNode, RoomNode, UserNode } from "@/graphql/graphql";
-import { createSlice, ThunkAction, UnknownAction } from "@reduxjs/toolkit";
+import { createApolloClient } from "@/lib/client/utils";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import gql from "graphql-tag";
 
 export interface EntityState {
   me: UserNode | null;
@@ -39,13 +41,38 @@ const initialState: EntityState = {
 export const entitySlice = createSlice({
   name: "entity",
   initialState,
-  reducers: {},
+  reducers: {
+    setMe(state, action: { payload: UserNode }) {
+      state.me = action.payload;
+    },
+  },
 });
 
-const signInAction = () => ({ type: "entity/user/signedIn" });
-
-export const signInSubscriptionListener =
-  (): ThunkAction<void, UserNode, unknown, UnknownAction> =>
-  async (dispatch) => {
-    dispatch(signInAction());
-  };
+// ログイン監視
+const signInAction = (payload: UserNode) => ({
+  type: "entity/user/signIn",
+  payload,
+});
+export const subscribeSignInThunk = createAsyncThunk(
+  "entity/user/signInSubscription",
+  async (_, thunkAPI) => {
+    const apolloClient = createApolloClient();
+    apolloClient
+      .subscribe<UserNode>({
+        query: gql``,
+        fetchPolicy: "no-cache",
+      })
+      .subscribe({
+        next(response) {
+          const user = response.data;
+          if (!user) {
+            return;
+          }
+          thunkAPI.dispatch(signInAction(user));
+        },
+        error(err) {
+          throw new Error(`Subscription error: ${err.message}`);
+        },
+      });
+  }
+);
