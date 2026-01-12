@@ -46,6 +46,8 @@ type Mutation {
 }
 
 type Query {
+  """ログインユーザーの情報を取得します"""
+  me: UserNode!
   messages(input: SearchOptionInput!): [MessageNode!]!
   """ユーザーが登録済みかどうかを判定します。"""
   registeredUser(input: RegisteredUserInput!): RegisteredUserModel!

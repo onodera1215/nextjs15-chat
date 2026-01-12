@@ -1,11 +1,13 @@
-// src/auth/current-payload.decorator.ts
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
-import { GqlContext, JwtPayload } from 'src/types';
+import { AuthenticatedRequest } from 'src/types';
 
 export const CurrentPayload = createParamDecorator(
-  (_data: unknown, context: ExecutionContext): JwtPayload | undefined => {
+  (data: unknown, context: ExecutionContext) => {
     const ctx = GqlExecutionContext.create(context);
-    return ctx.getContext<GqlContext>()?.request?.payload;
+    const authenticatedRequest = ctx?.getContext<{
+      req: AuthenticatedRequest;
+    }>();
+    return authenticatedRequest?.req?.payload;
   },
 );

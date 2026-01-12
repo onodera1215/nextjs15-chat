@@ -11,9 +11,9 @@ export class GetMeUsecase {
   ) {}
 
   async execute(payload: JwtPayload): Promise<UserNode | null> {
-    if (!payload.id) {
+    if (!payload.email) {
       throw new BadRequestException();
     }
-    return await this.userRepository.findById(payload.id);
+    return await this.userRepository.findByEmail(payload.email);
   }
 }

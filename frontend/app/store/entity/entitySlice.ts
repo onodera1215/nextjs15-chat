@@ -48,31 +48,39 @@ export const entitySlice = createSlice({
   },
 });
 
-// ログイン監視
-const signInAction = (payload: UserNode) => ({
-  type: "entity/user/signIn",
-  payload,
-});
-export const subscribeSignInThunk = createAsyncThunk(
-  "entity/user/signInSubscription",
+const { setMe: setMeAction } = entitySlice.actions;
+
+export const queryMeThunk = createAsyncThunk(
+  "entity/user/queryMe",
   async (_, thunkAPI) => {
     const apolloClient = createApolloClient();
     apolloClient
-      .subscribe<UserNode>({
-        query: gql``,
+      .query<UserNode>({
+        query: gql`
+          query GetMe {
+            me {
+              id
+              name
+              email
+              oauthProvider
+              oauthProviderAccountId
+              status
+              createdAt
+              updatedAt
+            }
+          }
+        `,
         fetchPolicy: "no-cache",
       })
-      .subscribe({
-        next(response) {
-          const user = response.data;
-          if (!user) {
-            return;
-          }
-          thunkAPI.dispatch(signInAction(user));
-        },
-        error(err) {
-          throw new Error(`Subscription error: ${err.message}`);
-        },
+      .then((response) => {
+        const user = response.data;
+        if (!user) {
+          return;
+        }
+        thunkAPI.dispatch(setMeAction(user));
+      })
+      .catch((err) => {
+        throw new Error(`Query error: ${err.message}`);
       });
   }
 );
