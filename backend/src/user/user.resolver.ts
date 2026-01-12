@@ -8,6 +8,9 @@ import { RegisteredUserUsecase } from './usecase/registered-user.usecase';
 import { RegisteredUserModel } from './gql-models/is-registered-user.model';
 import { GetUserUsecase } from './usecase/get-user.usecase';
 import { GetUserByEmailUsecase } from './usecase/get-user-by-email.usecase';
+import { CurrentPayload } from 'src/auth/current-payload.decorator';
+import { JwtPayload } from 'src/types';
+import { GetMeUsecase } from './usecase/get-me.usecase';
 
 @Resolver()
 export class UserResolver {
@@ -16,6 +19,7 @@ export class UserResolver {
     private readonly registeredUserUsecase: RegisteredUserUsecase,
     private readonly getUserUsecase: GetUserUsecase,
     private readonly getUserByEmailUsecase: GetUserByEmailUsecase,
+    private readonly getMeUsecase: GetMeUsecase,
   ) {}
 
   @Public()
@@ -49,5 +53,12 @@ export class UserResolver {
   })
   async userByEmail(@Args('email') email: string): Promise<UserNode | null> {
     return await this.getUserByEmailUsecase.execute(email);
+  }
+
+  @Query(() => UserNode, {
+    description: 'ログインユーザーの情報を取得します',
+  })
+  async me(@CurrentPayload() payload: JwtPayload): Promise<UserNode | null> {
+    return await this.getMeUsecase.execute(payload);
   }
 }

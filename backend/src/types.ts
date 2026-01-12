@@ -2,6 +2,7 @@
 import type { Request } from 'express';
 
 export type JwtPayload = {
+  id?: string;
   sub?: string;
   email?: string;
   name?: string;

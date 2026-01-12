@@ -66,6 +66,9 @@ type Query {
 
   """指定したemailを持つユーザーを取得します。"""
   userByEmail(email: String!): UserNode!
+
+  """ログインユーザーの情報を取得します"""
+  me: UserNode!
   rooms(input: SearchRoomOptionInput): [RoomNode!]!
 }
 
