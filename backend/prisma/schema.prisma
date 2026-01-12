@@ -29,7 +29,7 @@ enum RoomStatus {
 
 model User {
   id                     String     @id @default(cuid())
-  oauthProvider          String     @unique @map("oauth_provider")
+  oauthProvider          String     @map("oauth_provider")
   oauthProviderAccountId String     @unique @map("oauth_provider_account_id")
   email                  String     @unique
   name                   String
