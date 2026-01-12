@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IMessageRepository } from '../message.repository.interface';
-import { SearchOptionInput } from '../models/search-option.input';
+import { SearchMessagesInput } from '../models/search-messages.input';
 
 @Injectable()
 export class GetsMessageUsecase {
@@ -9,7 +9,7 @@ export class GetsMessageUsecase {
     private readonly messageRepository: IMessageRepository,
   ) {}
 
-  async execute(searchOptionInput: SearchOptionInput) {
+  async execute(searchOptionInput: SearchMessagesInput) {
     return this.messageRepository.getMessages(searchOptionInput);
   }
 }

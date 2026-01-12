@@ -8,6 +8,7 @@ export class UserDomain {
   oauthProvider: string;
   oauthProviderAccountId: string;
   email: string;
+  icon: string;
   name: string;
   status: UserStatusEnum;
   createdAt: Date;
@@ -18,6 +19,7 @@ export class UserDomain {
     oauthProvider,
     oauthProviderAccountId,
     email,
+    icon,
     name,
     status,
     createdAt,
@@ -27,6 +29,7 @@ export class UserDomain {
     oauthProvider: string;
     oauthProviderAccountId: string;
     email: string;
+    icon: string;
     name: string;
     status: UserStatusEnum;
     createdAt: Date;
@@ -36,6 +39,7 @@ export class UserDomain {
     this.oauthProvider = oauthProvider;
     this.oauthProviderAccountId = oauthProviderAccountId;
     this.email = email;
+    this.icon = icon;
     this.name = name;
     this.status = status;
     this.createdAt = createdAt;

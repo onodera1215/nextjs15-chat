@@ -37,6 +37,7 @@ type UserNode {
   id: ID!
   name: String!
   email: String!
+  icon: String!
   oauthProvider: String!
   oauthProviderAccountId: String!
   status: UserStatus!
@@ -56,7 +57,7 @@ type RegisteredUserModel {
 }
 
 type Query {
-  messages(input: SearchOptionInput!): [MessageNode!]!
+  messages(input: SearchMessagesInput!): [MessageNode!]!
 
   """ユーザーが登録済みかどうかを判定します。"""
   registeredUser(input: RegisteredUserInput!): RegisteredUserModel!
@@ -81,8 +82,8 @@ type Query {
 }
 
 """クエリ検索用オプション"""
-input SearchOptionInput {
-  roomId: String!
+input SearchMessagesInput {
+  roomId: String
   limit: Float
   offset: Float
 }
@@ -127,6 +128,7 @@ input CreateMessageInput {
 input CreateUserInput {
   name: String!
   email: String!
+  icon: String!
   oauthProvider: String!
   oauthProviderAccountId: String!
 }

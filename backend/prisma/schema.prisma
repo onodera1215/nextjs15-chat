@@ -33,6 +33,7 @@ model User {
   oauthProviderAccountId String     @unique @map("oauth_provider_account_id")
   email                  String     @unique
   name                   String
+  icon                   String     @map("icon")
   status                 UserStatus
   createdAt              DateTime   @default(now())
   updatedAt              DateTime   @updatedAt

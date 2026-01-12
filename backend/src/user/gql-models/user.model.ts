@@ -13,6 +13,9 @@ export class UserNode {
   email: string;
 
   @Field(() => String)
+  icon: string;
+
+  @Field(() => String)
   oauthProvider;
 
   @Field(() => String)

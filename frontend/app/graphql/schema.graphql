@@ -18,6 +18,7 @@ input CreateRoomInput {
 
 input CreateUserInput {
   email: String!
+  icon: String!
   name: String!
   oauthProvider: String!
   oauthProviderAccountId: String!
@@ -50,7 +51,7 @@ type Mutation {
 type Query {
   """ログインユーザーの情報を取得します"""
   me: UserNode!
-  messages(input: SearchOptionInput!): [MessageNode!]!
+  messages(input: SearchMessagesInput!): [MessageNode!]!
   """ユーザーが登録済みかどうかを判定します。"""
   registeredUser(input: RegisteredUserInput!): RegisteredUserModel!
   """ルーム取得"""
@@ -91,10 +92,10 @@ enum RoomStatusEnum {
 }
 
 """クエリ検索用オプション"""
-input SearchOptionInput {
+input SearchMessagesInput {
   limit: Float
   offset: Float
-  roomId: String!
+  roomId: String
 }
 
 input SearchRoomOptionInput {
@@ -120,6 +121,7 @@ type Subscription {
 type UserNode {
   createdAt: DateTime!
   email: String!
+  icon: String!
   id: ID!
   name: String!
   oauthProvider: String!

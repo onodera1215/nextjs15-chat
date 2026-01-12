@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, UnauthorizedException } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
@@ -14,6 +14,12 @@ import { RoomModule } from './room/room.module';
 import { PubsubModule } from './pubsub/pubsub.module';
 import { LoggerModule } from './logger/logger.module';
 import { AuthModule } from './auth/auth.module';
+import { Context } from 'graphql-ws';
+import { IncomingMessage } from 'http';
+import { JwtService } from '@nestjs/jwt';
+import { JwtPayload } from './types';
+import { ExtractJwt } from 'passport-jwt';
+import { authenticate } from 'passport';
 
 @Module({
   imports: [

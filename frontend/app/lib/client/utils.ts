@@ -19,11 +19,11 @@ function createWsLinkSingleton(token: string) {
       createClient({
         url: process.env.NEXT_PUBLIC_GRAPHQL_WS_URL!,
         connectionParams: async () => {
-          return { Authorization: `Bearer ${token}` };
+          return { authorization: `Bearer ${token}` };
         },
         retryAttempts: 10,
         lazy: true,
-      }),
+      })
     );
     return link;
   }
@@ -37,7 +37,7 @@ function createHttpLinkSingleton(token: string) {
       uri: process.env.NEXT_PUBLIC_GRAPHQL_URL!,
       credentials: "include",
       headers: {
-        Authorization: `Bearer ${token}`,
+        authorization: `Bearer ${token}`,
       },
     });
     return httpLink;
@@ -62,7 +62,7 @@ export function createApolloClient() {
       );
     },
     wsLink,
-    httpLink,
+    httpLink
   );
 
   if (!apolloClient) {

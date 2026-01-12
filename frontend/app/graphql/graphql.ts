@@ -32,6 +32,7 @@ export type CreateRoomInput = {
 
 export type CreateUserInput = {
   email: Scalars['String']['input'];
+  icon: Scalars['String']['input'];
   name: Scalars['String']['input'];
   oauthProvider: Scalars['String']['input'];
   oauthProviderAccountId: Scalars['String']['input'];
@@ -94,7 +95,7 @@ export type Query = {
 
 
 export type QueryMessagesArgs = {
-  input: SearchOptionInput;
+  input: SearchMessagesInput;
 };
 
 
@@ -155,10 +156,10 @@ export enum RoomStatusEnum {
 }
 
 /** クエリ検索用オプション */
-export type SearchOptionInput = {
+export type SearchMessagesInput = {
   limit?: InputMaybe<Scalars['Float']['input']>;
   offset?: InputMaybe<Scalars['Float']['input']>;
-  roomId: Scalars['String']['input'];
+  roomId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type SearchRoomOptionInput = {
@@ -186,6 +187,7 @@ export type UserNode = {
   __typename?: 'UserNode';
   createdAt: Scalars['DateTime']['output'];
   email: Scalars['String']['output'];
+  icon: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   oauthProvider: Scalars['String']['output'];
@@ -199,13 +201,6 @@ export enum UserStatus {
   Active = 'ACTIVE',
   Inactive = 'INACTIVE'
 }
-
-export type GetRoomQueryVariables = Exact<{
-  id: Scalars['String']['input'];
-}>;
-
-
-export type GetRoomQuery = { __typename?: 'Query', room: { __typename?: 'RoomNode', id: string, name: string } };
 
 export type CreateMessageMutationVariables = Exact<{
   input: CreateMessageInput;
@@ -243,6 +238,18 @@ export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetUsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'UserNode', id: string, name: string, email: string, oauthProvider: string, oauthProviderAccountId: string, status: UserStatus, createdAt: any, updatedAt: any }> };
 
+export type GetMessagesQueryVariables = Exact<{
+  input: SearchMessagesInput;
+}>;
+
+
+export type GetMessagesQuery = { __typename?: 'Query', messages: Array<{ __typename?: 'MessageNode', id: string, body: string, roomId: string, senderId: string, createdAt: any, updatedAt: any, sender: { __typename?: 'UserNode', id: string, name: string, icon: string } }> };
+
+export type OnMessageCreatedSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type OnMessageCreatedSubscription = { __typename?: 'Subscription', messageCreated: { __typename?: 'MessageNode', id: string, body: string, roomId: string, senderId: string, createdAt: any, updatedAt: any, sender: { __typename?: 'UserNode', id: string, name: string, icon: string } } };
+
 export class TypedDocumentString<TResult, TVariables>
   extends String
   implements DocumentTypeDecoration<TResult, TVariables>
@@ -262,14 +269,6 @@ export class TypedDocumentString<TResult, TVariables>
   }
 }
 
-export const GetRoomDocument = new TypedDocumentString(`
-    query GetRoom($id: String!) {
-  room(id: $id) {
-    id
-    name
-  }
-}
-    `) as unknown as TypedDocumentString<GetRoomQuery, GetRoomQueryVariables>;
 export const CreateMessageDocument = new TypedDocumentString(`
     mutation CreateMessage($input: CreateMessageInput!) {
   createMessage(input: $input) {
@@ -343,3 +342,37 @@ export const GetUsersDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<GetUsersQuery, GetUsersQueryVariables>;
+export const GetMessagesDocument = new TypedDocumentString(`
+    query GetMessages($input: SearchMessagesInput!) {
+  messages(input: $input) {
+    id
+    body
+    roomId
+    senderId
+    sender {
+      id
+      name
+      icon
+    }
+    createdAt
+    updatedAt
+  }
+}
+    `) as unknown as TypedDocumentString<GetMessagesQuery, GetMessagesQueryVariables>;
+export const OnMessageCreatedDocument = new TypedDocumentString(`
+    subscription OnMessageCreated {
+  messageCreated {
+    id
+    body
+    roomId
+    senderId
+    sender {
+      id
+      name
+      icon
+    }
+    createdAt
+    updatedAt
+  }
+}
+    `) as unknown as TypedDocumentString<OnMessageCreatedSubscription, OnMessageCreatedSubscriptionVariables>;

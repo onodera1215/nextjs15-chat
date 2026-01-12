@@ -19,6 +19,7 @@ async function seeder() {
       email: 'example@domain.com',
       oauthProvider: 'default-oauth-provider-id',
       oauthProviderAccountId: 'default-oauth-provider-account-id',
+      icon: 'https://example.com/default-icon.png',
       status: UserStatusEnum.ACTIVE,
     },
   });

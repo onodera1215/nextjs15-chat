@@ -15,28 +15,26 @@ import * as types from './graphql';
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 type Documents = {
-    "\n  query GetRoom($id: String!) {\n    room(id: $id) {\n      id\n      name\n    }\n  }\n": typeof types.GetRoomDocument,
     "\nmutation CreateMessage($input: CreateMessageInput!) {\n  createMessage(input: $input) {\n    id\n    body\n    roomId\n    senderId\n    createdAt\n    updatedAt\n  }\n}\n": typeof types.CreateMessageDocument,
     "\n  mutation CreateUser($input: CreateUserInput!) {\n    createUser(input: $input) {\n      id\n      name\n      email\n      oauthProvider\n      status\n      createdAt\n      updatedAt\n    }\n  }\n": typeof types.CreateUserDocument,
     "\n  query RegisteredUser($input: RegisteredUserInput!) {\n    registeredUser(input: $input) {\n      isRegistered\n      isRegisteredInAnotherProvider\n    }\n  }\n": typeof types.RegisteredUserDocument,
     "\n          query GetMe {\n            me {\n              id\n              name\n              email\n              oauthProvider\n              oauthProviderAccountId\n              status\n              createdAt\n              updatedAt\n            }\n          }\n        ": typeof types.GetMeDocument,
     "\n          query GetRooms {\n            rooms {\n              id\n              name\n              description\n              status\n              createdAt\n              updatedAt\n            }\n          }\n        ": typeof types.GetRoomsDocument,
     "\n          query GetUsers {\n            users {\n              id\n              name\n              email\n              oauthProvider\n              oauthProviderAccountId\n              status\n              createdAt\n              updatedAt\n            }\n          }\n        ": typeof types.GetUsersDocument,
+    "\n          query GetMessages($input: SearchMessagesInput!) {\n            messages(input: $input) {\n              id\n              body\n              roomId\n              senderId\n              sender {\n                id\n                name\n                icon\n              }\n              createdAt\n              updatedAt\n            }\n          }\n        ": typeof types.GetMessagesDocument,
+    "\n          subscription OnMessageCreated {\n            messageCreated {\n              id\n              body\n              roomId\n              senderId\n              sender {\n                id\n                name\n                icon\n              }\n              createdAt\n              updatedAt\n            }\n          }\n        ": typeof types.OnMessageCreatedDocument,
 };
 const documents: Documents = {
-    "\n  query GetRoom($id: String!) {\n    room(id: $id) {\n      id\n      name\n    }\n  }\n": types.GetRoomDocument,
     "\nmutation CreateMessage($input: CreateMessageInput!) {\n  createMessage(input: $input) {\n    id\n    body\n    roomId\n    senderId\n    createdAt\n    updatedAt\n  }\n}\n": types.CreateMessageDocument,
     "\n  mutation CreateUser($input: CreateUserInput!) {\n    createUser(input: $input) {\n      id\n      name\n      email\n      oauthProvider\n      status\n      createdAt\n      updatedAt\n    }\n  }\n": types.CreateUserDocument,
     "\n  query RegisteredUser($input: RegisteredUserInput!) {\n    registeredUser(input: $input) {\n      isRegistered\n      isRegisteredInAnotherProvider\n    }\n  }\n": types.RegisteredUserDocument,
     "\n          query GetMe {\n            me {\n              id\n              name\n              email\n              oauthProvider\n              oauthProviderAccountId\n              status\n              createdAt\n              updatedAt\n            }\n          }\n        ": types.GetMeDocument,
     "\n          query GetRooms {\n            rooms {\n              id\n              name\n              description\n              status\n              createdAt\n              updatedAt\n            }\n          }\n        ": types.GetRoomsDocument,
     "\n          query GetUsers {\n            users {\n              id\n              name\n              email\n              oauthProvider\n              oauthProviderAccountId\n              status\n              createdAt\n              updatedAt\n            }\n          }\n        ": types.GetUsersDocument,
+    "\n          query GetMessages($input: SearchMessagesInput!) {\n            messages(input: $input) {\n              id\n              body\n              roomId\n              senderId\n              sender {\n                id\n                name\n                icon\n              }\n              createdAt\n              updatedAt\n            }\n          }\n        ": types.GetMessagesDocument,
+    "\n          subscription OnMessageCreated {\n            messageCreated {\n              id\n              body\n              roomId\n              senderId\n              sender {\n                id\n                name\n                icon\n              }\n              createdAt\n              updatedAt\n            }\n          }\n        ": types.OnMessageCreatedDocument,
 };
 
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n  query GetRoom($id: String!) {\n    room(id: $id) {\n      id\n      name\n    }\n  }\n"): typeof import('./graphql').GetRoomDocument;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -61,6 +59,14 @@ export function graphql(source: "\n          query GetRooms {\n            rooms
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n          query GetUsers {\n            users {\n              id\n              name\n              email\n              oauthProvider\n              oauthProviderAccountId\n              status\n              createdAt\n              updatedAt\n            }\n          }\n        "): typeof import('./graphql').GetUsersDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n          query GetMessages($input: SearchMessagesInput!) {\n            messages(input: $input) {\n              id\n              body\n              roomId\n              senderId\n              sender {\n                id\n                name\n                icon\n              }\n              createdAt\n              updatedAt\n            }\n          }\n        "): typeof import('./graphql').GetMessagesDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n          subscription OnMessageCreated {\n            messageCreated {\n              id\n              body\n              roomId\n              senderId\n              sender {\n                id\n                name\n                icon\n              }\n              createdAt\n              updatedAt\n            }\n          }\n        "): typeof import('./graphql').OnMessageCreatedDocument;
 
 
 export function graphql(source: string) {

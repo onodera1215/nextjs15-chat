@@ -95,8 +95,9 @@ export const authOptions: NextAuthConfig = {
         !registeredUser.isRegisteredInAnotherProvider
       ) {
         const { userNode, errors } = await executeMutationCreateUser({
-          email: user.email,
           name: user.name,
+          email: user.email,
+          icon: user.image || "NO_ICON_IMAGE",
           oauthProvider: account.provider,
           oauthProviderAccountId: account.providerAccountId,
         });

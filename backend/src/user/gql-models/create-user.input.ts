@@ -9,6 +9,9 @@ export class CreateUserInput {
   email: string;
 
   @Field(() => String)
+  icon: string;
+
+  @Field(() => String)
   oauthProvider: string;
 
   @Field(() => String)
