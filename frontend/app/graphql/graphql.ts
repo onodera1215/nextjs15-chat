@@ -54,6 +54,7 @@ export type Mutation = {
   createMessage: MessageNode;
   /** ルーム新規作成 */
   createRoom: RoomNode;
+  /** ユーザー新規作成 */
   createUser: UserNode;
 };
 
@@ -87,6 +88,8 @@ export type Query = {
   user: UserNode;
   /** 指定したemailを持つユーザーを取得します。 */
   userByEmail: UserNode;
+  /** ユーザー一覧情報を取得します。 */
+  users: Array<UserNode>;
 };
 
 
@@ -117,6 +120,11 @@ export type QueryUserArgs = {
 
 export type QueryUserByEmailArgs = {
   email: Scalars['String']['input'];
+};
+
+
+export type QueryUsersArgs = {
+  input?: InputMaybe<SearchUsersInput>;
 };
 
 export type RegisteredUserInput = {
@@ -160,6 +168,14 @@ export type SearchRoomOptionInput = {
   updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
+/** ユーザー検索オプション */
+export type SearchUsersInput = {
+  /** メールアドレスで部分一致検索 */
+  email?: InputMaybe<Scalars['String']['input']>;
+  /** 名前で部分一致検索 */
+  name?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type Subscription = {
   __typename?: 'Subscription';
   messageCreated: MessageNode;
@@ -191,6 +207,13 @@ export type GetRoomQueryVariables = Exact<{
 
 export type GetRoomQuery = { __typename?: 'Query', room: { __typename?: 'RoomNode', id: string, name: string } };
 
+export type CreateMessageMutationVariables = Exact<{
+  input: CreateMessageInput;
+}>;
+
+
+export type CreateMessageMutation = { __typename?: 'Mutation', createMessage: { __typename?: 'MessageNode', id: string, body: string, roomId: string, senderId: string, createdAt: any, updatedAt: any } };
+
 export type CreateUserMutationVariables = Exact<{
   input: CreateUserInput;
 }>;
@@ -214,6 +237,11 @@ export type GetRoomsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetRoomsQuery = { __typename?: 'Query', rooms: Array<{ __typename?: 'RoomNode', id: string, name: string, description: string, status: RoomStatusEnum, createdAt: any, updatedAt: any }> };
+
+export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetUsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'UserNode', id: string, name: string, email: string, oauthProvider: string, oauthProviderAccountId: string, status: UserStatus, createdAt: any, updatedAt: any }> };
 
 export class TypedDocumentString<TResult, TVariables>
   extends String
@@ -242,6 +270,18 @@ export const GetRoomDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<GetRoomQuery, GetRoomQueryVariables>;
+export const CreateMessageDocument = new TypedDocumentString(`
+    mutation CreateMessage($input: CreateMessageInput!) {
+  createMessage(input: $input) {
+    id
+    body
+    roomId
+    senderId
+    createdAt
+    updatedAt
+  }
+}
+    `) as unknown as TypedDocumentString<CreateMessageMutation, CreateMessageMutationVariables>;
 export const CreateUserDocument = new TypedDocumentString(`
     mutation CreateUser($input: CreateUserInput!) {
   createUser(input: $input) {
@@ -289,3 +329,17 @@ export const GetRoomsDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<GetRoomsQuery, GetRoomsQueryVariables>;
+export const GetUsersDocument = new TypedDocumentString(`
+    query GetUsers {
+  users {
+    id
+    name
+    email
+    oauthProvider
+    oauthProviderAccountId
+    status
+    createdAt
+    updatedAt
+  }
+}
+    `) as unknown as TypedDocumentString<GetUsersQuery, GetUsersQueryVariables>;

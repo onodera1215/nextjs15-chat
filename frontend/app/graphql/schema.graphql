@@ -43,6 +43,7 @@ type Mutation {
   createMessage(input: CreateMessageInput!): MessageNode!
   """ルーム新規作成"""
   createRoom(input: CreateRoomInput!): RoomNode!
+  """ユーザー新規作成"""
   createUser(input: CreateUserInput!): UserNode!
 }
 
@@ -60,6 +61,8 @@ type Query {
   user(userId: String!): UserNode!
   """指定したemailを持つユーザーを取得します。"""
   userByEmail(email: String!): UserNode!
+  """ユーザー一覧情報を取得します。"""
+  users(input: SearchUsersInput): [UserNode!]!
 }
 
 input RegisteredUserInput {
@@ -99,6 +102,14 @@ input SearchRoomOptionInput {
   name: String
   roomId: String
   updatedAt: DateTime
+}
+
+"""ユーザー検索オプション"""
+input SearchUsersInput {
+  """メールアドレスで部分一致検索"""
+  email: String
+  """名前で部分一致検索"""
+  name: String
 }
 
 type Subscription {

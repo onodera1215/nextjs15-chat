@@ -103,6 +103,13 @@ export const queryMeThunk = createAsyncThunk(
       });
   }
 );
+export const useMeSelector = (): UserNode => {
+  const me = useAppSelector((state) => state.entityReducer.me);
+  if (!me) {
+    throw new Error("ログインユーザー情報が存在しません。");
+  }
+  return { ...me };
+};
 
 /**
  * ルーム情報取得処理

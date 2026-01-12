@@ -2,8 +2,10 @@
 
 import AuthenticatedPageTitle from "@/components/atoms/AuthenticatedPageTitle";
 import { Loading } from "@/components/atoms/Loading";
-import { GetRoomQuery } from "@/graphql/graphql";
+import { CreateMessageMutation, GetRoomQuery } from "@/graphql/graphql";
+import { useMeSelector } from "@/store/entity/entitySlice";
 import { useMutation, useQuery } from "@apollo/client/react";
+import { create } from "domain";
 import gql from "graphql-tag";
 import { PlayIcon } from "lucide-react";
 import Image from "next/image";
@@ -21,19 +23,35 @@ const RoomQueryDocument = gql`
     }
   }
 `;
+
+const CreateMessageMutationDocument = gql`
+mutation CreateMessage($input: CreateMessageInput!) {
+  createMessage(input: $input) {
+    id
+    body
+    roomId
+    senderId
+    createdAt
+    updatedAt
+  }
+}
+`;
 export default function Content({ roomId }: Props) {
 
   const [message, setMessage] = useState<string>("");
-  const { data, loading } = useQuery<GetRoomQuery>(RoomQueryDocument, { variables: { id: roomId } });
+  const { data: roomData, loading } = useQuery<GetRoomQuery>(RoomQueryDocument, { variables: { id: roomId } });
+  const { me } = useMeSelector();
+  const [createMessage,] = useMutation<CreateMessageMutation>(CreateMessageMutationDocument);
+
 
   if (loading) {
     return <Loading />;
   }
 
-  if (!data?.room.id || !data?.room.name) {
+  if (!roomData?.room.id || !roomData?.room.name) {
     throw new Error("ルームが見つかりません");
   }
-  const { room } = data;
+  const { room } = roomData;
 
   /**
    * メッセージ入力欄変更時処理 
@@ -44,8 +62,14 @@ export default function Content({ roomId }: Props) {
     setMessage(e.currentTarget.value)
   }
 
-  const handleSendMessageButtonClick = (e: FormEvent<HTMLFormElement>) => {
+  /**
+   * メッセージ送信ボタンクリック時処理 
+   * @param {FormEvent<HTMLButtonElement>} e 
+   */
+  const handleSendMessageButtonClick = (e: FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    console.log("me:", me);
+    createMessage({ variables: { input: { body: message, roomId: room.id, senderId: me?.id } } }).catch(console.error);
   }
 
   return (
@@ -78,7 +102,7 @@ export default function Content({ roomId }: Props) {
       <section className="h-full w-full">
         <div className="p-2">
           <div className="grid grid-rows[1fr_4vh] h-full">
-            <textarea onChange={handleSendMessageChange} className="border p-2 rounded-[0.5vw] w-full" />
+            <textarea onChange={handleSendMessageChange} value={message} className="border p-2 rounded-[0.5vw] w-full" />
           </div>
           <div className="grid grid-cols-12 mt-2">
             <div className="col-span-11"></div>
@@ -87,7 +111,7 @@ export default function Content({ roomId }: Props) {
                 <div>
                   <PlayIcon />
                 </div>
-                <button className="text-primary pl-1 pr-2 py-2 font-bold">
+                <button type="button" className="text-primary pl-1 pr-2 py-2 font-bold" onClick={handleSendMessageButtonClick}>
                   送信
                 </button>
               </div>
