@@ -1,15 +1,39 @@
 "use client";
 
 import AuthenticatedPageTitle from "@/components/atoms/AuthenticatedPageTitle";
+import { Loading } from "@/components/atoms/Loading";
+import { GetRoomQuery } from "@/graphql/graphql";
+import { useQuery } from "@apollo/client/react";
+import gql from "graphql-tag";
 import Image from "next/image";
 
 interface Props {
   roomId: string;
 }
+
+const RoomQueryDocument = gql`
+  query GetRoom($id: String!) {
+    room(id: $id) {
+      id
+      name
+    }
+  }
+`;
 export default function Content({ roomId }: Props) {
+  const { data, loading } = useQuery<GetRoomQuery>(RoomQueryDocument, { variables: { id: roomId } });
+
+  if (loading) {
+    return <Loading />;
+  }
+
+  if (!data?.room.id || !data?.room.name) {
+    throw new Error("ルームが見つかりません");
+  }
+  const { room } = data;
+
   return (
     <div className="p-2">
-      <AuthenticatedPageTitle title={roomId} />
+      <AuthenticatedPageTitle title={room.name} />
       <section className="m-4">
         <section className="border border-gray-300 rounded-lg p-4 mb-4">
           <div className="flex justify-start items-center">

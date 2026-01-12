@@ -1,4 +1,5 @@
 import { CreateUserInput } from './gql-models/create-user.input';
+import { SearchUsersInput } from './gql-models/search-users.input';
 import { UserDomain } from './user.domain';
 
 export interface IUserRepository {
@@ -8,4 +9,5 @@ export interface IUserRepository {
   ): Promise<UserDomain | null>;
   findById(userId: string): Promise<UserDomain | null>;
   findByEmail(email: string): Promise<UserDomain | null>;
+  searchUsers(params?: SearchUsersInput): Promise<UserDomain[]>;
 }

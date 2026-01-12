@@ -41,28 +41,24 @@ type MessageNode {
 
 type Mutation {
   createMessage(input: CreateMessageInput!): MessageNode!
+  """ルーム新規作成"""
   createRoom(input: CreateRoomInput!): RoomNode!
   createUser(input: CreateUserInput!): UserNode!
 }
 
 type Query {
-  """
-  ログインユーザーの情報を取得します
-  """
+  """ログインユーザーの情報を取得します"""
   me: UserNode!
   messages(input: SearchOptionInput!): [MessageNode!]!
-  """
-  ユーザーが登録済みかどうかを判定します。
-  """
+  """ユーザーが登録済みかどうかを判定します。"""
   registeredUser(input: RegisteredUserInput!): RegisteredUserModel!
+  """ルーム取得"""
+  room(id: String!): RoomNode!
+  """ルーム一覧取得"""
   rooms(input: SearchRoomOptionInput): [RoomNode!]!
-  """
-  指定したIDのユーザーを取得します。
-  """
+  """指定したIDのユーザーを取得します。"""
   user(userId: String!): UserNode!
-  """
-  指定したemailを持つユーザーを取得します。
-  """
+  """指定したemailを持つユーザーを取得します。"""
   userByEmail(email: String!): UserNode!
 }
 
@@ -85,17 +81,13 @@ type RoomNode {
   updatedAt: DateTime!
 }
 
-"""
-ルームステータス
-"""
+"""ルームステータス"""
 enum RoomStatusEnum {
   ACTIVE
   INACTIVE
 }
 
-"""
-クエリ検索用オプション
-"""
+"""クエリ検索用オプション"""
 input SearchOptionInput {
   limit: Float
   offset: Float
@@ -125,9 +117,7 @@ type UserNode {
   updatedAt: DateTime!
 }
 
-"""
-ユーザーステータス
-"""
+"""ユーザーステータス"""
 enum UserStatus {
   ACTIVE
   INACTIVE

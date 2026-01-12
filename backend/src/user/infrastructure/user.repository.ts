@@ -5,7 +5,7 @@ import { CreateUserInput } from '../gql-models/create-user.input';
 import { UserStatusEnum } from '../gql-models/user-status.enum';
 import { fromPrismaUserToUserDomain } from './utils';
 import { UserDomain } from '../user.domain';
-
+import { SearchUsersInput } from '../gql-models/search-users.input';
 @Injectable()
 export class UserRepository implements IUserRepository {
   constructor(private readonly prisma: PrismaService) {}
@@ -51,5 +51,14 @@ export class UserRepository implements IUserRepository {
       return null;
     }
     return fromPrismaUserToUserDomain(user);
+  }
+
+  async searchUsers(params?: SearchUsersInput): Promise<UserDomain[]> {
+    const users = await this.prisma.user.findMany({
+      where: {
+        ...params,
+      },
+    });
+    return users.map(fromPrismaUserToUserDomain);
   }
 }

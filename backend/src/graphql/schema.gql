@@ -64,6 +64,9 @@ type Query {
   """指定したIDのユーザーを取得します。"""
   user(userId: String!): UserNode!
 
+  """ユーザー一覧情報を取得します。"""
+  users(input: SearchUsersInput): [UserNode!]!
+
   """指定したemailを持つユーザーを取得します。"""
   userByEmail(email: String!): UserNode!
 
@@ -89,6 +92,15 @@ input RegisteredUserInput {
   oauthProviderAccountId: String!
 }
 
+"""ユーザー検索オプション"""
+input SearchUsersInput {
+  """名前で部分一致検索"""
+  name: String
+
+  """メールアドレスで部分一致検索"""
+  email: String
+}
+
 input SearchRoomOptionInput {
   roomId: String
   name: String
@@ -98,6 +110,8 @@ input SearchRoomOptionInput {
 
 type Mutation {
   createMessage(input: CreateMessageInput!): MessageNode!
+
+  """ユーザー新規作成"""
   createUser(input: CreateUserInput!): UserNode!
 
   """ルーム新規作成"""

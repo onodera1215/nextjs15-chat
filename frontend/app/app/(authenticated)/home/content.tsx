@@ -2,7 +2,7 @@
 
 import AuthenticatedPageTitle from "@/components/atoms/AuthenticatedPageTitle";
 import { AppDispatch } from "@/store";
-import { queryMeThunk, queryRoomsThunk } from "@/store/entity/entitySlice";
+import { queryMeThunk, queryRoomsThunk, queryUsersThunk } from "@/store/entity/entitySlice";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
@@ -14,6 +14,9 @@ export default function Content() {
     dispatch(queryMeThunk());
     // ルーム情報を取得
     dispatch(queryRoomsThunk());
+    // ユーザー一覧情報を取得
+    dispatch(queryUsersThunk());
+    // メッセージ情報を取得
   }, [dispatch]);
 
   return (

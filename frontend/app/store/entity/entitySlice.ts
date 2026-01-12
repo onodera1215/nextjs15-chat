@@ -2,6 +2,7 @@ import { MessageNode, RoomNode, UserNode } from "@/graphql/graphql";
 import { createApolloClient } from "@/lib/client/utils";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import gql from "graphql-tag";
+import { useAppSelector } from "../hooks";
 
 export interface EntityState {
   me: UserNode | null;
@@ -50,6 +51,14 @@ export const entitySlice = createSlice({
         state.rooms.byId[room.id] = room;
         if (!state.rooms.allIds.includes(room.id)) {
           state.rooms.allIds.push(room.id);
+        }
+      });
+    },
+    getUsers(state, action: { payload: UserNode[] }) {
+      action.payload.forEach((user) => {
+        state.users.byId[user.id] = user;
+        if (!state.users.allIds.includes(user.id)) {
+          state.users.allIds.push(user.id);
         }
       });
     },
@@ -131,3 +140,46 @@ export const queryRoomsThunk = createAsyncThunk(
       });
   }
 );
+export const useRoomsSelector = () =>
+  useAppSelector((state) => state.entityReducer.rooms);
+
+/**
+ * ユーザー情報を取得
+ */
+const { getUsers: getUsersAction } = entitySlice.actions;
+export const queryUsersThunk = createAsyncThunk(
+  "entity/user/queryUsers",
+  async (_, thunkAPI) => {
+    const apolloClient = createApolloClient();
+    apolloClient
+      .query<{ users: UserNode[] }>({
+        query: gql`
+          query GetUsers {
+            users {
+              id
+              name
+              email
+              oauthProvider
+              oauthProviderAccountId
+              status
+              createdAt
+              updatedAt
+            }
+          }
+        `,
+        fetchPolicy: "no-cache",
+      })
+      .then((response) => {
+        const users = response?.data?.users;
+        if (!users) {
+          return;
+        }
+        thunkAPI.dispatch(getUsersAction(users));
+      })
+      .catch((err) => {
+        throw new Error(`Query error: ${err.message}`);
+      });
+  }
+);
+export const useUsersSelector = () =>
+  useAppSelector((state) => state.entityReducer.users);

@@ -6,11 +6,11 @@ import SidebarNavigationButton from "../atoms/SidebaNavigationButtons";
 import { UserCircle } from "lucide-react";
 import SidebarHeading from "../atoms/SidebarHeading";
 import SidebarChannels from "../atoms/SidebarChannels";
-import { useAppSelector } from "@/store/hooks";
+import { useRoomsSelector, useUsersSelector } from "@/store/entity/entitySlice";
 
 export default function Sidebar() {
-  const test = useAppSelector((state) => state.entityReducer);
-  console.log("Sidebar test:", test);
+  const rooms = useRoomsSelector();
+  const users = useUsersSelector();
   return (
     <aside className="bg-surface h-full relative">
       <div className="grid grid-cols-10 mb-4 h-full">
@@ -36,23 +36,26 @@ export default function Sidebar() {
             <li>
               <SidebarHeading title="チャンネル" url="#" />
               <SidebarChannels
-                channels={[{ title: "default", url: "/room/default" }]}
+                channels={rooms.allIds.map((id) => ({
+                  title: rooms.byId[id].name,
+                  url: `/room/${id}`,
+                }))}
               />
             </li>
             <li>
-              <SidebarHeading title="ダイレクトメッセージ" url="/" />
+              <SidebarHeading title="ユーザー" url="/" />
               <div className="ml-4">
                 <ul className="mt-2 space-y-1">
-                  <li>
-                    <Link href="#" className="text-primary hover:none">
-                      #ユーザー1
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#" className="text-primary hover:none">
-                      #ユーザー2
-                    </Link>
-                  </li>
+                  {users.allIds.map((id) => (
+                    <li key={id}>
+                      <Link
+                        href="#"
+                        className="text-primary hover:none"
+                      >
+                        {users.byId[id].name}
+                      </Link>
+                    </li>
+                  ))}
                 </ul>
               </div>
             </li>

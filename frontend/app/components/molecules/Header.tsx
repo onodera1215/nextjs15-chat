@@ -1,5 +1,3 @@
-import Logo from "../../public/logo.png";
-import Image from "next/image";
 import Link from "next/link";
 import { auth } from "@/auth";
 import { logout } from "@/lib/server-actions/utils";
@@ -16,7 +14,7 @@ export default async function Header() {
           <div className="flex items-center justify-start h-full">
             <Bars3Icon className="h-6 w-6 text-primary ml-4 lg:hidden hover:cursor-pointer" />
             <div>
-              <h1 className="text-2xl font-bold text-primary ml-4">Whisp</h1>
+              <h1 className="text-2xl font-bold text-primary ml-4">Chat Application</h1>
             </div>
           </div>
         </Link>

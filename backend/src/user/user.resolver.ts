@@ -11,6 +11,8 @@ import { GetUserByEmailUsecase } from './usecase/get-user-by-email.usecase';
 import { CurrentPayload } from 'src/auth/current-payload.decorator';
 import { JwtPayload } from 'src/types';
 import { GetMeUsecase } from './usecase/get-me.usecase';
+import { GetUsersUsecase } from './usecase/get-users.usecase';
+import { SearchUsersInput } from './gql-models/search-users.input';
 
 @Resolver()
 export class UserResolver {
@@ -20,10 +22,11 @@ export class UserResolver {
     private readonly getUserUsecase: GetUserUsecase,
     private readonly getUserByEmailUsecase: GetUserByEmailUsecase,
     private readonly getMeUsecase: GetMeUsecase,
+    private readonly getUsersUsecase: GetUsersUsecase,
   ) {}
 
   @Public()
-  @Mutation(() => UserNode)
+  @Mutation(() => UserNode, { description: 'ユーザー新規作成' })
   async createUser(@Args('input') input: CreateUserInput): Promise<UserNode> {
     return await this.createUserUsecase.execute(input);
   }
@@ -46,6 +49,15 @@ export class UserResolver {
   })
   async user(@Args('userId') userId: string): Promise<UserNode | null> {
     return await this.getUserUsecase.execute(userId);
+  }
+
+  @Query(() => [UserNode], {
+    description: 'ユーザー一覧情報を取得します。',
+  })
+  async users(
+    @Args('input', { nullable: true }) input?: SearchUsersInput,
+  ): Promise<UserNode[]> {
+    return await this.getUsersUsecase.execute(input);
   }
 
   @Query(() => UserNode, {
