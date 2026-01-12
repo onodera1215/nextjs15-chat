@@ -69,7 +69,12 @@ type Query {
 
   """ログインユーザーの情報を取得します"""
   me: UserNode!
+
+  """ルーム一覧取得"""
   rooms(input: SearchRoomOptionInput): [RoomNode!]!
+
+  """ルーム取得"""
+  room(id: String!): RoomNode!
 }
 
 """クエリ検索用オプション"""
@@ -94,6 +99,8 @@ input SearchRoomOptionInput {
 type Mutation {
   createMessage(input: CreateMessageInput!): MessageNode!
   createUser(input: CreateUserInput!): UserNode!
+
+  """ルーム新規作成"""
   createRoom(input: CreateRoomInput!): RoomNode!
 }
 
