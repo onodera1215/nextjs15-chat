@@ -16,8 +16,7 @@ export default function Content() {
     dispatch(queryRoomsThunk());
     // ユーザー一覧情報を取得
     dispatch(queryUsersThunk());
-    // メッセージ情報を取得
-  }, [dispatch]);
+  });
 
   return (
     <>

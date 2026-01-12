@@ -3,9 +3,11 @@
 import AuthenticatedPageTitle from "@/components/atoms/AuthenticatedPageTitle";
 import { Loading } from "@/components/atoms/Loading";
 import { GetRoomQuery } from "@/graphql/graphql";
-import { useQuery } from "@apollo/client/react";
+import { useMutation, useQuery } from "@apollo/client/react";
 import gql from "graphql-tag";
+import { PlayIcon } from "lucide-react";
 import Image from "next/image";
+import { FormEvent, useState } from "react";
 
 interface Props {
   roomId: string;
@@ -20,6 +22,8 @@ const RoomQueryDocument = gql`
   }
 `;
 export default function Content({ roomId }: Props) {
+
+  const [message, setMessage] = useState<string>("");
   const { data, loading } = useQuery<GetRoomQuery>(RoomQueryDocument, { variables: { id: roomId } });
 
   if (loading) {
@@ -31,8 +35,21 @@ export default function Content({ roomId }: Props) {
   }
   const { room } = data;
 
+  /**
+   * メッセージ入力欄変更時処理 
+   * @param {FormEvent<HTMLTextAreaElement>} e 
+   */
+  const handleSendMessageChange = (e: FormEvent<HTMLTextAreaElement>) => {
+    e.preventDefault();
+    setMessage(e.currentTarget.value)
+  }
+
+  const handleSendMessageButtonClick = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  }
+
   return (
-    <div className="p-2">
+    <div className="grid grid-rows-[5rem_1fr_4vh] h-full overflow-scroll">
       <AuthenticatedPageTitle title={room.name} />
       <section className="m-4">
         <section className="border border-gray-300 rounded-lg p-4 mb-4">
@@ -57,6 +74,26 @@ export default function Content({ roomId }: Props) {
             </p>
           </article>
         </section>
+      </section>
+      <section className="h-full w-full">
+        <div className="p-2">
+          <div className="grid grid-rows[1fr_4vh] h-full">
+            <textarea onChange={handleSendMessageChange} className="border p-2 rounded-[0.5vw] w-full" />
+          </div>
+          <div className="grid grid-cols-12 mt-2">
+            <div className="col-span-11"></div>
+            <div className="bg-surface col-span-1 flex justify-end items-center border border-surface rounded-[0.1vw] text-primary hover:cursor-pointer">
+              <div className="flex items-center">
+                <div>
+                  <PlayIcon />
+                </div>
+                <button className="text-primary pl-1 pr-2 py-2 font-bold">
+                  送信
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
     </div>
   );
