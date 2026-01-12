@@ -24,10 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="ja"
-      data-google-analytics-opt-out=""
-    >
+    <html lang="ja" data-google-analytics-opt-out="">
       <ReduxStoreProvider>
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
@@ -35,6 +32,6 @@ export default function RootLayout({
           {children}
         </body>
       </ReduxStoreProvider>
-    </html >
+    </html>
   );
 }

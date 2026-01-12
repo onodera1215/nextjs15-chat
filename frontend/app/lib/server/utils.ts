@@ -34,7 +34,7 @@ export const { getClient, query, PreloadQuery } = registerApolloClient(
       cache: new InMemoryCache(),
       link: authLink.concat(httpLink),
     });
-  }
+  },
 );
 
 /**
@@ -45,7 +45,7 @@ export const { getClient, query, PreloadQuery } = registerApolloClient(
  */
 export async function executeGql<TResult, TVariables = unknown>(
   query: TypedDocumentString<TResult, TVariables>,
-  variables: TVariables
+  variables: TVariables,
 ) {
   const response = await fetch(process.env.NEST_GQL_URL!, {
     method: "POST",
@@ -81,7 +81,7 @@ async function fetchWithoutCache<T>(path: string, init?: RequestInit) {
 
 export async function postWithoutCache<T, S = undefined>(
   path: string,
-  body?: S
+  body?: S,
 ) {
   const { data, errors } = await fetchWithoutCache<{
     data: T;

@@ -4,17 +4,15 @@ import { Metadata, ResolvingMetadata } from "next";
 
 export async function generateMetadata(
   _: GenerateMetadataProps,
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const meta = await parent;
   return {
     title: `${meta.title?.absolute} | プロフィール編集`,
     description: "プロフィール編集",
-  }
+  };
 }
 
 export default function ProfilePage() {
-  return (
-    <AuthenticatedPageTitle title="プロフィール編集" />
-  );
+  return <AuthenticatedPageTitle title="プロフィール編集" />;
 }

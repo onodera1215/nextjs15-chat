@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useSearchParams } from "next/navigation"
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 enum Error {
   // NEXTAUTHのエラーコードに合わせる
@@ -10,30 +10,28 @@ enum Error {
   Verification = "Verification",
   Default = "Default",
   // 独自エラーコード
-  USER_ALREADY_REGISTERED_IN_ANOTHER_PROVIDER = 'USER_ALREADY_REGISTERED_IN_ANOTHER_PROVIDER',
+  USER_ALREADY_REGISTERED_IN_ANOTHER_PROVIDER = "USER_ALREADY_REGISTERED_IN_ANOTHER_PROVIDER",
 }
 
 const errorMap = {
   [Error.Configuration]: (
     <p>認証設定に問題があります。管理者に連絡してください。</p>
   ),
-  [Error.AccessDenied]: (
-    <p>アクセスが拒否されました。</p>
-  ),
-  [Error.Verification]: (
-    <p>確認リンクが無効か期限切れです。</p>
-  ),
+  [Error.AccessDenied]: <p>アクセスが拒否されました。</p>,
+  [Error.Verification]: <p>確認リンクが無効か期限切れです。</p>,
   [Error.USER_ALREADY_REGISTERED_IN_ANOTHER_PROVIDER]: (
     <p>このメールアドレスは別の認証プロバイダーで既に登録されています。</p>
   ),
   [Error.Default]: (
-    <p>認証中に問題が発生しました。問題が解決しない場合は管理者に連絡してください。</p>
+    <p>
+      認証中に問題が発生しました。問題が解決しない場合は管理者に連絡してください。
+    </p>
   ),
-}
+};
 
 export default function AuthErrorPage() {
-  const search = useSearchParams()
-  const error = search.get("error") as Error
+  const search = useSearchParams();
+  const error = search.get("error") as Error;
 
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center">
@@ -45,9 +43,10 @@ export default function AuthErrorPage() {
           問題が発生しました
         </h5>
         <div className="font-normal text-gray-700 dark:text-gray-400">
-          {errorMap[error] || "認証中に問題が発生しました。問題が解決しない場合は管理者に連絡してください。"}
+          {errorMap[error] ||
+            "認証中に問題が発生しました。問題が解決しない場合は管理者に連絡してください。"}
         </div>
       </Link>
     </div>
-  )
+  );
 }

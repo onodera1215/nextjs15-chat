@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import { createApolloClient, setToken } from "@/lib/client/utils";
@@ -14,5 +12,7 @@ export default function BrowserApolloProvider({
 }) {
   // インメモリストアに保存しておく(Redux Toolkit Queryでの利用の為)
   setToken(token);
-  return <ApolloProvider client={createApolloClient()}>{children}</ApolloProvider>;
+  return (
+    <ApolloProvider client={createApolloClient()}>{children}</ApolloProvider>
+  );
 }

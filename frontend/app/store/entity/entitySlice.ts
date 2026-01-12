@@ -42,14 +42,24 @@ export const entitySlice = createSlice({
   name: "entity",
   initialState,
   reducers: {
-    setMe(state, action: { payload: UserNode }) {
+    getMe(state, action: { payload: UserNode }) {
       state.me = action.payload;
+    },
+    getRooms(state, action: { payload: RoomNode[] }) {
+      action.payload.forEach((room) => {
+        state.rooms.byId[room.id] = room;
+        if (!state.rooms.allIds.includes(room.id)) {
+          state.rooms.allIds.push(room.id);
+        }
+      });
     },
   },
 });
 
-const { setMe: setMeAction } = entitySlice.actions;
-
+/**
+ * ログインユーザー情報を取得処理
+ */
+const { getMe: getMeAction } = entitySlice.actions;
 export const queryMeThunk = createAsyncThunk(
   "entity/user/queryMe",
   async (_, thunkAPI) => {
@@ -77,7 +87,44 @@ export const queryMeThunk = createAsyncThunk(
         if (!user) {
           return;
         }
-        thunkAPI.dispatch(setMeAction(user));
+        thunkAPI.dispatch(getMeAction(user));
+      })
+      .catch((err) => {
+        throw new Error(`Query error: ${err.message}`);
+      });
+  }
+);
+
+/**
+ * ルーム情報取得処理
+ */
+const { getRooms: getRoomsAction } = entitySlice.actions;
+export const queryRoomsThunk = createAsyncThunk(
+  "entity/room/queryRooms",
+  async (_, thunkAPI) => {
+    const apolloClient = createApolloClient();
+    apolloClient
+      .query<{ rooms: RoomNode[] }>({
+        query: gql`
+          query GetRooms {
+            rooms {
+              id
+              name
+              description
+              status
+              createdAt
+              updatedAt
+            }
+          }
+        `,
+        fetchPolicy: "no-cache",
+      })
+      .then((response) => {
+        const rooms = response?.data?.rooms;
+        if (!rooms) {
+          return;
+        }
+        thunkAPI.dispatch(getRoomsAction(rooms));
       })
       .catch((err) => {
         throw new Error(`Query error: ${err.message}`);

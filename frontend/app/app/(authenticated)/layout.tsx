@@ -1,4 +1,4 @@
-'use server';
+"use server";
 
 import Header from "@/components/molecules/Header";
 import "../globals.css";
@@ -9,7 +9,6 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { SessionProvider } from "next-auth/react";
 
-
 export default async function AuthPageLayout({
   children,
 }: Readonly<{
@@ -18,7 +17,7 @@ export default async function AuthPageLayout({
   const authentication = await auth();
   const token = authentication?.nestAccessToken;
   if (!token) {
-    redirect('/login');
+    redirect("/login");
   }
   return (
     <SessionProvider>
@@ -30,9 +29,7 @@ export default async function AuthPageLayout({
               <Sidebar />
             </div>
             <div className="lg:col-span-9 block col-span-12">
-              <Content>
-                {children}
-              </Content>
+              <Content>{children}</Content>
             </div>
           </div>
         </main>

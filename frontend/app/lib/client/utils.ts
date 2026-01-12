@@ -23,7 +23,7 @@ function createWsLinkSingleton(token: string) {
         },
         retryAttempts: 10,
         lazy: true,
-      })
+      }),
     );
     return link;
   }
@@ -62,7 +62,7 @@ export function createApolloClient() {
       );
     },
     wsLink,
-    httpLink
+    httpLink,
   );
 
   if (!apolloClient) {

@@ -4,16 +4,14 @@ import Content from "./content";
 
 export async function generateMetadata(
   _: GenerateMetadataProps,
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const meta = await parent;
   return {
     title: `${meta.title?.absolute} | ホーム`,
     description: "ホーム",
-  }
+  };
 }
 export default async function HomePage() {
-  return (
-    <Content />
-  );
+  return <Content />;
 }
