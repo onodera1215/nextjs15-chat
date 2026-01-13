@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { JwtPayload } from 'src/types';
 
 const publicKey = process.env.NEST_JWT_PUBLIC_KEY!;
 
@@ -14,9 +15,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: any) {
-    // ペイロードの検証
-    // ここでユーザーが存在するか確認する処理などを追加可能
-    return payload; // 成功すると、このペイロードがリクエストにアタッチされる
+  validate(payload: JwtPayload) {
+    return payload;
   }
 }
