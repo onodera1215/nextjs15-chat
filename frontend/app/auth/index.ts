@@ -6,7 +6,7 @@ import { SignJWT, importPKCS8 } from "jose";
 import {
   executeMutationCreateUser,
   executeQueryRegisteredUser,
-} from "./features";
+} from "../lib/server/utils";
 
 const PRIVATE_KEY = process.env.NEST_JWT_PRIVATE_KEY!;
 

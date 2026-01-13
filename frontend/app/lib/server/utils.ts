@@ -8,6 +8,12 @@ import {
 import { TypedDocumentString } from "@/graphql/graphql";
 import { HttpLink } from "@apollo/client";
 import { auth } from "@/auth";
+import {
+  CreateUserInput,
+  RegisteredUserInput,
+  RegisteredUserModel,
+  UserNode,
+} from "@/graphql/graphql";
 
 /**
  * backend用のApollo Clientを登録します。
@@ -34,7 +40,7 @@ export const { getClient, query, PreloadQuery } = registerApolloClient(
       cache: new InMemoryCache(),
       link: authLink.concat(httpLink),
     });
-  },
+  }
 );
 
 /**
@@ -45,7 +51,7 @@ export const { getClient, query, PreloadQuery } = registerApolloClient(
  */
 export async function executeGql<TResult, TVariables = unknown>(
   query: TypedDocumentString<TResult, TVariables>,
-  variables: TVariables,
+  variables: TVariables
 ) {
   const response = await fetch(process.env.NEST_GQL_URL!, {
     method: "POST",
@@ -81,7 +87,7 @@ async function fetchWithoutCache<T>(path: string, init?: RequestInit) {
 
 export async function postWithoutCache<T, S = undefined>(
   path: string,
-  body?: S,
+  body?: S
 ) {
   const { data, errors } = await fetchWithoutCache<{
     data: T;
@@ -95,4 +101,29 @@ export async function postWithoutCache<T, S = undefined>(
     data: T;
     errors: unknown[] | undefined;
   };
+}
+
+export async function executeQueryRegisteredUser(input: RegisteredUserInput) {
+  const { data, errors } = await postWithoutCache<
+    {
+      data: RegisteredUserModel;
+    },
+    { input: RegisteredUserInput }
+  >("/api/user/is-registered-user", {
+    input,
+  });
+  return { registeredUser: data.data, errors };
+}
+
+export async function executeMutationCreateUser(input: CreateUserInput) {
+  const { data, errors } = await postWithoutCache<
+    {
+      createUser: UserNode;
+    },
+    { input: CreateUserInput }
+  >("/api/user/create", {
+    input,
+  });
+
+  return { userNode: data.createUser, errors };
 }

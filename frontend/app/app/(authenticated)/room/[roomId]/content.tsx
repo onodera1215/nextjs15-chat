@@ -83,15 +83,17 @@ export default function Content({ roomId }: Props) {
           </div>
           <div className="grid grid-cols-12 mt-2">
             <div className="col-span-11"></div>
-            <div className="bg-surface col-span-1 flex justify-end items-center border border-surface rounded-[0.1vw] text-primary hover:cursor-pointer">
-              <div className="flex items-center">
-                <div>
-                  <PlayIcon />
+            <div className="bg-surface col-span-1 flex justify-center border border-surface rounded-[0.1vw] text-primary">
+              <button type="button" className="text-primary font-bold w-full p-2 hover:cursor-pointer" onClick={handleSendMessageButtonClick}>
+                <div className="flex items-center justify-center">
+                  <div>
+                    <PlayIcon />
+                  </div>
+                  <div>
+                    送信
+                  </div>
                 </div>
-                <button type="button" className="text-primary pl-1 pr-2 py-2 font-bold" onClick={handleSendMessageButtonClick}>
-                  送信
-                </button>
-              </div>
+              </button>
             </div>
           </div>
         </div>
