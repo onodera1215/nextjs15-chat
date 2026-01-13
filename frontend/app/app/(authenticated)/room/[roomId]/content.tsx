@@ -11,6 +11,7 @@ import { PlayIcon } from "lucide-react";
 import { FormEvent, useEffect, useState } from "react";
 import { useMeSelector } from "@/store/slices/entity/me-slice";
 import { queryMessagesThunk, useMessagesSelector } from "@/store/slices/entity/messages-slice";
+import { toLocalDateString } from "@/lib/client/utils";
 
 interface Props {
   roomId: string;
@@ -70,7 +71,7 @@ export default function Content({ roomId }: Props) {
             senderIconUrl={message.sender.icon}
             senderName={message.sender.name}
             content={message.body}
-            sentAt={new Date(message.createdAt).toLocaleString()}
+            sentAt={toLocalDateString(message.createdAt)}
             key={message.id}
           />
         ))}

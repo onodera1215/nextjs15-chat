@@ -11,6 +11,7 @@ import {
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { createClient } from "graphql-ws";
 import { getMainDefinition } from "@apollo/client/utilities";
+import dayjs from "dayjs";
 
 let link: GraphQLWsLink | null = null;
 function createWsLinkSingleton(token: string) {
@@ -100,3 +101,6 @@ export function getTokenStorage() {
   }
   return tokenStorage;
 }
+
+export const toLocalDateString = (date: Date): string =>
+  dayjs(date).format("YYYY年MM月DD日 HH時mm分");
