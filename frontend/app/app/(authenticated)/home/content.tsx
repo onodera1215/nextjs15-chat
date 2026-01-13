@@ -2,7 +2,10 @@
 
 import AuthenticatedPageTitle from "@/components/atoms/AuthenticatedPageTitle";
 import { AppDispatch } from "@/store";
-import { queryMeThunk, queryRoomsThunk, queryUsersThunk, startEntitySubscriptions } from "@/store/entity/entitySlice";
+import { queryMeThunk } from "@/store/slices/entity/me-slice";
+import { queryRoomsThunk } from "@/store/slices/entity/rooms-slice";
+import { queryUsersThunk } from "@/store/slices/entity/users-slice";
+import { startEntitySubscriptions } from "@/store/slices/entity/messages-slice";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 

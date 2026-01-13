@@ -6,7 +6,8 @@ import SidebarNavigationButton from "../atoms/SidebaNavigationButtons";
 import { UserCircle } from "lucide-react";
 import SidebarHeading from "../atoms/SidebarHeading";
 import SidebarChannels from "../atoms/SidebarChannels";
-import { useRoomsSelector, useUsersSelector } from "@/store/entity/entitySlice";
+import { useRoomsSelector, } from "@/store/slices/entity/rooms-slice";
+import { useUsersSelector } from "@/store/slices/entity/users-slice";
 
 export default function Sidebar() {
   const rooms = useRoomsSelector();

@@ -3,12 +3,14 @@
 import AuthenticatedPageTitle from "@/components/atoms/AuthenticatedPageTitle";
 import Message from "@/components/atoms/Message";
 import { CreateMessageMutation } from "@/graphql/graphql";
-import { queryMessagesThunk, queryRoomsThunk, useMeSelector, useMessagesSelector, useRoomSelector } from "@/store/entity/entitySlice";
 import { useAppDispatch } from "@/store/hooks";
 import { useMutation, } from "@apollo/client/react";
+import { queryRoomsThunk, useRoomSelector } from "@/store/slices/entity/rooms-slice";
 import gql from "graphql-tag";
 import { PlayIcon } from "lucide-react";
 import { FormEvent, useEffect, useState } from "react";
+import { useMeSelector } from "@/store/slices/entity/me-slice";
+import { queryMessagesThunk, useMessagesSelector } from "@/store/slices/entity/messages-slice";
 
 interface Props {
   roomId: string;

@@ -1,12 +1,18 @@
 "use client";
 
 import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
-import { entitySlice } from "./entity/entitySlice";
+import { usersSlice } from "./slices/entity/users-slice";
+import { meSlice } from "./slices/entity/me-slice";
+import { roomsSlice } from "./slices/entity/rooms-slice";
+import { messagesSlice } from "./slices/entity/messages-slice";
 import store from "./index";
 
 export default configureStore({
   reducer: {
-    entityReducer: entitySlice.reducer,
+    meReducer: meSlice.reducer,
+    usersReducer: usersSlice.reducer,
+    roomsReducer: roomsSlice.reducer,
+    messagesReducer: messagesSlice.reducer,
   },
 });
 export type RootState = ReturnType<typeof store.getState>;
