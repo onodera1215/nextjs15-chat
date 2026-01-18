@@ -1,0 +1,137 @@
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
+
+input CreateMessageInput {
+  body: String!
+  roomId: String!
+  senderId: String!
+}
+
+input CreateRoomInput {
+  description: String!
+  name: String!
+  status: RoomStatusEnum!
+}
+
+input CreateUserInput {
+  email: String!
+  icon: String!
+  name: String!
+  oauthProvider: String!
+  oauthProviderAccountId: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type MessageNode {
+  body: String!
+  createdAt: DateTime!
+  id: String!
+  room: RoomNode!
+  roomId: String!
+  sender: UserNode!
+  senderId: String!
+  updatedAt: DateTime!
+}
+
+type Mutation {
+  createMessage(input: CreateMessageInput!): MessageNode!
+  """ルーム新規作成"""
+  createRoom(input: CreateRoomInput!): RoomNode!
+  """ユーザー新規作成"""
+  createUser(input: CreateUserInput!): UserNode!
+}
+
+type Query {
+  """ログインユーザーの情報を取得します"""
+  me: UserNode!
+  messages(input: SearchMessagesInput!): [MessageNode!]!
+  """ユーザーが登録済みかどうかを判定します。"""
+  registeredUser(input: RegisteredUserInput!): RegisteredUserModel!
+  """ルーム取得"""
+  room(id: String!): RoomNode!
+  """ルーム一覧取得"""
+  rooms(input: SearchRoomOptionInput): [RoomNode!]!
+  """指定したIDのユーザーを取得します。"""
+  user(userId: String!): UserNode!
+  """指定したemailを持つユーザーを取得します。"""
+  userByEmail(email: String!): UserNode!
+  """ユーザー一覧情報を取得します。"""
+  users(input: SearchUsersInput): [UserNode!]!
+}
+
+input RegisteredUserInput {
+  oauthProvider: String!
+  oauthProviderAccountId: String!
+}
+
+type RegisteredUserModel {
+  isRegistered: Boolean!
+  isRegisteredInAnotherProvider: Boolean!
+}
+
+type RoomNode {
+  createdAt: DateTime!
+  description: String!
+  id: ID!
+  name: String!
+  status: RoomStatusEnum!
+  updatedAt: DateTime!
+}
+
+"""ルームステータス"""
+enum RoomStatusEnum {
+  ACTIVE
+  INACTIVE
+}
+
+"""クエリ検索用オプション"""
+input SearchMessagesInput {
+  limit: Float
+  offset: Float
+  roomId: String
+}
+
+input SearchRoomOptionInput {
+  createdAt: DateTime
+  name: String
+  roomId: String
+  updatedAt: DateTime
+}
+
+"""ユーザー検索オプション"""
+input SearchUsersInput {
+  """メールアドレスで部分一致検索"""
+  email: String
+  """名前で部分一致検索"""
+  name: String
+}
+
+type Subscription {
+  messageCreated: MessageNode!
+  userSignedUp: UserNode!
+}
+
+type UserNode {
+  createdAt: DateTime!
+  email: String!
+  icon: String!
+  id: ID!
+  name: String!
+  oauthProvider: String!
+  oauthProviderAccountId: String!
+  status: UserStatus!
+  updatedAt: DateTime!
+}
+
+"""ユーザーステータス"""
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}

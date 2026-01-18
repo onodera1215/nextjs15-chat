@@ -180,6 +180,12 @@ mutation createMessage(createMessageInput: CreateMessageInput): Message!
 query messages(searchMessageOption: SearchMessageOptionInput!): [Message]!
 ```
 
+#### ログインユーザー情報取得
+
+```graphql
+query me(): UserNode!
+```
+
 ### サブスクリプション
 
 #### メッセージ取得

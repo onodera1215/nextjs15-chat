@@ -3,7 +3,7 @@ import { IMessageRepository } from '../message.repository.interface';
 import { MessageDomain } from '../message.domain';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateMessageInput } from '../models/create-message.input';
-import { SearchOptionInput } from '../models/search-option.input';
+import { SearchMessagesInput } from '../models/search-messages.input';
 
 @Injectable()
 export class MessageRepository implements IMessageRepository {
@@ -17,7 +17,7 @@ export class MessageRepository implements IMessageRepository {
   }
 
   async getMessages(
-    searchOptionInput: SearchOptionInput,
+    searchOptionInput: SearchMessagesInput,
   ): Promise<MessageDomain[]> {
     const messages = await this.prismaService.message.findMany({
       where: {

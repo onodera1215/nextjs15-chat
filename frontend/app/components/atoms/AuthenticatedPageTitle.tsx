@@ -1,5 +1,3 @@
-
-
 export default function AuthenticatedPageTitle({ title }: { title: string }) {
   return (
     <div className="p-4">

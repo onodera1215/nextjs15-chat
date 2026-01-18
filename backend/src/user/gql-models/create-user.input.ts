@@ -7,4 +7,13 @@ export class CreateUserInput {
 
   @Field(() => String)
   email: string;
+
+  @Field(() => String)
+  icon: string;
+
+  @Field(() => String)
+  oauthProvider: string;
+
+  @Field(() => String)
+  oauthProviderAccountId: string;
 }

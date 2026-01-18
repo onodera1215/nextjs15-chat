@@ -7,6 +7,12 @@ interface Props {
 }
 export default function GithubIcon({ className }: Props) {
   return (
-    <Image src={GithubLogo} alt="github icon" className={className} width={10} height={10} />
+    <Image
+      src={GithubLogo}
+      alt="github icon"
+      className={className}
+      width={10}
+      height={10}
+    />
   );
 }

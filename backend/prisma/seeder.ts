@@ -1,6 +1,5 @@
 import { PrismaClient } from '@prisma/client';
 import { RoomStatusEnum } from '../src/room/room.domain';
-import { UserStatusEnum } from '../src/user/user.domain';
 
 const prisma = new PrismaClient();
 async function seeder() {
@@ -12,17 +11,8 @@ async function seeder() {
       status: RoomStatusEnum.ACTIVE,
     },
   });
-  // デフォルトユーザーを作成
-  const user = await prisma.user.create({
-    data: {
-      name: 'デフォルトユーザー',
-      email: 'example@domain.com',
-      status: UserStatusEnum.ACTIVE,
-    },
-  });
 
   console.log(`room id: ${room.id}`);
-  console.log(`user id: ${user.id}`);
 }
 
 seeder()

@@ -10,7 +10,7 @@ export class GetRoomsUsecase {
     private readonly roomRepository: IRoomRepository,
   ) {}
 
-  async execute(searchOption: SearchRoomOptionInput): Promise<RoomNode[]> {
+  async execute(searchOption?: SearchRoomOptionInput): Promise<RoomNode[]> {
     return await this.roomRepository.findAllBySearchRoomOption(searchOption);
   }
 }

@@ -3,11 +3,18 @@ import NextAuth, { NextAuthConfig } from "next-auth";
 import Google from "next-auth/providers/google";
 import GitHub from "next-auth/providers/github";
 import { SignJWT, importPKCS8 } from "jose";
+import {
+  executeMutationCreateUser,
+  executeQueryRegisteredUser,
+} from "../lib/server/utils";
 
 const PRIVATE_KEY = process.env.NEST_JWT_PRIVATE_KEY!;
 
 export const authOptions: NextAuthConfig = {
   session: { strategy: "jwt" },
+  pages: {
+    error: "/error",
+  },
   providers: [
     Google({
       clientId: process.env.AUTH_GOOGLE_ID!,
@@ -29,8 +36,8 @@ export const authOptions: NextAuthConfig = {
       };
       return newSession;
     },
-    async jwt({ token, user, account }) {
-      // 初回ログイン時にユーザー情報をトークンに保存
+    async jwt({ token, user }) {
+      // ログイン時にユーザー情報をトークンに保存
       if (user) {
         token.id = user.id;
         token.email = user.email;
@@ -65,6 +72,44 @@ export const authOptions: NextAuthConfig = {
     },
     async redirect({ baseUrl }) {
       return new URL("/home", baseUrl).toString();
+    },
+    async signIn({ user, account }) {
+      if (!user.email || !account) {
+        return false;
+      }
+      const { registeredUser, errors } = await executeQueryRegisteredUser({
+        oauthProvider: account.provider,
+        oauthProviderAccountId: account.providerAccountId,
+      });
+      if (registeredUser.isRegisteredInAnotherProvider) {
+        throw new Error("USER_ALREADY_REGISTERED_IN_ANOTHER_PROVIDER");
+      }
+      if (errors && errors.length > 0) {
+        return false;
+      }
+      if (!account.provider || !user.email || !user.name) {
+        return false;
+      }
+      if (
+        !registeredUser.isRegistered &&
+        !registeredUser.isRegisteredInAnotherProvider
+      ) {
+        const { userNode, errors } = await executeMutationCreateUser({
+          name: user.name,
+          email: user.email,
+          icon: user.image || "NO_ICON_IMAGE",
+          oauthProvider: account.provider,
+          oauthProviderAccountId: account.providerAccountId,
+        });
+        return !!userNode && !errors;
+      }
+      if (
+        registeredUser.isRegistered &&
+        !registeredUser.isRegisteredInAnotherProvider
+      ) {
+        return true;
+      }
+      return false;
     },
   },
 };

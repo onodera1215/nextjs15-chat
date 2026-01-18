@@ -37,6 +37,9 @@ type UserNode {
   id: ID!
   name: String!
   email: String!
+  icon: String!
+  oauthProvider: String!
+  oauthProviderAccountId: String!
   status: UserStatus!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -48,19 +51,55 @@ enum UserStatus {
   INACTIVE
 }
 
+type RegisteredUserModel {
+  isRegistered: Boolean!
+  isRegisteredInAnotherProvider: Boolean!
+}
+
 type Query {
-  messages(input: SearchOptionInput!): [MessageNode!]!
-  rooms(input: SearchRoomOptionInput!): [RoomNode!]!
+  messages(input: SearchMessagesInput!): [MessageNode!]!
 
   """ユーザーが登録済みかどうかを判定します。"""
-  isRegisteredUser: Boolean!
+  registeredUser(input: RegisteredUserInput!): RegisteredUserModel!
+
+  """指定したIDのユーザーを取得します。"""
+  user(userId: String!): UserNode!
+
+  """ユーザー一覧情報を取得します。"""
+  users(input: SearchUsersInput): [UserNode!]!
+
+  """指定したemailを持つユーザーを取得します。"""
+  userByEmail(email: String!): UserNode!
+
+  """ログインユーザーの情報を取得します"""
+  me: UserNode!
+
+  """ルーム一覧取得"""
+  rooms(input: SearchRoomOptionInput): [RoomNode!]!
+
+  """ルーム取得"""
+  room(id: String!): RoomNode!
 }
 
 """クエリ検索用オプション"""
-input SearchOptionInput {
-  roomId: String!
+input SearchMessagesInput {
+  roomId: String
   limit: Float
   offset: Float
+}
+
+input RegisteredUserInput {
+  oauthProvider: String!
+  oauthProviderAccountId: String!
+}
+
+"""ユーザー検索オプション"""
+input SearchUsersInput {
+  """名前で部分一致検索"""
+  name: String
+
+  """メールアドレスで部分一致検索"""
+  email: String
 }
 
 input SearchRoomOptionInput {
@@ -72,7 +111,11 @@ input SearchRoomOptionInput {
 
 type Mutation {
   createMessage(input: CreateMessageInput!): MessageNode!
+
+  """ユーザー新規作成"""
   createUser(input: CreateUserInput!): UserNode!
+
+  """ルーム新規作成"""
   createRoom(input: CreateRoomInput!): RoomNode!
 }
 
@@ -85,6 +128,9 @@ input CreateMessageInput {
 input CreateUserInput {
   name: String!
   email: String!
+  icon: String!
+  oauthProvider: String!
+  oauthProviderAccountId: String!
 }
 
 input CreateRoomInput {
@@ -95,4 +141,5 @@ input CreateRoomInput {
 
 type Subscription {
   messageCreated: MessageNode!
+  userSignedUp: UserNode!
 }

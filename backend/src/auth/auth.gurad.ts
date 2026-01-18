@@ -31,11 +31,24 @@ export class GqlAuthGuard implements CanActivate {
 
     const ctx = GqlExecutionContext.create(context);
     const gqlContext = ctx.getContext<{
-      req: { headers: { authorization?: string } };
+      req:
+        | { headers?: { authorization?: string } }
+        | { connectionParams?: { authorization?: string } };
     }>();
-    const request = gqlContext.req as { headers: { authorization?: string } };
-    const splitedAutorization: string[] | undefined =
-      request.headers.authorization?.split(' ');
+    let authorization: string | undefined = undefined;
+    // HTTPリクエストの場合
+    if ('headers' in gqlContext.req) {
+      authorization = gqlContext.req.headers?.authorization;
+    }
+    // WebSocket接続の場合
+    if ('connectionParams' in gqlContext.req) {
+      authorization = gqlContext.req.connectionParams?.authorization;
+    }
+    if (!authorization) {
+      throw new UnauthorizedException('No authorization header found');
+    }
+
+    const splitedAutorization: string[] | undefined = authorization.split(' ');
     if (
       splitedAutorization?.length !== 2 ||
       splitedAutorization?.[0] !== 'Bearer'
@@ -57,6 +70,7 @@ export class GqlAuthGuard implements CanActivate {
       );
 
       // リクエストにユーザーペイロードをアタッチ
+      const request = gqlContext.req;
       request['payload'] = payload;
       return true;
     } catch (error) {

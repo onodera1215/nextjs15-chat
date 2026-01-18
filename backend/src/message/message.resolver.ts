@@ -12,7 +12,7 @@ import { CreateMessageUsecase } from './usecase/create-message.usecase';
 import { GetsMessageUsecase } from './usecase/gets-message.usecase';
 import { Inject } from '@nestjs/common';
 import { PubSub } from 'graphql-subscriptions';
-import { SearchOptionInput } from './models/search-option.input';
+import { SearchMessagesInput } from './models/search-messages.input';
 import { CreateMessageInput } from './models/create-message.input';
 import { RoomNode } from 'src/room/gql-model/room.model';
 import { GetRoomUsecase } from 'src/room/usecase/get-room.usecase';
@@ -34,7 +34,7 @@ export class MessageResolver {
   ) {}
 
   @Query(() => [MessageNode])
-  async messages(@Args('input') input: SearchOptionInput) {
+  async messages(@Args('input') input: SearchMessagesInput) {
     return await this.getsMessageUsecase.execute(input);
   }
 
