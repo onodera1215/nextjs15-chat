@@ -105,6 +105,16 @@ input CreateMessageInput {
   senderId: String!
 }
 
+input CreateRoomInput {
+  name: String!
+  description: String!
+}
+
+input JoinUserToRoomInput {
+  roomId: String!
+  userId: String!
+}
+
 input SearchMessageOptionInput {
   roomId: ID
   userId: ID
@@ -135,6 +145,16 @@ type MessageNode {
   readUsers: [User]!
   sender: User!
   room: Room!
+  createdAt: Date!
+  updatedAt: Date!
+}
+
+type RoomNode {
+  id: ID!
+  name: String!
+  description: String!
+  users: [User]!
+  message: [Message]!
   createdAt: Date!
   updatedAt: Date!
 }
@@ -172,6 +192,18 @@ mutation createMessageRead(createMessageReadInput: CreateMessageReadInput!): Mes
 mutation createMessage(createMessageInput: CreateMessageInput): Message!
 ```
 
+#### ルーム登録
+
+```graphql
+mutation createRoom(createRoomInput: CreateRoomInput!)
+```
+
+#### ユーザーとルームの紐づけ登録
+
+```graphql
+mutation joinUserToRoom(joinUserToRoomInput: JoinUserToRoomInput!): UserRoomEdge!
+```
+
 ### クエリ
 
 #### メッセージ取得
@@ -186,16 +218,42 @@ query messages(searchMessageOption: SearchMessageOptionInput!): [Message]!
 query me(): UserNode!
 ```
 
+#### ユーザーが参加しているチャットルーム一覧取得
+
+```graphql
+query roomJoined(userId: ID!): [Room]!
+```
+
+#### ユーザーが参加していないチャットルーム一覧の取得
+
+```graphql
+query roomNotJoined(userId: ID!): [Room]!
+```
+
 ### サブスクリプション
 
-#### メッセージ取得
+#### ユーザー作成通知
+
+#### メッセージ通知
 
 ```graphql
 subscription messageAdded(roomId: String!): Message!
 ```
 
-#### 既読情報取得
+#### 既読通知
 
 ```graphql
 subscription messageRead(roomId: String!): MessageRead!
+```
+
+#### ルーム作成通知
+
+```graphql
+subscription roomAdded(): RoomNode!
+```
+
+#### ルーム参加通知
+
+```graphql
+subscription userJoinedRoom(roomId: String!): UserNode!
 ```
