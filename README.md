@@ -135,6 +135,7 @@ type UserNode {
   name: String!
   messages(searchMessageOption: SearchMessageOptionInput!): [Message!]!
   rooms(searchRoomOption: SearchRoomOptionInput!): [Room!]!
+  roomsNotJoined: [Room]!
   createdAt: Date!
   updatedAt: Date!
 }
@@ -218,21 +219,13 @@ query messages(searchMessageOption: SearchMessageOptionInput!): [Message]!
 query me(): UserNode!
 ```
 
-#### ユーザーが参加しているチャットルーム一覧取得
-
-```graphql
-query roomJoined(userId: ID!): [Room]!
-```
-
-#### ユーザーが参加していないチャットルーム一覧の取得
-
-```graphql
-query roomNotJoined(userId: ID!): [Room]!
-```
-
 ### サブスクリプション
 
 #### ユーザー作成通知
+
+```graphql
+subscription userAdded(): User!
+```
 
 #### メッセージ通知
 
