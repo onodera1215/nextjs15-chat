@@ -141,5 +141,6 @@ input CreateRoomInput {
 
 type Subscription {
   messageCreated: MessageNode!
+  roomCreated: RoomNode!
   userSignedUp: UserNode!
 }
