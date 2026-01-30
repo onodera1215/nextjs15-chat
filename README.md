@@ -7,115 +7,118 @@
 ```mermaid
 erDiagram
 
-    User {
-        string id
-        string oauthProvider
-        string oauthProviderAccountId
-        string email
-        string name
-        string icon
-        UserStatus status
-        datetime createdAt
-        datetime updatedAt
-    }
+  User {
+    string   id
+    string   oauthProvider
+    string   oauthProviderAccountId
+    string   email
+    string   name
+    string   icon
+    UserStatus status
+    datetime createdAt
+    datetime updatedAt
+  }
 
-    Room {
-        string id
-        string name
-        string description
-        RoomStatus status
-        string createdByUserId
-        datetime createdAt
-        datetime updatedAt
-    }
+  Room {
+    string   id
+    string   name
+    string   description
+    RoomStatus status
+    string   createdByUserId
+    datetime createdAt
+    datetime updatedAt
+  }
 
-    UserRoom {
-        string roomId
-        string userId
-        string roleId
-        string joinedViaUserId
-        datetime createdAt
-        datetime updatedAt
-    }
+  UserRoom {
+    string   roomId
+    string   userId
+    string   roomRoleId
+    string   joinedViaUserId
+    datetime createdAt
+    datetime updatedAt
+  }
 
-    Invitation {
-        string id
-        string roomId
-        string inviterUserId
-        string inviteeUserId
-        string email
-        string token
-        datetime expiresAt
-        datetime createdAt
-        datetime usedAt
-        datetime updatedAt
-    }
+  Invitation {
+    string   id
+    string   roomId
+    string   inviterUserId
+    string   inviteeUserId
+    string   email
+    string   token
+    datetime expiresAt
+    datetime createdAt
+    datetime usedAt
+    datetime updatedAt
+  }
 
-    Message {
-        string id
-        string body
-        string senderId
-        string roomId
-        datetime createdAt
-        datetime updatedAt
-    }
+  Role {
+    string   id
+    string   name
+    RoleScope scope
+    datetime createdAt
+    datetime updatedAt
+  }
 
-    RoomRead {
-        string id
-        string roomId
-        string userId
-        datetime lastReadAt
-        datetime createdAt
-        datetime updatedAt
-    }
+  RolePolicy {
+    string      id
+    string      roleId
+    PolicyAction action
+    ResourceType resource
+    datetime    createdAt
+    datetime    updatedAt
+  }
 
-    Role {
-        string id
-        string name
-        datetime createdAt
-        datetime updatedAt
-    }
+  Message {
+    string   id
+    string   body
+    string   senderId
+    string   roomId
+    datetime createdAt
+    datetime updatedAt
+  }
 
-    RolePolicy {
-        string id
-        string roleId
-        PolicyAction action
-        ResourceType resource
-        datetime createdAt
-        datetime updatedAt
-    }
+  RoomRead {
+    string   id
+    string   roomId
+    string   userId
+    datetime lastReadAt
+    datetime createdAt
+    datetime updatedAt
+  }
 
+  %% ==========================
+  %% Relations
+  %% ==========================
 
-    %% ========================
-    %% Relations
-    %% ========================
+  %% ルーム作成
+  User ||--o{ Room : "作成 (作成ユーザーIDが記録される)"
 
-    %% User ↔ Room
-    User ||--o{ Room : "creates"
+  %% ルーム参加済みユーザー
+  User ||--o{ UserRoom : "メンバー (userId)"
+  Room ||--o{ UserRoom : "ルーム (roomId)"
 
-    %% User ↔ Message
-    User ||--o{ Message : "sends"
-    Room ||--o{ Message : "has"
+  %% 誰に招待されたか
+  User ||--o{ UserRoom : "joinedViaUserIdに招待された"
 
-    %% User ↔ RoomRead
-    User ||--o{ RoomRead : "reads"
-    Room ||--o{ RoomRead : "has"
+  %% ユーザーのルーム内ロール
+  Role ||--o{ UserRoom : "ルーム内でのロール"
 
-    %% User ↔ UserRoom (member)
-    User ||--o{ UserRoom : "member"
-    Room ||--o{ UserRoom : "has members"
+  %% Role policies
+  Role ||--o{ RolePolicy : "ロールに紐づくポリシー"
 
-    %% UserRoom joined via invitation
-    User ||--o{ UserRoom : "invited by"
+  %% 招待情報
+  Room ||--o{ Invitation : "has"
+  User ||--o{ Invitation : "招待する (inviterUserId)"
+  User ||--o{ Invitation : "招待者 (inviteeUserId)"
 
-    %% Role
-    Role ||--o{ UserRoom : "assigned"
-    Role ||--o{ RolePolicy : "has"
+  %% メッセージ
+  User ||--o{ Message : "送信 (senderId)"
+  Room ||--o{ Message : "ルーム内メッセージ (roomId)"
 
-    %% Invitation
-    Room ||--o{ Invitation : "has"
-    User ||--o{ Invitation : "sent invitations"
-    User ||--o{ Invitation : "received invitations"
+  %% 既読管理
+  User ||--o{ RoomRead : "誰が読んだか (userId)"
+  Room ||--o{ RoomRead : "どのルームを見たか (roomId)"
+
 ```
 
 ## GraphQL
