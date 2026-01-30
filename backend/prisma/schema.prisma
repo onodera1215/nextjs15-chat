@@ -20,11 +20,32 @@ enum UserStatus {
   @@map("user_status")
 }
 
+enum RoleScope {
+  ROOM
+
+  @@map("role_scope")
+}
+
 enum RoomStatus {
   ACTIVE
   INACTIVE
 
   @@map("room_status")
+}
+
+enum PolicyAction {
+  READ
+  WRITE
+  DELETE
+
+  @@map("policy_action")
+}
+
+enum ResourceType {
+  ROOM
+  MESSAGE
+
+  @@map("resource_type")
 }
 
 model User {
@@ -35,38 +56,102 @@ model User {
   name                   String
   icon                   String     @map("icon")
   status                 UserStatus
-  createdAt              DateTime   @default(now())
+  createdAt              DateTime   @default(now()) @map("created_at")
   updatedAt              DateTime   @updatedAt
 
-  rooms    UserRoom[]
-  messages Message[]
+  messages            Message[]
+  roomReads           RoomRead[]
+  rooms               Room[]
+  sentInvitations     Invitation[] @relation("InviterUser")
+  receivedInvitations Invitation[] @relation("InviteeUser")
+  userRooms           UserRoom[]   @relation("MemberUser")
+  invitedUserRooms    UserRoom[]   @relation("JoinedViaUser")
 
   @@map("users")
 }
 
 model UserRoom {
-  roomId    String
-  userId    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  roomId          String
+  userId          String
+  roomRoleId      String   @map("room_role_id")
+  joinedViaUserId String?  @map("joined_via_user_id")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt
 
-  room Room @relation(fields: [roomId], references: [id])
-  user User @relation(fields: [userId], references: [id])
+  roomRole      Role  @relation(fields: [roomRoleId], references: [id])
+  room          Room  @relation(fields: [roomId], references: [id])
+  joinedViaUser User? @relation("JoinedViaUser", fields: [joinedViaUserId], references: [id])
+  user          User  @relation("MemberUser", fields: [userId], references: [id])
 
   @@unique([roomId, userId])
+  @@index([userId])
+  @@index([roomId])
+  @@index([roomRoleId])
   @@map("user_rooms")
 }
 
-model Room {
-  id          String     @id @default(cuid())
-  name        String
-  description String
-  status      RoomStatus
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+model Invitation {
+  id            String    @id @default(cuid())
+  roomId        String    @map("room_id")
+  inviterUserId String    @map("inviter_user_id")
+  inviteeUserId String?   @map("invitee_user_id")
+  email         String
+  token         String    @unique @default(cuid())
+  expiresAt     DateTime  @map("expires_at")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  usedAt        DateTime? @map("used_at")
+  updatedAt     DateTime  @updatedAt
 
-  users    UserRoom[]
-  messages Message[]
+  room        Room  @relation(fields: [roomId], references: [id])
+  inviterUser User  @relation("InviterUser", fields: [inviterUserId], references: [id])
+  inviteeUser User? @relation("InviteeUser", fields: [inviteeUserId], references: [id])
+
+  @@index([roomId])
+  @@index([inviterUserId])
+  @@index([inviteeUserId])
+  @@map("invitations")
+}
+
+model Role {
+  id           String       @id @default(cuid())
+  name         String
+  scope        RoleScope
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt
+  userRooms    UserRoom[]
+  rolePolicies RolePolicy[]
+
+  @@unique([name, scope])
+  @@map("roles")
+}
+
+model RolePolicy {
+  id        String       @id @default(cuid())
+  roleId    String       @map("role_id")
+  action    PolicyAction
+  resource  ResourceType
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime     @updatedAt
+  role      Role         @relation(fields: [roleId], references: [id])
+
+  @@unique([roleId, action, resource])
+  @@map("role_policies")
+}
+
+model Room {
+  id              String     @id @default(cuid())
+  name            String
+  description     String
+  status          RoomStatus
+  createdByUserId String     @map("created_by_user_id")
+  createdAt       DateTime   @default(now()) @map("created_at")
+  updatedAt       DateTime   @updatedAt
+
+  userRooms     UserRoom[]
+  messages      Message[]
+  roomReads     RoomRead[]
+  invitations   Invitation[]
+  createdByUser User         @relation(fields: [createdByUserId], references: [id])
 
   @@map("rooms")
 }
@@ -76,11 +161,30 @@ model Message {
   body      String
   senderId  String
   roomId    String
-  createdAt DateTime @default(now())
+  createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt
 
   sender User @relation(fields: [senderId], references: [id])
   room   Room @relation(fields: [roomId], references: [id])
 
+  @@index([roomId])
+  @@index([senderId])
   @@map("messages")
+}
+
+model RoomRead {
+  id         String   @id @default(cuid())
+  roomId     String
+  userId     String
+  lastReadAt DateTime @map("last_read_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt
+
+  room Room @relation(fields: [roomId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([roomId, userId])
+  @@index([userId])
+  @@index([roomId])
+  @@map("room_reads")
 }
