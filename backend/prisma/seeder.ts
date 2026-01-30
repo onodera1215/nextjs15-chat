@@ -1,12 +1,25 @@
-import { PrismaClient, UserStatus } from '@prisma/client';
+import {
+  PolicyAction,
+  PrismaClient,
+  ResourceType,
+  UserStatus,
+} from '@prisma/client';
 import { RoomStatusEnum } from '../src/room/room.domain';
-import { STATUS_CODES } from 'http';
+import { RoomRole } from '../src/consts';
 
 const prisma = new PrismaClient();
-async function seeder() {
+async function seeder(prisma: PrismaClient) {
+  await roomSeeder(prisma);
+  await roleSeeder(prisma);
+}
+
+async function roomSeeder(prisma: PrismaClient) {
   // デフォルトルーム作成
-  const room = await prisma.room.create({
-    data: {
+  await prisma.room.upsert({
+    where: { id: 'cml0gh5hd0003356vsf7p42f5' },
+    update: {},
+    create: {
+      id: 'cml0gh5hd0003356vsf7p42f5',
       name: 'デフォルトルーム',
       description: 'デフォルトルーム',
       createdByUser: {
@@ -22,11 +35,90 @@ async function seeder() {
       status: RoomStatusEnum.ACTIVE,
     },
   });
-
-  console.log(`room: ${JSON.stringify(room, null, 2)}`);
 }
 
-seeder()
+/**
+ * ロールシーダー
+ * @param {PrismaClient} prisma
+ */
+async function roleSeeder(prisma: PrismaClient) {
+  await prisma.$transaction(async (tx) => {
+    // ルームオーナーロール作成
+    await tx.role.upsert({
+      where: { id: 'cml0gh5hd0004356vsf7p42f6' },
+      update: {},
+      create: {
+        id: 'cml0gh5hd0004356vsf7p42f6',
+        name: RoomRole.ROOM_OWNER,
+        scope: ResourceType.ROOM,
+        rolePolicies: {
+          createMany: {
+            data: [
+              {
+                action: PolicyAction.READ,
+                resource: ResourceType.ROOM,
+              },
+              {
+                action: PolicyAction.WRITE,
+                resource: ResourceType.ROOM,
+              },
+              {
+                action: PolicyAction.DELETE,
+                resource: ResourceType.ROOM,
+              },
+              {
+                action: PolicyAction.READ,
+                resource: ResourceType.MESSAGE,
+              },
+              {
+                action: PolicyAction.WRITE,
+                resource: ResourceType.MESSAGE,
+              },
+              {
+                action: PolicyAction.DELETE,
+                resource: ResourceType.MESSAGE,
+              },
+            ],
+          },
+        },
+      },
+    });
+    // ルームメンバーロール作成
+    await tx.role.upsert({
+      where: { id: 'cml0h2gi10000356xg95kkuqd' },
+      update: {},
+      create: {
+        id: 'cml0h2gi10000356xg95kkuqd',
+        name: RoomRole.ROOM_MEMBER,
+        scope: ResourceType.ROOM,
+        rolePolicies: {
+          createMany: {
+            data: [
+              {
+                action: PolicyAction.READ,
+                resource: ResourceType.ROOM,
+              },
+              {
+                action: PolicyAction.READ,
+                resource: ResourceType.MESSAGE,
+              },
+              {
+                action: PolicyAction.WRITE,
+                resource: ResourceType.MESSAGE,
+              },
+              {
+                action: PolicyAction.DELETE,
+                resource: ResourceType.MESSAGE,
+              },
+            ],
+          },
+        },
+      },
+    });
+  });
+}
+
+seeder(prisma)
   .then(() => console.log('シーダー実行完了'))
   .catch(console.error)
   .finally(() => {
