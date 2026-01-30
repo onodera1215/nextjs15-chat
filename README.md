@@ -151,320 +151,384 @@ graph TD
 
 ## GraphQL 設計一覧
 
----
-
-### Query
-
-| 名前    | 引数    | 戻り値       | 説明                                                |
-| ------- | ------- | ------------ | --------------------------------------------------- |
-| me      | なし    | UserNode!    | ログインユーザー情報取得                            |
-| myRooms | なし    | [RoomNode!]! | 自分が参加しているルーム一覧                        |
-| room    | id: ID! | RoomNode     | ルーム詳細（messages / members / readState を含む） |
-
----
-
-### Mutation
-
-#### ユーザー・ルーム
-
-| 名前          | Input               | 戻り値                | 説明           |
-| ------------- | ------------------- | --------------------- | -------------- |
-| createUser    | CreateUserInput!    | CreateUserPayload!    | ユーザー登録   |
-| createRoom    | CreateRoomInput!    | CreateRoomPayload!    | ルーム作成     |
-| createMessage | CreateMessageInput! | CreateMessagePayload! | メッセージ送信 |
-
----
-
-#### ルーム参加・退室
-
-| 名前      | Input           | 戻り値            | 説明                           |
-| --------- | --------------- | ----------------- | ------------------------------ |
-| joinRoom  | JoinRoomInput!  | JoinRoomPayload!  | ルーム参加（招待トークン任意） |
-| leaveRoom | LeaveRoomInput! | LeaveRoomPayload! | ルーム退室                     |
-
----
-
-#### 既読管理
-
-| 名前         | Input              | 戻り値               | 説明                   |
-| ------------ | ------------------ | -------------------- | ---------------------- |
-| markRoomRead | MarkRoomReadInput! | MarkRoomReadPayload! | 最終既読メッセージ更新 |
-
----
-
-#### 招待
-
-| 名前             | Input                  | 戻り値                   | 説明                     |
-| ---------------- | ---------------------- | ------------------------ | ------------------------ |
-| createInvitation | CreateInvitationInput! | CreateInvitationPayload! | 招待リンク用トークン発行 |
-
----
-
-### Subscription
-
-| 名前            | 引数        | 戻り値         | 説明           |
-| --------------- | ----------- | -------------- | -------------- |
-| messageAdded    | roomId: ID! | MessageNode!   | メッセージ通知 |
-| roomMemberAdded | roomId: ID! | UserRoomNode!  | ルーム参加通知 |
-| roomReadUpdated | roomId: ID! | RoomReadState! | 既読更新通知   |
-| roomAdded       | なし        | RoomNode!      | ルーム作成通知 |
-
----
-
-### Input 定義
-
----
-
-#### JoinRoomInput
-
-| フィールド      | 型     | 必須 | 説明                     |
-| --------------- | ------ | ---- | ------------------------ |
-| roomId          | ID     | ○    | 参加対象ルーム           |
-| invitationToken | String | ×    | 招待リンク経由の場合のみ |
-
----
-
-#### LeaveRoomInput
-
-| フィールド | 型  | 必須 | 説明           |
-| ---------- | --- | ---- | -------------- |
-| roomId     | ID  | ○    | 退室対象ルーム |
-
----
-
-#### MarkRoomReadInput
-
-| フィールド        | 型  | 必須 | 説明               |
-| ----------------- | --- | ---- | ------------------ |
-| roomId            | ID  | ○    | 対象ルーム         |
-| lastReadMessageId | ID  | ○    | 最終既読メッセージ |
-
----
-
-#### CreateInvitationInput
-
-| フィールド    | 型       | 必須 | 説明           |
-| ------------- | -------- | ---- | -------------- |
-| roomId        | ID       | ○    | 招待対象ルーム |
-| inviteeUserId | ID       | ×    | 招待ユーザー   |
-| inviteeEmail  | String   | ×    | メール招待     |
-| expiresAt     | DateTime | ×    | 有効期限       |
-
----
-
-### Payload 定義
-
----
-
-#### JoinRoomPayload
-
-| フィールド | 型            | 説明           |
-| ---------- | ------------- | -------------- |
-| membership | UserRoomNode! | 参加情報       |
-| room       | RoomNode!     | 参加したルーム |
-
----
-
-#### CreateRoomPayload
-
-| フィールド | 型        | 説明             |
-| ---------- | --------- | ---------------- |
-| room       | RoomNode! | 作成されたルーム |
-
----
-
-#### CreateMessagePayload
-
-| フィールド | 型           | 説明                 |
-| ---------- | ------------ | -------------------- |
-| message    | MessageNode! | 作成されたメッセージ |
-
----
-
-#### MarkRoomReadPayload
-
-| フィールド | 型             | 説明             |
-| ---------- | -------------- | ---------------- |
-| readState  | RoomReadState! | 更新後の既読状態 |
-
----
-
-#### CreateInvitationPayload
-
-| フィールド | 型              | 説明              |
-| ---------- | --------------- | ----------------- |
-| invitation | InvitationNode! | 招待情報          |
-| inviteLink | String!         | フロント表示用URL |
-
----
-
-### Node 型
-
----
-
-#### UserNode
-
-| フィールド | 型      | 説明           |
-| ---------- | ------- | -------------- |
-| id         | ID!     | ユーザーID     |
-| name       | String! | 名前           |
-| email      | String! | メールアドレス |
-
----
-
-#### RoomNode
-
-| フィールド  | 型               | 説明           |
-| ----------- | ---------------- | -------------- |
-| id          | ID!              | ルームID       |
-| name        | String!          | ルーム名       |
-| description | String           | 説明           |
-| joinPolicy  | RoomJoinPolicy!  | 参加方式       |
-| members     | [UserRoomNode!]! | 参加メンバー   |
-| messages    | [MessageNode!]!  | メッセージ一覧 |
-| readState   | RoomReadState    | 自分の既読状態 |
-
----
-
-#### UserRoomNode（参加情報）
-
-| フィールド          | 型             | 説明           |
-| ------------------- | -------------- | -------------- |
-| userId              | ID!            | ユーザー       |
-| roomId              | ID!            | ルーム         |
-| role                | RoomRole!      | 権限           |
-| joinedAt            | DateTime!      | 参加日時       |
-| joinedViaInvitation | InvitationNode | 招待経由の場合 |
-
----
-
-#### InvitationNode
-
-| フィールド | 型       | 説明         |
-| ---------- | -------- | ------------ |
-| id         | ID!      | 招待ID       |
-| roomId     | ID!      | ルーム       |
-| token      | String!  | 招待トークン |
-| expiresAt  | DateTime | 有効期限     |
-| usedAt     | DateTime | 使用日時     |
-
----
-
-#### MessageNode
-
-| フィールド | 型        | 説明         |
-| ---------- | --------- | ------------ |
-| id         | ID!       | メッセージID |
-| roomId     | ID!       | ルーム       |
-| userId     | ID!       | 送信者       |
-| message    | String!   | 本文         |
-| createdAt  | DateTime! | 送信日時     |
-
----
-
-#### RoomReadState
-
-| フィールド        | 型       | 説明     |
-| ----------------- | -------- | -------- |
-| roomId            | ID!      | ルーム   |
-| lastReadMessageId | ID       | 最終既読 |
-| lastReadAt        | DateTime | 既読日時 |
-| unreadCount       | Int!     | 未読数   |
-
----
-
-### Enum
-
----
-
-#### RoomJoinPolicy
-
-| 値          | 説明                 |
-| ----------- | -------------------- |
-| OPEN        | 誰でも参加可能       |
-| INVITE_ONLY | 招待必須（将来拡張） |
-
----
-
-#### RoomRole
-
-| 値     | 説明       |
-| ------ | ---------- |
-| OWNER  | オーナー   |
-| ADMIN  | 管理者     |
-| MEMBER | 一般参加者 |
-
-### 関連図
-
-```mermaid
-flowchart TB
-  %% =====================
-  %% GraphQL API 構成
-  %% =====================
-
-  subgraph Query["Query（取得）"]
-    QMe["me(): UserNode!<br/>※ログインユーザー"]
-    QMyRooms["myRooms(): [RoomNode!]!<br/>※参加ルーム一覧"]
-    QRoom["room(id: ID!): RoomNode<br/>※room配下で messages / members / readState を取得"]
-  end
-
-  subgraph Mutation["Mutation（更新）"]
-    MCreateUser["createUser(input: CreateUserInput!): CreateUserPayload!"]
-    MCreateRoom["createRoom(input: CreateRoomInput!): CreateRoomPayload!"]
-    MCreateMessage["createMessage(input: CreateMessageInput!): CreateMessagePayload!"]
-
-    MJoinRoom["joinRoom(input: JoinRoomInput!): JoinRoomPayload!<br/>※invitationTokenは任意"]
-    MLeaveRoom["leaveRoom(input: LeaveRoomInput!): LeaveRoomPayload!"]
-
-    MMarkRead["markRoomRead(input: MarkRoomReadInput!): MarkRoomReadPayload!<br/>※最終既読を更新"]
-    MCreateInvitation["createInvitation(input: CreateInvitationInput!): CreateInvitationPayload!<br/>※リンク用token発行"]
-  end
-
-  subgraph Subscription["Subscription（通知）"]
-    SMessageAdded["messageAdded(roomId: ID!): MessageNode!"]
-    SMemberAdded["roomMemberAdded(roomId: ID!): UserRoomNode!<br/>※参加イベント"]
-    SReadUpdated["roomReadUpdated(roomId: ID!): RoomReadState!<br/>※既読更新イベント"]
-    SRoomAdded["roomAdded(): RoomNode!"]
-  end
-
-  %% =====================
-  %% 型（概念）
-  %% =====================
-  subgraph Types["主な型（概念）"]
-    TUser["UserNode"]
-    TRoom["RoomNode"]
-    TMembership["UserRoomNode<br/>（= user_rooms）"]
-    TMessage["MessageNode"]
-    TRead["RoomReadState<br/>（= room_reads）"]
-    TInvite["InvitationNode<br/>（= invitations）"]
-  end
-
-  %% =====================
-  %% 入力（主要）
-  %% =====================
-  subgraph Inputs["主要Input（例）"]
-    IJoin["JoinRoomInput{ roomId, invitationToken? }"]
-    IMark["MarkRoomReadInput{ roomId, lastReadMessageId }"]
-    IInv["CreateInvitationInput{ roomId, inviteeUserId? , inviteeEmail? , expiresAt? }"]
-  end
-
-  %% 関係（ざっくり）
-  MJoinRoom --> TMembership
-  MJoinRoom --> TRoom
-  MCreateMessage --> TMessage
-  MMarkRead --> TRead
-  MCreateInvitation --> TInvite
-
-  QMe --> TUser
-  QMyRooms --> TRoom
-  QRoom --> TRoom
-
-  SMessageAdded --> TMessage
-  SMemberAdded --> TMembership
-  SReadUpdated --> TRead
-  SRoomAdded --> TRoom
-
-  IJoin --> MJoinRoom
-  IMark --> MMarkRead
-  IInv --> MCreateInvitation
+```graphql
+"""
+========================
+Connection 共通
+========================
+"""
+type PageInfo {
+  hasNextPage: Boolean!
+  endCursor: String
+}
+
+"""
+========================
+Query
+========================
+"""
+type Query {
+  """
+  ログイン中ユーザー情報
+  """
+  me: UserNode!
+
+  """
+  自分が参加しているルーム一覧（ページング）
+  - first/after: 前方向ページング
+  - last/before: 後ろ方向ページング
+  """
+  myRooms(first: Int, after: String, last: Int, before: String): RoomConnection!
+
+  """
+  ルーム詳細
+  - messages/members/readState は RoomNode のフィールドで取得
+  """
+  room(id: ID!): RoomNode
+}
+
+"""
+========================
+Mutation
+========================
+"""
+type Mutation {
+  """
+  ユーザー作成
+  - OAuthのみの運用なら、サインイン時に自動作成してこのMutation自体を消すのもアリ
+  """
+  createUser(input: CreateUserInput!): CreateUserPayload!
+
+  """
+  ルーム作成（作成者はオーナーになる想定）
+  """
+  createRoom(input: CreateRoomInput!): CreateRoomPayload!
+
+  """
+  メッセージ送信
+  """
+  createMessage(input: CreateMessageInput!): CreateMessagePayload!
+
+  """
+  ルーム参加
+  - invitationTokenあり：招待リンク経由（期限・使用済みなど検証）
+  - invitationTokenなし：joinPolicy=OPEN のときのみ許可、など
+  """
+  joinRoom(input: JoinRoomInput!): JoinRoomPayload!
+
+  """
+  ルーム退室
+  """
+  leaveRoom(input: LeaveRoomInput!): LeaveRoomPayload!
+
+  """
+  既読更新（DBのlastReadAtに合わせる）
+  - 推奨：lastReadAt は「画面で見えている最新メッセージの createdAt」を送る
+  - 注意：クライアント時刻（new Date()）は使わない
+  """
+  markRoomRead(input: MarkRoomReadInput!): MarkRoomReadPayload!
+
+  """
+  招待トークン発行
+  - inviteeUserId / inviteeEmail は任意（両方nullは弾く等のバリデーション推奨）
+  """
+  createInvitation(input: CreateInvitationInput!): CreateInvitationPayload!
+}
+
+"""
+========================
+Subscription
+========================
+"""
+type Subscription {
+  """
+  メッセージ追加イベント
+  """
+  messageAdded(roomId: ID!): MessageNode!
+
+  """
+  ルーム参加イベント
+  """
+  roomMemberAdded(roomId: ID!): UserRoomNode!
+
+  """
+  既読更新イベント
+  - 最低限 roomId / userId / lastReadAt を流す
+  - unreadCount はまず Query で算出が安全
+  """
+  roomReadUpdated(roomId: ID!): RoomReadState!
+
+  """
+  ルーム作成イベント（任意：ルーム一覧をリアルタイム更新したい場合）
+  """
+  roomAdded: RoomNode!
+}
+
+"""
+========================
+Inputs
+========================
+"""
+input CreateUserInput {
+  """
+  OAuthのみなら不要になる可能性あり
+  """
+  email: String!
+  name: String!
+  icon: String
+}
+
+input CreateRoomInput {
+  name: String!
+  description: String
+  joinPolicy: RoomJoinPolicy! = OPEN
+}
+
+input CreateMessageInput {
+  roomId: ID!
+  body: String!
+}
+
+input JoinRoomInput {
+  roomId: ID!
+  """
+  招待リンク経由の場合のみ指定
+  """
+  invitationToken: String
+}
+
+input LeaveRoomInput {
+  roomId: ID!
+}
+
+input MarkRoomReadInput {
+  roomId: ID!
+  """
+  最終既読時刻（単調増加させる）
+  - 推奨：最新表示メッセージの createdAt を送る
+  """
+  lastReadAt: DateTime!
+}
+
+input CreateInvitationInput {
+  roomId: ID!
+  inviteeUserId: ID
+  inviteeEmail: String
+  expiresAt: DateTime
+}
+
+"""
+========================
+Payloads（Mutationの戻り値）
+========================
+"""
+type CreateUserPayload {
+  user: UserNode!
+}
+
+type CreateRoomPayload {
+  room: RoomNode!
+}
+
+type CreateMessagePayload {
+  message: MessageNode!
+  """
+  送信者の既読状態を同時に進める実装にする場合に便利
+  """
+  readState: RoomReadState
+}
+
+type JoinRoomPayload {
+  membership: UserRoomNode!
+  room: RoomNode!
+}
+
+type LeaveRoomPayload {
+  roomId: ID!
+  userId: ID!
+}
+
+type MarkRoomReadPayload {
+  readState: RoomReadState!
+}
+
+type CreateInvitationPayload {
+  invitation: InvitationNode!
+  inviteLink: String!
+}
+
+"""
+========================
+Node types
+========================
+"""
+type UserNode {
+  id: ID!
+  name: String!
+  email: String!
+  icon: String
+  status: UserStatus!
+  createdAt: DateTime!
+}
+
+type RoomNode {
+  id: ID!
+  name: String!
+  description: String
+  joinPolicy: RoomJoinPolicy!
+  status: RoomStatus!
+
+  createdByUserId: ID!
+  createdAt: DateTime!
+
+  """
+  参加メンバー（ページング）
+  """
+  members(
+    first: Int
+    after: String
+    last: Int
+    before: String
+  ): UserRoomConnection!
+
+  """
+  メッセージ一覧（ページング）
+  - チャットは通常「新しい順/古い順」を選びたくなるので orderBy を用意
+  """
+  messages(
+    first: Int
+    after: String
+    last: Int
+    before: String
+    orderBy: MessageOrderBy = CREATED_AT_DESC
+  ): MessageConnection!
+
+  """
+  自分の既読状態（非メンバーならnull）
+  """
+  readState: RoomReadState
+}
+
+type UserRoomNode {
+  userId: ID!
+  roomId: ID!
+
+  """
+  ルーム権限（Role.name をそのまま返す想定）
+  例：ROOM_OWNER / ROOM_MEMBER / ROOM_READONLY
+  """
+  role: String!
+
+  joinedAt: DateTime!
+  joinedViaUserId: ID
+
+  """
+  InvitationとUserRoomをDBで直接結びつけてないので基本はnull
+  （必要なら joinedViaInvitationId を持つ設計にすると解決）
+  """
+  joinedViaInvitation: InvitationNode
+}
+
+type InvitationNode {
+  id: ID!
+  roomId: ID!
+  inviterUserId: ID!
+  inviteeUserId: ID
+  email: String!
+  token: String!
+  expiresAt: DateTime
+  usedAt: DateTime
+  createdAt: DateTime!
+}
+
+type MessageNode {
+  id: ID!
+  roomId: ID!
+  userId: ID!
+  body: String!
+  createdAt: DateTime!
+}
+
+type RoomReadState {
+  roomId: ID!
+  userId: ID!
+  lastReadAt: DateTime
+  """
+  まずは Query（myRooms/room）で算出するのが安全
+  Subscriptionで厳密な unreadCount を配るのは順序/再接続でズレやすい
+  """
+  unreadCount: Int
+}
+
+"""
+========================
+Connection 定義
+========================
+"""
+type RoomEdge {
+  cursor: String!
+  node: RoomNode!
+}
+
+type RoomConnection {
+  edges: [RoomEdge!]!
+  nodes: [RoomNode!]!
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
+type UserRoomEdge {
+  cursor: String!
+  node: UserRoomNode!
+}
+
+type UserRoomConnection {
+  edges: [UserRoomEdge!]!
+  nodes: [UserRoomNode!]!
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
+type MessageEdge {
+  cursor: String!
+  node: MessageNode!
+}
+
+type MessageConnection {
+  edges: [MessageEdge!]!
+  nodes: [MessageNode!]!
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
+"""
+========================
+Enums
+========================
+"""
+enum RoomJoinPolicy {
+  OPEN
+  INVITE_ONLY
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum RoomStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum MessageOrderBy {
+  """
+  新しい順（チャットのデフォルトにしがち）
+  """
+  CREATED_AT_DESC
+  """
+  古い順（スクロールで末尾に向かうUIなど）
+  """
+  CREATED_AT_ASC
+}
 ```
