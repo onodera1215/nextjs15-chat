@@ -176,9 +176,8 @@ type Query {
   """
   自分が参加しているルーム一覧（ページング）
   - first/after: 前方向ページング
-  - last/before: 後ろ方向ページング
   """
-  myRooms(first: Int, after: String, last: Int, before: String): RoomConnection!
+  myRooms(first: Int, after: String): RoomConnection!
 
   """
   ルーム詳細
@@ -195,7 +194,6 @@ Mutation
 type Mutation {
   """
   ユーザー作成
-  - OAuthのみの運用なら、サインイン時に自動作成してこのMutation自体を消すのもアリ
   """
   createUser(input: CreateUserInput!): CreateUserPayload!
 
@@ -212,7 +210,6 @@ type Mutation {
   """
   ルーム参加
   - invitationTokenあり：招待リンク経由（期限・使用済みなど検証）
-  - invitationTokenなし：joinPolicy=OPEN のときのみ許可、など
   """
   joinRoom(input: JoinRoomInput!): JoinRoomPayload!
 
@@ -224,7 +221,6 @@ type Mutation {
   """
   既読更新（DBのlastReadAtに合わせる）
   - 推奨：lastReadAt は「画面で見えている最新メッセージの createdAt」を送る
-  - 注意：クライアント時刻（new Date()）は使わない
   """
   markRoomRead(input: MarkRoomReadInput!): MarkRoomReadPayload!
 
@@ -254,7 +250,7 @@ type Subscription {
   """
   既読更新イベント
   - 最低限 roomId / userId / lastReadAt を流す
-  - unreadCount はまず Query で算出が安全
+  - unreadCount は Query で算出が安全
   """
   roomReadUpdated(roomId: ID!): RoomReadState!
 
@@ -270,18 +266,17 @@ Inputs
 ========================
 """
 input CreateUserInput {
-  """
-  OAuthのみなら不要になる可能性あり
-  """
   email: String!
   name: String!
   icon: String
+  oauthProvider: string!
+  oauthProviderAccountId: string!
 }
 
 input CreateRoomInput {
   name: String!
   description: String
-  joinPolicy: RoomJoinPolicy! = OPEN
+  status: RoomStatus!
 }
 
 input CreateMessageInput {
@@ -332,10 +327,6 @@ type CreateRoomPayload {
 
 type CreateMessagePayload {
   message: MessageNode!
-  """
-  送信者の既読状態を同時に進める実装にする場合に便利
-  """
-  readState: RoomReadState
 }
 
 type JoinRoomPayload {
@@ -375,31 +366,22 @@ type RoomNode {
   id: ID!
   name: String!
   description: String
-  joinPolicy: RoomJoinPolicy!
   status: RoomStatus!
-
   createdByUserId: ID!
   createdAt: DateTime!
 
   """
   参加メンバー（ページング）
   """
-  members(
-    first: Int
-    after: String
-    last: Int
-    before: String
-  ): UserRoomConnection!
+  members(first: Int, after: String): UserRoomConnection!
 
   """
   メッセージ一覧（ページング）
-  - チャットは通常「新しい順/古い順」を選びたくなるので orderBy を用意
+  - 「新しい順/古い順」を選びたくなったら使う orderBy を用意
   """
   messages(
     first: Int
     after: String
-    last: Int
-    before: String
     orderBy: MessageOrderBy = CREATED_AT_DESC
   ): MessageConnection!
 
@@ -421,12 +403,6 @@ type UserRoomNode {
 
   joinedAt: DateTime!
   joinedViaUserId: ID
-
-  """
-  InvitationとUserRoomをDBで直接結びつけてないので基本はnull
-  （必要なら joinedViaInvitationId を持つ設計にすると解決）
-  """
-  joinedViaInvitation: InvitationNode
 }
 
 type InvitationNode {
@@ -506,11 +482,6 @@ type MessageConnection {
 Enums
 ========================
 """
-enum RoomJoinPolicy {
-  OPEN
-  INVITE_ONLY
-}
-
 enum UserStatus {
   ACTIVE
   INACTIVE
@@ -522,13 +493,7 @@ enum RoomStatus {
 }
 
 enum MessageOrderBy {
-  """
-  新しい順（チャットのデフォルトにしがち）
-  """
   CREATED_AT_DESC
-  """
-  古い順（スクロールで末尾に向かうUIなど）
-  """
   CREATED_AT_ASC
 }
 ```
