@@ -8,6 +8,7 @@ import { GetRoomUsecase } from './usecase/get-room.usecase';
 import { Inject } from '@nestjs/common';
 import { PubSub } from 'graphql-subscriptions';
 import { Public } from 'src/auth/public.decorator';
+import { CreateRoomPayload } from './models/create-room.payload';
 
 @Resolver()
 export class RoomResolver {
@@ -21,10 +22,12 @@ export class RoomResolver {
   ) {}
 
   @Mutation(() => RoomNode, { description: 'ルーム新規作成' })
-  async createRoom(@Args('input') input: CreateRoomInput): Promise<RoomNode> {
+  async createRoom(
+    @Args('input') input: CreateRoomInput,
+  ): Promise<CreateRoomPayload> {
     const room = await this.createRoomUsecase.execute(input);
     await this.gqlPubSub.publish('roomCreated', { roomCreated: room });
-    return room;
+    return { room };
   }
 
   @Query(() => [RoomNode], { description: 'ルーム一覧取得' })

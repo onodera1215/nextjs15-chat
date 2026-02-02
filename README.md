@@ -220,13 +220,12 @@ type Mutation {
 
   """
   既読更新（DBのlastReadAtに合わせる）
-  - 推奨：lastReadAt は「画面で見えている最新メッセージの createdAt」を送る
   """
   markRoomRead(input: MarkRoomReadInput!): MarkRoomReadPayload!
 
   """
   招待トークン発行
-  - inviteeUserId / inviteeEmail は任意（両方nullは弾く等のバリデーション推奨）
+  - inviteeUserId / inviteeEmail は任意（両方nullは弾く等のバリデーション実施）
   """
   createInvitation(input: CreateInvitationInput!): CreateInvitationPayload!
 }
@@ -300,7 +299,6 @@ input MarkRoomReadInput {
   roomId: ID!
   """
   最終既読時刻（単調増加させる）
-  - 推奨：最新表示メッセージの createdAt を送る
   """
   lastReadAt: DateTime!
 }
@@ -430,8 +428,7 @@ type RoomReadState {
   userId: ID!
   lastReadAt: DateTime
   """
-  まずは Query（myRooms/room）で算出するのが安全
-  Subscriptionで厳密な unreadCount を配るのは順序/再接続でズレやすい
+  Query（myRooms/room）で算出するのが安全
   """
   unreadCount: Int
 }

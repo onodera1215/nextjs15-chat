@@ -51,9 +51,17 @@ enum UserStatus {
   INACTIVE
 }
 
+type CreateMessagePayload {
+  message: MessageNode!
+}
+
 type RegisteredUserModel {
   isRegistered: Boolean!
   isRegisteredInAnotherProvider: Boolean!
+}
+
+type CreateUserPayload {
+  user: UserNode!
 }
 
 type Query {
@@ -110,10 +118,10 @@ input SearchRoomOptionInput {
 }
 
 type Mutation {
-  createMessage(input: CreateMessageInput!): MessageNode!
+  createMessage(input: CreateMessageInput!): CreateMessagePayload!
 
   """ユーザー新規作成"""
-  createUser(input: CreateUserInput!): UserNode!
+  createUser(input: CreateUserInput!): CreateUserPayload!
 
   """ルーム新規作成"""
   createRoom(input: CreateRoomInput!): RoomNode!

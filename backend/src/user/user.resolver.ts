@@ -13,6 +13,7 @@ import { JwtPayload } from 'src/types';
 import { GetMeUsecase } from './usecase/get-me.usecase';
 import { GetUsersUsecase } from './usecase/get-users.usecase';
 import { SearchUsersInput } from './models/search-users.input';
+import { CreateUserPayload } from './models/create-user.payload';
 
 @Resolver()
 export class UserResolver {
@@ -26,9 +27,12 @@ export class UserResolver {
   ) {}
 
   @Public()
-  @Mutation(() => UserNode, { description: 'ユーザー新規作成' })
-  async createUser(@Args('input') input: CreateUserInput): Promise<UserNode> {
-    return await this.createUserUsecase.execute(input);
+  @Mutation(() => CreateUserPayload, { description: 'ユーザー新規作成' })
+  async createUser(
+    @Args('input') input: CreateUserInput,
+  ): Promise<CreateUserPayload> {
+    const user = await this.createUserUsecase.execute(input);
+    return { user };
   }
 
   /**

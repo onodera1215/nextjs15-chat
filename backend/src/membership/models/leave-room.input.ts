@@ -1,7 +1,7 @@
 import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
-export class JoinRoomInput {
+export class LeaveRoomInput {
   @Field(() => String)
   roomId: string;
 }

@@ -20,6 +20,7 @@ import { GetUserUsecase } from 'src/user/usecase/get-user.usecase';
 import { UserNode } from 'src/user/models/user.model';
 import { CurrentPayload } from 'src/auth/current-payload.decorator';
 import { JwtPayload } from 'src/types';
+import { CreateMessagePayload } from './models/create-message.payload';
 
 @Resolver(() => MessageNode)
 export class MessageResolver {
@@ -50,7 +51,7 @@ export class MessageResolver {
     return await this.getUserUsecase.execute(message.senderId);
   }
 
-  @Mutation(() => MessageNode)
+  @Mutation(() => CreateMessagePayload)
   async createMessage(
     @Args('input') input: CreateMessageInput,
     @CurrentPayload() user: JwtPayload,
@@ -59,7 +60,7 @@ export class MessageResolver {
     const message = await this.createMessageUsecase.execute(input, user);
     // パブリッシュ
     await this.gqlPubSub.publish('messageCreated', { messageCreated: message });
-    return message;
+    return { message };
   }
 
   @Subscription(() => MessageNode)

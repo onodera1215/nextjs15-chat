@@ -1,7 +1,7 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
-export class RoomReadStateModel {
+export class RoomReadState {
   @Field(() => ID)
   roomId: string;
 
