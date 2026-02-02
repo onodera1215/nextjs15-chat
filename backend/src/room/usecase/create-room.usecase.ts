@@ -1,6 +1,6 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { RoomNode } from '../gql-model/room.model';
-import { CreateRoomInput } from '../gql-model/room.input';
+import { RoomNode } from '../models/room.model';
+import { CreateRoomInput } from '../models/room.input';
 import { IRoomRepository } from '../room.repository.interface';
 
 @Injectable()

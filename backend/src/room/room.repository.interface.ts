@@ -1,6 +1,6 @@
-import { CreateRoomInput } from './gql-model/room.input';
+import { CreateRoomInput } from './models/room.input';
 import { RoomDomain } from './room.domain';
-import { SearchRoomOptionInput } from './gql-model/search-room-option.input';
+import { SearchRoomOptionInput } from './models/search-room-option.input';
 
 export interface IRoomRepository {
   createRoom(input: CreateRoomInput): Promise<RoomDomain>;

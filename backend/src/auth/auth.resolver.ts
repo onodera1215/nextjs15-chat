@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { Resolver, Subscription } from '@nestjs/graphql';
 import { PubSub } from 'graphql-subscriptions';
-import { UserNode } from 'src/user/gql-models/user.model';
+import { UserNode } from 'src/user/models/user.model';
 
 @Resolver()
 export class AuthResolver {

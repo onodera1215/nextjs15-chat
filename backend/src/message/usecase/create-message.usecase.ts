@@ -1,6 +1,7 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { IMessageRepository } from '../message.repository.interface';
 import { CreateMessageInput } from '../models/create-message.input';
+import { JwtPayload } from 'src/types';
 
 @Injectable()
 export class CreateMessageUsecase {
@@ -9,7 +10,14 @@ export class CreateMessageUsecase {
     private readonly messageRepository: IMessageRepository,
   ) {}
 
-  async execute(createMessageInput: CreateMessageInput) {
-    return await this.messageRepository.createMessage(createMessageInput);
+  async execute(createMessageInput: CreateMessageInput, user: JwtPayload) {
+    const senderId = user.sub;
+    if (!senderId) {
+      throw new BadRequestException('Invalid user payload: missing sub');
+    }
+    return await this.messageRepository.createMessage({
+      ...createMessageInput,
+      senderId,
+    });
   }
 }

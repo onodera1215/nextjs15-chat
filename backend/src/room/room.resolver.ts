@@ -1,9 +1,9 @@
 import { Args, Mutation, Resolver, Query, Subscription } from '@nestjs/graphql';
-import { RoomNode } from './gql-model/room.model';
-import { CreateRoomInput } from './gql-model/room.input';
+import { RoomNode } from './models/room.model';
+import { CreateRoomInput } from './models/room.input';
 import { CreateRoomUsecase } from './usecase/create-room.usecase';
 import { GetRoomsUsecase } from './usecase/get-rooms.usecase';
-import { SearchRoomOptionInput } from './gql-model/search-room-option.input';
+import { SearchRoomOptionInput } from './models/search-room-option.input';
 import { GetRoomUsecase } from './usecase/get-room.usecase';
 import { Inject } from '@nestjs/common';
 import { PubSub } from 'graphql-subscriptions';

@@ -14,10 +14,12 @@ import { Inject } from '@nestjs/common';
 import { PubSub } from 'graphql-subscriptions';
 import { SearchMessagesInput } from './models/search-messages.input';
 import { CreateMessageInput } from './models/create-message.input';
-import { RoomNode } from 'src/room/gql-model/room.model';
+import { RoomNode } from 'src/room/models/room.model';
 import { GetRoomUsecase } from 'src/room/usecase/get-room.usecase';
 import { GetUserUsecase } from 'src/user/usecase/get-user.usecase';
-import { UserNode } from 'src/user/gql-models/user.model';
+import { UserNode } from 'src/user/models/user.model';
+import { CurrentPayload } from 'src/auth/current-payload.decorator';
+import { JwtPayload } from 'src/types';
 
 @Resolver(() => MessageNode)
 export class MessageResolver {
@@ -49,9 +51,12 @@ export class MessageResolver {
   }
 
   @Mutation(() => MessageNode)
-  async createMessage(@Args('input') input: CreateMessageInput) {
+  async createMessage(
+    @Args('input') input: CreateMessageInput,
+    @CurrentPayload() user: JwtPayload,
+  ) {
     // メッセージ登録
-    const message = await this.createMessageUsecase.execute(input);
+    const message = await this.createMessageUsecase.execute(input, user);
     // パブリッシュ
     await this.gqlPubSub.publish('messageCreated', { messageCreated: message });
     return message;

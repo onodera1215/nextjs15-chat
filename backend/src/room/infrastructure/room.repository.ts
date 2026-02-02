@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { IRoomRepository } from '../room.repository.interface';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateRoomInput } from '../gql-model/room.input';
 import { fromPrismaRoomToRoomDomain } from './utis';
 import { RoomDomain, RoomStatusEnum } from '../room.domain';
-import { SearchRoomOptionInput } from '../gql-model/search-room-option.input';
+import { SearchRoomOptionInput } from '../models/search-room-option.input';
 import { Prisma } from '@prisma/client';
+import { CreateRoomDto } from '../dto/create-room.dto';
 
 @Injectable()
 export class RoomRepository implements IRoomRepository {
@@ -17,7 +17,7 @@ export class RoomRepository implements IRoomRepository {
     return !!room;
   }
 
-  async createRoom(data: CreateRoomInput): Promise<RoomDomain> {
+  async createRoom(data: CreateRoomDto): Promise<RoomDomain> {
     const room = await this.prisma.room.create({
       data,
     });

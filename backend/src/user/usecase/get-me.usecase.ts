@@ -1,6 +1,6 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { IUserRepository } from '../user.repository.interface';
-import { UserNode } from '../gql-models/user.model';
+import { UserNode } from '../models/user.model';
 import { JwtPayload } from 'src/types';
 
 @Injectable()

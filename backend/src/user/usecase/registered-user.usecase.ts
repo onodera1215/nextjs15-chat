@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IUserRepository } from 'src/user/user.repository.interface';
-import { RegisteredUserInput } from '../gql-models/is-registered-user.input';
-import { RegisteredUserModel } from '../gql-models/is-registered-user.model';
+import { RegisteredUserInput } from '../models/is-registered-user.input';
+import { RegisteredUserModel } from '../models/is-registered-user.model';
 
 @Injectable()
 export class RegisteredUserUsecase {
