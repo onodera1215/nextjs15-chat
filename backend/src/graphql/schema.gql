@@ -65,6 +65,10 @@ type CreateUserPayload {
   user: UserNode!
 }
 
+type CreateRoomPayload {
+  room: RoomNode!
+}
+
 type UserRoomNode {
   userId: String!
   roomId: String!
@@ -171,7 +175,7 @@ type Mutation {
   createUser(input: CreateUserInput!): CreateUserPayload!
 
   """ルーム新規作成"""
-  createRoom(input: CreateRoomInput!): RoomNode!
+  createRoom(input: CreateRoomInput!): CreateRoomPayload!
 
   """ルーム参加"""
   joinRoom(input: JoinRoomInput!): JoinRoomPayload!

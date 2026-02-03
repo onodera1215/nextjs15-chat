@@ -9,6 +9,8 @@ import { Inject } from '@nestjs/common';
 import { PubSub } from 'graphql-subscriptions';
 import { Public } from 'src/auth/public.decorator';
 import { CreateRoomPayload } from './models/create-room.payload';
+import { CurrentPayload } from 'src/auth/current-payload.decorator';
+import { JwtPayload } from 'src/types';
 
 @Resolver()
 export class RoomResolver {
@@ -21,11 +23,12 @@ export class RoomResolver {
     private readonly gqlPubSub: PubSub,
   ) {}
 
-  @Mutation(() => RoomNode, { description: 'ルーム新規作成' })
+  @Mutation(() => CreateRoomPayload, { description: 'ルーム新規作成' })
   async createRoom(
     @Args('input') input: CreateRoomInput,
+    @CurrentPayload() payload: JwtPayload,
   ): Promise<CreateRoomPayload> {
-    const room = await this.createRoomUsecase.execute(input);
+    const room = await this.createRoomUsecase.execute(input, payload);
     await this.gqlPubSub.publish('roomCreated', { roomCreated: room });
     return { room };
   }

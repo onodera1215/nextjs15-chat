@@ -2,6 +2,7 @@ import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { RoomNode } from '../models/room.model';
 import { CreateRoomInput } from '../models/room.input';
 import { IRoomRepository } from '../room.repository.interface';
+import { JwtPayload } from 'src/types';
 
 @Injectable()
 export class CreateRoomUsecase {
@@ -10,13 +11,20 @@ export class CreateRoomUsecase {
     private readonly roomRepository: IRoomRepository,
   ) {}
 
-  async execute(input: CreateRoomInput): Promise<RoomNode> {
+  async execute(input: CreateRoomInput, user: JwtPayload): Promise<RoomNode> {
     const isRoomExists = await this.roomRepository.isNameAlreadyExists(
       input.name,
     );
     if (isRoomExists) {
       throw new BadRequestException('このルーム名は使用できません');
     }
-    return await this.roomRepository.createRoom(input);
+    const userId = user?.sub;
+    if (!userId) {
+      throw new BadRequestException('ユーザー情報が不正です');
+    }
+    return await this.roomRepository.createRoom({
+      ...input,
+      createdByUserId: userId,
+    });
   }
 }

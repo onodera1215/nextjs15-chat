@@ -83,7 +83,7 @@ export class GqlAuthGuard implements CanActivate {
       if (!user) {
         throw new UnauthorizedException('User not found');
       }
-      request['payload'] = { ...payload, user };
+      request['payload'] = payload;
       return true;
     } catch (error) {
       throw new UnauthorizedException('Invalid token: ' + error);

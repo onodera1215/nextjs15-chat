@@ -3,7 +3,6 @@ import type { Request } from 'express';
 
 export type JwtPayload = {
   sub?: string;
-  userId?: string;
   email?: string;
   name?: string;
   roles?: string[];
