@@ -94,8 +94,8 @@ model Invitation {
   id            String    @id @default(cuid())
   roomId        String    @map("room_id")
   inviterUserId String    @map("inviter_user_id")
-  inviteeUserId String?   @map("invitee_user_id")
-  email         String
+  inviteeUserId String    @map("invitee_user_id")
+  email         String?
   token         String    @unique @default(cuid())
   expiresAt     DateTime  @map("expires_at")
   createdAt     DateTime  @default(now()) @map("created_at")

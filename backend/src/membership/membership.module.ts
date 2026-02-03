@@ -6,6 +6,8 @@ import { RoomRepository } from 'src/room/infrastructure/room.repository';
 import { MarkRoomReadUsecase } from './usecase/mark-room-read.usecase';
 import { MessageRepository } from 'src/message/infrastructure/message.repository';
 import { LeaveRoomUsecase } from './usecase/leave-room.usecase';
+import { CreateInvitationUsecase } from './usecase/create-invitation.usecase';
+import { InvitationRepository } from './infrastructure/invitation.repository';
 
 @Module({
   providers: [
@@ -13,6 +15,7 @@ import { LeaveRoomUsecase } from './usecase/leave-room.usecase';
     JoinRoomUsecase,
     MarkRoomReadUsecase,
     LeaveRoomUsecase,
+    CreateInvitationUsecase,
     {
       provide: 'IMembershipRepository',
       useClass: MembershipRepository,
@@ -24,6 +27,10 @@ import { LeaveRoomUsecase } from './usecase/leave-room.usecase';
     {
       provide: 'IMessageRepository',
       useClass: MessageRepository,
+    },
+    {
+      provide: 'IInvitationRepository',
+      useClass: InvitationRepository,
     },
   ],
 })

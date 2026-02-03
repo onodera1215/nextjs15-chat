@@ -14,14 +14,14 @@ export class InvitationNode {
   @Field(() => ID)
   inviteeUserId: string;
 
-  @Field(() => String)
-  email: string;
+  @Field(() => String, { nullable: true })
+  email: string | null;
 
   @Field(() => Date)
   expiresAt: Date;
 
-  @Field(() => Date)
-  usedAt: Date;
+  @Field(() => Date, { nullable: true })
+  usedAt: Date | null;
 
   @Field(() => Date)
   createdAt: Date;

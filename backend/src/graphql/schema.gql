@@ -104,15 +104,19 @@ type MarkRoomReadPayload {
   readState: RoomReadState!
 }
 
-type CreateInvitationPayload {
-  roomId: String!
-
-  """招待したユーザーのユーザーID"""
+type InvitationNode {
+  id: ID!
+  roomId: ID!
+  inviterUserId: ID!
   inviteeUserId: ID!
-
-  """招待を受け取るユーザーのメールアドレス"""
-  inviteeEmail: String
+  email: String
   expiresAt: DateTime!
+  usedAt: DateTime
+  createdAt: DateTime!
+}
+
+type CreateInvitationPayload {
+  invitation: InvitationNode!
 }
 
 type Query {
@@ -186,7 +190,7 @@ type Mutation {
   """既読処理実行"""
   markRoomRead(input: MarkRoomReadInput!): MarkRoomReadPayload!
 
-  """招待トークン発行"""
+  """招待用レコード作成"""
   createInvitation(input: CreateInvitationInput!): CreateInvitationPayload!
 }
 
@@ -230,11 +234,8 @@ input MarkRoomReadInput {
 
 input CreateInvitationInput {
   roomId: String!
-
-  """招待を受け取るユーザーのメールアドレス"""
-  inviteeEmail: String
-  inviteeUserId: ID!
-  expiresAt: DateTime!
+  inviteeUserId: String!
+  email: String
 }
 
 type Subscription {

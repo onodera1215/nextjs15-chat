@@ -12,6 +12,7 @@ import { CreateInvitationPayload } from './models/create-invitation.payload';
 import { JoinRoomUsecase } from './usecase/join-room.usecase';
 import { LeaveRoomUsecase } from './usecase/leave-room.usecase';
 import { MarkRoomReadUsecase } from './usecase/mark-room-read.usecase';
+import { CreateInvitationUsecase } from './usecase/create-invitation.usecase';
 
 @Resolver()
 export class MembershipResolver {
@@ -19,6 +20,7 @@ export class MembershipResolver {
     private readonly joinRoomUsecase: JoinRoomUsecase,
     private readonly leaveRoomUsecase: LeaveRoomUsecase,
     private readonly markRoomReadUsecase: MarkRoomReadUsecase,
+    private readonly createInvitationUsecase: CreateInvitationUsecase,
   ) {}
 
   @Mutation(() => JoinRoomPayload, { description: 'ルーム参加' })
@@ -48,11 +50,16 @@ export class MembershipResolver {
     });
   }
 
-  @Mutation(() => CreateInvitationPayload, { description: '招待トークン発行' })
+  @Mutation(() => CreateInvitationPayload, {
+    description: '招待用レコード作成',
+  })
   async createInvitation(
     @Args('input') input: CreateInvitationInput,
     @CurrentPayload() user: JwtPayload,
   ): Promise<CreateInvitationPayload> {
-    throw new Error('Not implemented yet');
+    return await this.createInvitationUsecase.execute({
+      ...input,
+      inviterUserId: user.sub!,
+    });
   }
 }
