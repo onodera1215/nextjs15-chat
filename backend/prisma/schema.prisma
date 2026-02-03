@@ -113,7 +113,7 @@ model Invitation {
 }
 
 model Role {
-  id           String       @id @default(cuid())
+  id           String       @id
   name         String
   scope        RoleScope
   createdAt    DateTime     @default(now()) @map("created_at")

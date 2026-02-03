@@ -3,6 +3,7 @@ import { RoomNode } from '../models/room.model';
 import { CreateRoomInput } from '../models/room.input';
 import { IRoomRepository } from '../room.repository.interface';
 import { JwtPayload } from 'src/types';
+import { RoomStatusEnum } from '../room.domain';
 
 @Injectable()
 export class CreateRoomUsecase {
@@ -24,6 +25,7 @@ export class CreateRoomUsecase {
     }
     return await this.roomRepository.createRoom({
       ...input,
+      status: RoomStatusEnum.ACTIVE,
       createdByUserId: userId,
     });
   }

@@ -45,10 +45,10 @@ async function roleSeeder(prisma: PrismaClient) {
   await prisma.$transaction(async (tx) => {
     // ルームオーナーロール作成
     await tx.role.upsert({
-      where: { id: 'cml0gh5hd0004356vsf7p42f6' },
+      where: { id: RoomRole.ROOM_OWNER },
       update: {},
       create: {
-        id: 'cml0gh5hd0004356vsf7p42f6',
+        id: RoomRole.ROOM_OWNER,
         name: RoomRole.ROOM_OWNER,
         scope: ResourceType.ROOM,
         rolePolicies: {
@@ -85,10 +85,10 @@ async function roleSeeder(prisma: PrismaClient) {
     });
     // ルームメンバーロール作成
     await tx.role.upsert({
-      where: { id: 'cml0h2gi10000356xg95kkuqd' },
+      where: { id: RoomRole.ROOM_MEMBER },
       update: {},
       create: {
-        id: 'cml0h2gi10000356xg95kkuqd',
+        id: RoomRole.ROOM_MEMBER,
         name: RoomRole.ROOM_MEMBER,
         scope: ResourceType.ROOM,
         rolePolicies: {

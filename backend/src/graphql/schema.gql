@@ -214,6 +214,7 @@ input JoinRoomInput {
 
   """招待経由の場合に使う"""
   invitationToken: String
+  roomRoleId: RoomRole!
 }
 
 input LeaveRoomInput {

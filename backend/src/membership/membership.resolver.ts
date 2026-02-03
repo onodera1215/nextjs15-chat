@@ -9,15 +9,19 @@ import { MarkRoomReadInput } from './models/mark-room-read.input';
 import { MarkRoomReadPayload } from './models/mark-room-read.payload';
 import { CreateInvitationInput } from './models/create-invitation.input';
 import { CreateInvitationPayload } from './models/create-invitation.payload';
+import { JoinRoomUsecase } from './usecase/join-room.usecase';
 
 @Resolver()
 export class MembershipResolver {
+  constructor(private readonly joinRoomUsecase: JoinRoomUsecase) {}
+
   @Mutation(() => JoinRoomPayload, { description: 'ルーム参加' })
   async joinRoom(
     @Args('input') input: JoinRoomInput,
     @CurrentPayload() user: JwtPayload,
   ): Promise<JoinRoomPayload> {
-    throw new Error('Not implemented yet');
+    // user.subが無い場合はGuardで弾かれる想定なのでここではチェックしない
+    return this.joinRoomUsecase.execute({ ...input, userId: user.sub! });
   }
 
   @Mutation(() => LeaveRoomPayload, { description: 'ルームメンバー退会' })
