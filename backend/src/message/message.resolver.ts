@@ -57,7 +57,10 @@ export class MessageResolver {
     @CurrentPayload() user: JwtPayload,
   ) {
     // メッセージ登録
-    const message = await this.createMessageUsecase.execute(input, user);
+    const message = await this.createMessageUsecase.execute({
+      ...input,
+      senderId: user.sub!,
+    });
     // パブリッシュ
     await this.gqlPubSub.publish('messageCreated', { messageCreated: message });
     return { message };
