@@ -58,10 +58,57 @@ type CreateMessagePayload {
 type RegisteredUserModel {
   isRegistered: Boolean!
   isRegisteredInAnotherProvider: Boolean!
+  user: UserNode
 }
 
 type CreateUserPayload {
   user: UserNode!
+}
+
+type UserRoomNode {
+  userId: String!
+  roomId: String!
+  role: RoomRole!
+  joinedAt: DateTime!
+  leftViaUserId: String
+}
+
+enum RoomRole {
+  ROOM_OWNER
+  ROOM_MEMBER
+}
+
+type JoinRoomPayload {
+  membership: UserRoomNode!
+  room: RoomNode!
+}
+
+type LeaveRoomPayload {
+  room: RoomNode!
+}
+
+type RoomReadState {
+  roomId: ID!
+  userId: ID!
+  lastReadAt: DateTime!
+
+  """未読メッセージ数(厳密な数はqueryで取得すること)"""
+  unreadCount: Float!
+}
+
+type MarkRoomReadPayload {
+  readState: RoomReadState!
+}
+
+type CreateInvitationPayload {
+  roomId: String!
+
+  """招待したユーザーのユーザーID"""
+  inviteeUserId: ID!
+
+  """招待を受け取るユーザーのメールアドレス"""
+  inviteeEmail: String
+  expiresAt: DateTime!
 }
 
 type Query {
@@ -125,6 +172,18 @@ type Mutation {
 
   """ルーム新規作成"""
   createRoom(input: CreateRoomInput!): RoomNode!
+
+  """ルーム参加"""
+  joinRoom(input: JoinRoomInput!): JoinRoomPayload!
+
+  """ルームメンバー退会"""
+  leaveRoom(input: LeaveRoomInput!): LeaveRoomPayload!
+
+  """既読処理実行"""
+  markRoomRead(input: MarkRoomReadInput!): MarkRoomReadPayload!
+
+  """招待トークン発行"""
+  createInvitation(input: CreateInvitationInput!): CreateInvitationPayload!
 }
 
 input CreateMessageInput {
@@ -144,6 +203,33 @@ input CreateRoomInput {
   name: String!
   description: String!
   status: RoomStatusEnum!
+}
+
+input JoinRoomInput {
+  roomId: String!
+
+  """招待経由の場合に使う"""
+  invitationToken: String
+}
+
+input LeaveRoomInput {
+  roomId: String!
+}
+
+input MarkRoomReadInput {
+  roomId: String!
+
+  """最終既読日時（単調増加）"""
+  lastReadAt: DateTime
+}
+
+input CreateInvitationInput {
+  roomId: String!
+
+  """招待を受け取るユーザーのメールアドレス"""
+  inviteeEmail: String
+  inviteeUserId: ID!
+  expiresAt: DateTime!
 }
 
 type Subscription {

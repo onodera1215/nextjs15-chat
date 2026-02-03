@@ -1,7 +1,6 @@
 import "server-only";
 import NextAuth, { NextAuthConfig } from "next-auth";
 import Google from "next-auth/providers/google";
-import GitHub from "next-auth/providers/github";
 import { SignJWT, importPKCS8 } from "jose";
 import {
   executeMutationCreateUser,
@@ -20,7 +19,6 @@ export const authOptions: NextAuthConfig = {
       clientId: process.env.AUTH_GOOGLE_ID!,
       clientSecret: process.env.AUTH_GOOGLE_SECRET!,
     }),
-    GitHub,
   ],
   callbacks: {
     // NextAuth の定義に合わせた引数。戻り値は Session 全体を返す
@@ -36,21 +34,25 @@ export const authOptions: NextAuthConfig = {
       };
       return newSession;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, account, user }) {
       // ログイン時にユーザー情報をトークンに保存
-      if (user) {
-        token.id = user.id;
+      if (account && account.providerAccountId && user) {
+        // TODO: 後でexecuteUserとかで取得するようにする
+        const { registeredUser } = await executeQueryRegisteredUser({
+          oauthProvider: account.provider,
+          oauthProviderAccountId: account.providerAccountId,
+        });
+        token.provider = account.provider;
+        token.userId = registeredUser.user?.id;
+        token.sub = account.providerAccountId;
         token.email = user.email;
         token.name = user.name;
-      }
 
-      // NEST_JWT_PRIVATE_KEYが設定されている場合のみ、nestAccessTokenを生成
-      if (PRIVATE_KEY) {
         try {
           const privateKey = await importPKCS8(PRIVATE_KEY, "RS256");
 
           const nestAccessToken = await new SignJWT({
-            sub: token.sub as string | undefined,
+            sub: token.userId as string | undefined,
             email: token.email as string | undefined,
             name: token.name as string | undefined,
             roles: token.roles as string[] | undefined,

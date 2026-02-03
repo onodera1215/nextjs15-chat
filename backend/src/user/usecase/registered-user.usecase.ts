@@ -28,6 +28,7 @@ export class RegisteredUserUsecase {
     return {
       isRegistered: isActive && isTheSameOauthProvider,
       isRegisteredInAnotherProvider: isActive && !isTheSameOauthProvider,
+      user,
     };
   }
 }
