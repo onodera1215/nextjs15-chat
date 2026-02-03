@@ -26,4 +26,18 @@ export class MessageRepository implements IMessageRepository {
     });
     return messages.map((message) => new MessageDomain(message));
   }
+  async countUnreadMessages(
+    roomId: string,
+    userId: string,
+    lastReadAt: Date,
+  ): Promise<number> {
+    return this.prismaService.message.count({
+      where: {
+        roomId,
+        createdAt: {
+          gt: lastReadAt,
+        },
+      },
+    });
+  }
 }

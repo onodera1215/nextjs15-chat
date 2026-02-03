@@ -10,17 +10,22 @@ import { MarkRoomReadPayload } from './models/mark-room-read.payload';
 import { CreateInvitationInput } from './models/create-invitation.input';
 import { CreateInvitationPayload } from './models/create-invitation.payload';
 import { JoinRoomUsecase } from './usecase/join-room.usecase';
+import { LeaveRoomUsecase } from './usecase/leave-room.usecase';
+import { MarkRoomReadUsecase } from './usecase/mark-room-read.usecase';
 
 @Resolver()
 export class MembershipResolver {
-  constructor(private readonly joinRoomUsecase: JoinRoomUsecase) {}
+  constructor(
+    private readonly joinRoomUsecase: JoinRoomUsecase,
+    private readonly leaveRoomUsecase: LeaveRoomUsecase,
+    private readonly markRoomReadUsecase: MarkRoomReadUsecase,
+  ) {}
 
   @Mutation(() => JoinRoomPayload, { description: 'ルーム参加' })
   async joinRoom(
     @Args('input') input: JoinRoomInput,
     @CurrentPayload() user: JwtPayload,
   ): Promise<JoinRoomPayload> {
-    // user.subが無い場合はGuardで弾かれる想定なのでここではチェックしない
     return this.joinRoomUsecase.execute({ ...input, userId: user.sub! });
   }
 
@@ -29,7 +34,7 @@ export class MembershipResolver {
     @Args('input') input: LeaveRoomInput,
     @CurrentPayload() user: JwtPayload,
   ): Promise<LeaveRoomPayload> {
-    throw new Error('Not implemented yet');
+    return await this.leaveRoomUsecase.execute({ ...input, userId: user.sub! });
   }
 
   @Mutation(() => MarkRoomReadPayload, { description: '既読処理実行' })
@@ -37,7 +42,10 @@ export class MembershipResolver {
     @Args('input') input: MarkRoomReadInput,
     @CurrentPayload() user: JwtPayload,
   ): Promise<MarkRoomReadPayload> {
-    throw new Error('Not implemented yet');
+    return await this.markRoomReadUsecase.execute({
+      ...input,
+      userId: user.sub!,
+    });
   }
 
   @Mutation(() => CreateInvitationPayload, { description: '招待トークン発行' })

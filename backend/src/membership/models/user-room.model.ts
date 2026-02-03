@@ -16,5 +16,5 @@ export class UserRoomNode {
   joinedAt: Date;
 
   @Field(() => String, { nullable: true })
-  leftViaUserId?: string;
+  joinViaUserId?: string;
 }

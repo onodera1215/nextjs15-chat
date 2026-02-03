@@ -5,4 +5,9 @@ import { SearchMessagesInput } from './models/search-messages.input';
 export interface IMessageRepository {
   createMessage(createMessageDto: CreateMessageDto): Promise<MessageDomain>;
   getMessages(searchOptionInput: SearchMessagesInput): Promise<MessageDomain[]>;
+  countUnreadMessages(
+    roomId: string,
+    userId: string,
+    lastReadAt: Date,
+  ): Promise<number>;
 }

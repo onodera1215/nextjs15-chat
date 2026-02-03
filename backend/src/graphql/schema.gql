@@ -74,7 +74,7 @@ type UserRoomNode {
   roomId: String!
   role: RoomRole!
   joinedAt: DateTime!
-  leftViaUserId: String
+  joinViaUserId: String
 }
 
 enum RoomRole {
@@ -97,7 +97,7 @@ type RoomReadState {
   lastReadAt: DateTime!
 
   """未読メッセージ数(厳密な数はqueryで取得すること)"""
-  unreadCount: Float!
+  unreadCount: Int!
 }
 
 type MarkRoomReadPayload {
