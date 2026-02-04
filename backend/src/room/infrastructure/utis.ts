@@ -1,5 +1,5 @@
 import { Room } from '@prisma/client';
-import { RoomStatusEnum } from '../gql-model/room-status.enum';
+import { RoomStatusEnum } from '../models/room-status.enum';
 import { RoomDomain } from '../room.domain';
 
 export function fromPrismaRoomToRoomDomain(room: Room): RoomDomain {

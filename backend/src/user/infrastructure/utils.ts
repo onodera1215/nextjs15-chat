@@ -1,5 +1,5 @@
 import { User } from '@prisma/client';
-import { UserStatusEnum } from '../gql-models/user-status.enum';
+import { UserStatusEnum } from '../models/user-status.enum';
 import { UserDomain } from '../user.domain';
 
 export function fromPrismaUserToUserDomain(user: User): UserDomain {

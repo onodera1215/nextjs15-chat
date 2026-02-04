@@ -9,6 +9,7 @@ import { GqlExecutionContext } from '@nestjs/graphql';
 import { JwtService } from '@nestjs/jwt';
 import { IS_PUBLIC_KEY } from './public.decorator';
 import { JwtPayload } from 'src/types';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 const secret = process.env.NEST_JWT_PUBLIC_KEY!;
 
@@ -17,6 +18,7 @@ export class GqlAuthGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
     private reflector: Reflector,
+    private readonly prisma: PrismaService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -71,6 +73,16 @@ export class GqlAuthGuard implements CanActivate {
 
       // リクエストにユーザーペイロードをアタッチ
       const request = gqlContext.req;
+      const userId = payload?.sub;
+      if (!userId) {
+        throw new UnauthorizedException('Invalid token: no userId');
+      }
+      const user = await this.prisma.user.findUnique({
+        where: { id: userId },
+      });
+      if (!user) {
+        throw new UnauthorizedException('User not found');
+      }
       request['payload'] = payload;
       return true;
     } catch (error) {

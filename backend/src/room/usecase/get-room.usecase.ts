@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IRoomRepository } from '../room.repository.interface';
-import { RoomNode } from '../gql-model/room.model';
+import { RoomNode } from '../models/room.model';
 
 @Injectable()
 export class GetRoomUsecase {

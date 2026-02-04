@@ -1,5 +1,5 @@
-import { CreateUserInput } from './gql-models/create-user.input';
-import { SearchUsersInput } from './gql-models/search-users.input';
+import { CreateUserInput } from './models/create-user.input';
+import { SearchUsersInput } from './models/search-users.input';
 import { UserDomain } from './user.domain';
 
 export interface IUserRepository {

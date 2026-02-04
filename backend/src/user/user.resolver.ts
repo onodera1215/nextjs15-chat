@@ -1,18 +1,19 @@
 import { Args, Query, Mutation, Resolver } from '@nestjs/graphql';
-import { UserNode } from './gql-models/user.model';
-import { CreateUserInput } from './gql-models/create-user.input';
+import { UserNode } from './models/user.model';
+import { CreateUserInput } from './models/create-user.input';
 import { CreateUserUsecase } from './usecase/create-user.usecase';
 import { Public } from 'src/auth/public.decorator';
-import { RegisteredUserInput } from './gql-models/is-registered-user.input';
+import { RegisteredUserInput } from './models/is-registered-user.input';
 import { RegisteredUserUsecase } from './usecase/registered-user.usecase';
-import { RegisteredUserModel } from './gql-models/is-registered-user.model';
+import { RegisteredUserModel } from './models/is-registered-user.model';
 import { GetUserUsecase } from './usecase/get-user.usecase';
 import { GetUserByEmailUsecase } from './usecase/get-user-by-email.usecase';
 import { CurrentPayload } from 'src/auth/current-payload.decorator';
 import { JwtPayload } from 'src/types';
 import { GetMeUsecase } from './usecase/get-me.usecase';
 import { GetUsersUsecase } from './usecase/get-users.usecase';
-import { SearchUsersInput } from './gql-models/search-users.input';
+import { SearchUsersInput } from './models/search-users.input';
+import { CreateUserPayload } from './models/create-user.payload';
 
 @Resolver()
 export class UserResolver {
@@ -26,9 +27,12 @@ export class UserResolver {
   ) {}
 
   @Public()
-  @Mutation(() => UserNode, { description: 'ユーザー新規作成' })
-  async createUser(@Args('input') input: CreateUserInput): Promise<UserNode> {
-    return await this.createUserUsecase.execute(input);
+  @Mutation(() => CreateUserPayload, { description: 'ユーザー新規作成' })
+  async createUser(
+    @Args('input') input: CreateUserInput,
+  ): Promise<CreateUserPayload> {
+    const user = await this.createUserUsecase.execute(input);
+    return { user };
   }
 
   /**

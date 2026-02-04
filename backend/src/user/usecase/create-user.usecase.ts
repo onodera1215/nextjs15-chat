@@ -1,7 +1,7 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { IUserRepository } from '../user.repository.interface';
-import { CreateUserInput } from '../gql-models/create-user.input';
-import { UserNode } from '../gql-models/user.model';
+import { CreateUserInput } from '../models/create-user.input';
+import { UserNode } from '../models/user.model';
 
 @Injectable()
 export class CreateUserUsecase {

@@ -4,10 +4,30 @@ schema {
   subscription: Subscription
 }
 
+input CreateInvitationInput {
+  expiresAt: DateTime!
+  """招待を受け取るユーザーのメールアドレス"""
+  inviteeEmail: String
+  inviteeUserId: ID!
+  roomId: String!
+}
+
+type CreateInvitationPayload {
+  expiresAt: DateTime!
+  """招待を受け取るユーザーのメールアドレス"""
+  inviteeEmail: String
+  """招待したユーザーのユーザーID"""
+  inviteeUserId: ID!
+  roomId: String!
+}
+
 input CreateMessageInput {
   body: String!
   roomId: String!
-  senderId: String!
+}
+
+type CreateMessagePayload {
+  message: MessageNode!
 }
 
 input CreateRoomInput {
@@ -24,10 +44,43 @@ input CreateUserInput {
   oauthProviderAccountId: String!
 }
 
+type CreateUserPayload {
+  user: UserNode!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
+
+input JoinRoomInput {
+  """招待経由の場合に使う"""
+  invitationToken: String
+  roomId: String!
+}
+
+type JoinRoomPayload {
+  membership: UserRoomNode!
+  room: RoomNode!
+}
+
+input LeaveRoomInput {
+  roomId: String!
+}
+
+type LeaveRoomPayload {
+  room: RoomNode!
+}
+
+input MarkRoomReadInput {
+  """最終既読日時（単調増加）"""
+  lastReadAt: DateTime
+  roomId: String!
+}
+
+type MarkRoomReadPayload {
+  readState: RoomReadState!
+}
 
 type MessageNode {
   body: String!
@@ -41,11 +94,19 @@ type MessageNode {
 }
 
 type Mutation {
-  createMessage(input: CreateMessageInput!): MessageNode!
+  """招待トークン発行"""
+  createInvitation(input: CreateInvitationInput!): CreateInvitationPayload!
+  createMessage(input: CreateMessageInput!): CreateMessagePayload!
   """ルーム新規作成"""
   createRoom(input: CreateRoomInput!): RoomNode!
   """ユーザー新規作成"""
-  createUser(input: CreateUserInput!): UserNode!
+  createUser(input: CreateUserInput!): CreateUserPayload!
+  """ルーム参加"""
+  joinRoom(input: JoinRoomInput!): JoinRoomPayload!
+  """ルームメンバー退会"""
+  leaveRoom(input: LeaveRoomInput!): LeaveRoomPayload!
+  """既読処理実行"""
+  markRoomRead(input: MarkRoomReadInput!): MarkRoomReadPayload!
 }
 
 type Query {
@@ -74,6 +135,7 @@ input RegisteredUserInput {
 type RegisteredUserModel {
   isRegistered: Boolean!
   isRegisteredInAnotherProvider: Boolean!
+  user: UserNode
 }
 
 type RoomNode {
@@ -83,6 +145,19 @@ type RoomNode {
   name: String!
   status: RoomStatusEnum!
   updatedAt: DateTime!
+}
+
+type RoomReadState {
+  lastReadAt: DateTime!
+  roomId: ID!
+  """未読メッセージ数(厳密な数はqueryで取得すること)"""
+  unreadCount: Float!
+  userId: ID!
+}
+
+enum RoomRole {
+  ROOM_MEMBER
+  ROOM_OWNER
 }
 
 """ルームステータス"""
@@ -115,6 +190,7 @@ input SearchUsersInput {
 
 type Subscription {
   messageCreated: MessageNode!
+  roomCreated: RoomNode!
   userSignedUp: UserNode!
 }
 
@@ -128,6 +204,14 @@ type UserNode {
   oauthProviderAccountId: String!
   status: UserStatus!
   updatedAt: DateTime!
+}
+
+type UserRoomNode {
+  joinedAt: DateTime!
+  leftViaUserId: String
+  role: RoomRole!
+  roomId: String!
+  userId: String!
 }
 
 """ユーザーステータス"""
