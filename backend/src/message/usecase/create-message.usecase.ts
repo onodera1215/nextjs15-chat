@@ -1,6 +1,8 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { IMessageRepository } from '../message.repository.interface';
 import { CreateMessageInput } from '../models/create-message.input';
+import { JwtPayload } from 'src/types';
+import { CreateMessageDto } from '../dto/create-message.dto';
 
 @Injectable()
 export class CreateMessageUsecase {
@@ -9,7 +11,9 @@ export class CreateMessageUsecase {
     private readonly messageRepository: IMessageRepository,
   ) {}
 
-  async execute(createMessageInput: CreateMessageInput) {
-    return await this.messageRepository.createMessage(createMessageInput);
+  async execute(createMessageDto: CreateMessageDto) {
+    return await this.messageRepository.createMessage({
+      ...createMessageDto,
+    });
   }
 }

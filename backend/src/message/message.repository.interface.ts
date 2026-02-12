@@ -1,8 +1,13 @@
+import { CreateMessageDto } from './dto/create-message.dto';
 import { MessageDomain } from './message.domain';
-import { CreateMessageInput } from './models/create-message.input';
 import { SearchMessagesInput } from './models/search-messages.input';
 
 export interface IMessageRepository {
-  createMessage(createMessageInput: CreateMessageInput): Promise<MessageDomain>;
+  createMessage(createMessageDto: CreateMessageDto): Promise<MessageDomain>;
   getMessages(searchOptionInput: SearchMessagesInput): Promise<MessageDomain[]>;
+  countUnreadMessages(
+    roomId: string,
+    userId: string,
+    lastReadAt: Date,
+  ): Promise<number>;
 }

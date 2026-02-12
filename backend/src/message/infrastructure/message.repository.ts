@@ -2,14 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { IMessageRepository } from '../message.repository.interface';
 import { MessageDomain } from '../message.domain';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateMessageInput } from '../models/create-message.input';
 import { SearchMessagesInput } from '../models/search-messages.input';
+import { CreateMessageDto } from '../dto/create-message.dto';
 
 @Injectable()
 export class MessageRepository implements IMessageRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async createMessage(data: CreateMessageInput): Promise<MessageDomain> {
+  async createMessage(data: CreateMessageDto): Promise<MessageDomain> {
     const message = await this.prismaService.message.create({
       data,
     });
@@ -25,5 +25,19 @@ export class MessageRepository implements IMessageRepository {
       },
     });
     return messages.map((message) => new MessageDomain(message));
+  }
+  async countUnreadMessages(
+    roomId: string,
+    userId: string,
+    lastReadAt: Date,
+  ): Promise<number> {
+    return this.prismaService.message.count({
+      where: {
+        roomId,
+        createdAt: {
+          gt: lastReadAt,
+        },
+      },
+    });
   }
 }

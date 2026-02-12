@@ -20,12 +20,14 @@ interface Props {
 const CreateMessageMutationDocument = gql`
 mutation CreateMessage($input: CreateMessageInput!) {
   createMessage(input: $input) {
-    id
-    body
-    roomId
-    senderId
-    createdAt
-    updatedAt
+    message {
+      id
+      body
+      roomId
+      senderId
+      createdAt
+      updatedAt
+    }
   }
 }
 `;
