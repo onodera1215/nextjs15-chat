@@ -184,6 +184,19 @@ type Query {
   - messages/members/readState は RoomNode のフィールドで取得
   """
   room(id: ID!): RoomNode
+
+  """
+  メッセージ一覧
+  """
+  messages(
+    searchOptions: MessageSearchOptions
+    order: Order
+  ): MessageConnection!
+
+  """
+  ユーザー一覧
+  """
+  users(searchOptions: UserSearchOptions, order: Order): UserConnection!
 }
 
 """
