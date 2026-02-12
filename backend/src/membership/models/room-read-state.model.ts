@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 export class RoomReadState {
@@ -11,7 +11,7 @@ export class RoomReadState {
   @Field(() => Date)
   lastReadAt: Date;
 
-  @Field(() => Number, {
+  @Field(() => Int, {
     description: '未読メッセージ数(厳密な数はqueryで取得すること)',
   })
   unreadCount: number;

@@ -7,7 +7,6 @@ import { SearchRoomOptionInput } from './models/search-room-option.input';
 import { GetRoomUsecase } from './usecase/get-room.usecase';
 import { Inject } from '@nestjs/common';
 import { PubSub } from 'graphql-subscriptions';
-import { Public } from 'src/auth/public.decorator';
 import { CreateRoomPayload } from './models/create-room.payload';
 import { CurrentPayload } from 'src/auth/current-payload.decorator';
 import { JwtPayload } from 'src/types';
@@ -28,7 +27,10 @@ export class RoomResolver {
     @Args('input') input: CreateRoomInput,
     @CurrentPayload() payload: JwtPayload,
   ): Promise<CreateRoomPayload> {
-    const room = await this.createRoomUsecase.execute(input, payload);
+    const room = await this.createRoomUsecase.execute({
+      ...input,
+      createdByUserId: payload.sub!,
+    });
     await this.gqlPubSub.publish('roomCreated', { roomCreated: room });
     return { room };
   }

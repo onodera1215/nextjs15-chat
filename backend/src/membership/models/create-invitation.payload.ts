@@ -1,19 +1,8 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
+import { InvitationNode } from './invitation.model';
 
 @ObjectType()
 export class CreateInvitationPayload {
-  @Field(() => String)
-  roomId: string;
-
-  @Field(() => ID, { description: '招待したユーザーのユーザーID' })
-  inviteeUserId: string;
-
-  @Field(() => String, {
-    nullable: true,
-    description: '招待を受け取るユーザーのメールアドレス',
-  })
-  inviteeEmail?: string;
-
-  @Field(() => Date)
-  expiresAt: Date;
+  @Field(() => InvitationNode)
+  invitation: InvitationNode;
 }
