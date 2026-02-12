@@ -323,6 +323,18 @@ input CreateInvitationInput {
   expiresAt: DateTime
 }
 
+input MessageSearchOption {
+  roomId: ID
+  userId: ID
+  keyword: String
+}
+
+input UserSearchOption {
+  roomId: ID
+  userId: ID
+  keyword: String
+}
+
 """
 ========================
 Payloads（Mutationの戻り値）
@@ -456,9 +468,33 @@ type RoomEdge {
   node: RoomNode!
 }
 
+type UserEdge {
+  cursor: String!
+  node: RoomNode!
+}
+
+type MessageEdge {
+  cursor: String!
+  node: RoomNode!
+}
+
 type RoomConnection {
   edges: [RoomEdge!]!
   nodes: [RoomNode!]!
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
+type UserConnection {
+  edges: [UserEdge]!
+  nodes: [UserNode]!
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
+type MessageConnection {
+  edges: [MessageEdge]!
+  nodes: [MessageNode]!
   pageInfo: PageInfo!
   totalCount: Int
 }
@@ -502,7 +538,7 @@ enum RoomStatus {
   INACTIVE
 }
 
-enum MessageOrderBy {
+enum OrderBy {
   CREATED_AT_DESC
   CREATED_AT_ASC
 }
