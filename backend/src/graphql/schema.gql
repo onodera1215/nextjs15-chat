@@ -161,7 +161,7 @@ type Query {
   myRooms(input: SearchRoomOptionInput): RoomConnection!
 
   """ルーム取得"""
-  room(id: String!): RoomNode!
+  room(id: String!): RoomNode
 }
 
 """クエリ検索用オプション"""

@@ -54,7 +54,7 @@ export class RoomResolver {
     });
   }
 
-  @Query(() => RoomNode, { description: 'ルーム取得' })
+  @Query(() => RoomNode, { description: 'ルーム取得', nullable: true })
   async room(
     @Args('id', { type: () => String }) id: string,
   ): Promise<RoomNode | null> {
