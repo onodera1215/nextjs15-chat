@@ -65,6 +65,23 @@ type CreateUserPayload {
   user: UserNode!
 }
 
+type UserEdge {
+  cursor: String!
+  node: UserNode!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  endCursor: String
+}
+
+type UserConnection {
+  edges: [UserEdge!]!
+  nodes: [UserNode!]!
+  pageInfo: PageInfo!
+  totalCount: Float!
+}
+
 type CreateRoomPayload {
   room: RoomNode!
 }
@@ -72,11 +89,6 @@ type CreateRoomPayload {
 type RoomEdge {
   cursor: String!
   node: RoomNode!
-}
-
-type PageInfo {
-  hasNextPage: Boolean!
-  endCursor: String
 }
 
 type RoomConnection {
@@ -146,7 +158,7 @@ type Query {
   user(userId: String!): UserNode!
 
   """ユーザー一覧情報を取得します。"""
-  users(input: SearchUsersInput): [UserNode!]!
+  users(input: SearchUsersInput): UserConnection!
 
   """指定したemailを持つユーザーを取得します。"""
   userByEmail(email: String!): UserNode!
@@ -183,6 +195,7 @@ input SearchUsersInput {
 
   """メールアドレスで部分一致検索"""
   email: String
+  after: String!
 }
 
 input SearchRoomOptionInput {
