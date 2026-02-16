@@ -73,12 +73,8 @@ export class GqlAuthGuard implements CanActivate {
 
       // リクエストにユーザーペイロードをアタッチ
       const request = gqlContext.req;
-      const userId = payload?.sub;
-      if (!userId) {
-        throw new UnauthorizedException('Invalid token: no userId');
-      }
       const user = await this.prisma.user.findUnique({
-        where: { id: userId },
+        where: { oauthProviderAccountId: payload.sub },
       });
       if (!user) {
         throw new UnauthorizedException('User not found');

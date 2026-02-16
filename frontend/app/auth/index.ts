@@ -52,7 +52,7 @@ export const authOptions: NextAuthConfig = {
           const privateKey = await importPKCS8(PRIVATE_KEY, "RS256");
 
           const nestAccessToken = await new SignJWT({
-            sub: token.userId as string | undefined,
+            sub: token.sub as string | undefined,
             email: token.email as string | undefined,
             name: token.name as string | undefined,
             roles: token.roles as string[] | undefined,
