@@ -14,6 +14,6 @@ export class GetMeUsecase {
     if (!payload.sub) {
       throw new BadRequestException();
     }
-    return await this.userRepository.findByOauthProviderAccountId(payload.sub);
+    return await this.userRepository.findById(payload.sub);
   }
 }

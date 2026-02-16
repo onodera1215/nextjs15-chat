@@ -69,6 +69,23 @@ type CreateRoomPayload {
   room: RoomNode!
 }
 
+type RoomEdge {
+  cursor: String!
+  node: RoomNode!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  endCursor: String
+}
+
+type RoomConnection {
+  edges: [RoomEdge!]!
+  nodes: [RoomNode!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
 type UserRoomNode {
   userId: String!
   roomId: String!
@@ -138,7 +155,10 @@ type Query {
   me: UserNode!
 
   """ルーム一覧取得"""
-  rooms(input: SearchRoomOptionInput): [RoomNode!]!
+  rooms(input: SearchRoomOptionInput): RoomConnection!
+
+  """所属しているルーム一覧取得"""
+  myRooms(input: SearchRoomOptionInput): RoomConnection!
 
   """ルーム取得"""
   room(id: String!): RoomNode!
@@ -166,10 +186,12 @@ input SearchUsersInput {
 }
 
 input SearchRoomOptionInput {
+  userId: String
   roomId: String
   name: String
   createdAt: DateTime
   updatedAt: DateTime
+  after: String
 }
 
 type Mutation {
