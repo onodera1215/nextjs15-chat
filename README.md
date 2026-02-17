@@ -177,7 +177,7 @@ type Query {
   自分が参加しているルーム一覧（ページング）
   - first/after: 前方向ページング
   """
-  myRooms(first: Int, after: String): RoomConnection!
+  myRooms(searchOptions: SearchRoomOptions): RoomConnection!
 
   """
   ルーム詳細
@@ -188,10 +188,7 @@ type Query {
   """
   メッセージ一覧
   """
-  messages(
-    searchOptions: MessageSearchOptions
-    order: Order
-  ): MessageConnection!
+  messages(searchOptions: MessageSearchOptions): MessageConnection!
 
   """
   ユーザー一覧
