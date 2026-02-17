@@ -192,8 +192,7 @@ type Query {
 input SearchMessagesInput {
   userId: String
   roomId: String
-  limit: Float
-  offset: Float
+  after: String
 }
 
 input RegisteredUserInput {

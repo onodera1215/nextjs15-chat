@@ -1,9 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { IMessageRepository } from '../message.repository.interface';
+import {
+  IMessageRepository,
+  SearchMessagesDto,
+} from '../message.repository.interface';
 import { MessageDomain } from '../message.domain';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SearchMessagesInput } from '../models/search-messages.input';
 import { CreateMessageDto } from '../dto/create-message.dto';
+import { Prisma } from '@prisma/client';
+import { cursorDecoder } from 'src/common/utils';
+import { PAGINATION_LIMIT } from 'src/common/config';
 
 @Injectable()
 export class MessageRepository implements IMessageRepository {
@@ -16,15 +22,55 @@ export class MessageRepository implements IMessageRepository {
     return new MessageDomain(message);
   }
 
-  async getMessages(
+  async searchMessages(
     searchOptionInput: SearchMessagesInput,
-  ): Promise<MessageDomain[]> {
-    const messages = await this.prismaService.message.findMany({
-      where: {
-        ...searchOptionInput,
-      },
-    });
-    return messages.map((message) => new MessageDomain(message));
+  ): Promise<SearchMessagesDto> {
+    const conditions: Prisma.MessageWhereInput[] = [];
+
+    if (searchOptionInput.userId) {
+      conditions.push({ senderId: searchOptionInput.userId });
+    }
+
+    if (searchOptionInput.roomId) {
+      conditions.push({ roomId: searchOptionInput.roomId });
+    }
+
+    if (searchOptionInput.after) {
+      const { id, createdAt } = cursorDecoder(searchOptionInput.after);
+      conditions.push({
+        createdAt: {
+          gt: createdAt,
+        },
+        id: {
+          gt: id,
+        },
+      });
+    }
+
+    const whereCondition: Prisma.MessageWhereInput = {
+      AND: conditions,
+    };
+
+    const [totalCount, messages] = await this.prismaService.$transaction([
+      this.prismaService.message.count({
+        where: whereCondition,
+      }),
+      this.prismaService.message.findMany({
+        where: whereCondition,
+        orderBy: {
+          createdAt: Prisma.SortOrder.asc,
+        },
+        skip: PAGINATION_LIMIT + 1,
+      }),
+    ]);
+
+    return {
+      messages: messages
+        .slice(0, PAGINATION_LIMIT)
+        .map((message) => new MessageDomain(message)),
+      totalCount,
+      hasNextPage: messages.length > PAGINATION_LIMIT,
+    };
   }
   async countUnreadMessages(
     roomId: string,

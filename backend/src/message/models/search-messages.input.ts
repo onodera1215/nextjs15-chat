@@ -8,9 +8,6 @@ export class SearchMessagesInput {
   @Field(() => String, { nullable: true })
   roomId?: string;
 
-  @Field(() => Number, { nullable: true })
-  limit?: number;
-
-  @Field(() => Number, { nullable: true })
-  offset?: number;
+  @Field(() => String, { nullable: true })
+  after?: string;
 }
