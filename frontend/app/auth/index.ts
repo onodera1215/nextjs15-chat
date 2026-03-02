@@ -52,7 +52,7 @@ export const authOptions: NextAuthConfig = {
           const privateKey = await importPKCS8(PRIVATE_KEY, "RS256");
 
           const nestAccessToken = await new SignJWT({
-            sub: token.sub as string | undefined,
+            sub: token.userId as string | undefined,
             email: token.email as string | undefined,
             name: token.name as string | undefined,
             roles: token.roles as string[] | undefined,
@@ -63,6 +63,8 @@ export const authOptions: NextAuthConfig = {
             .setAudience(process.env.NEST_JWT_AUD!)
             .setIssuer(process.env.NEST_JWT_ISS!)
             .sign(privateKey);
+
+          console.log("Generated Nest Access Token:", nestAccessToken);
 
           token.nestAccessToken = nestAccessToken;
         } catch (error) {
