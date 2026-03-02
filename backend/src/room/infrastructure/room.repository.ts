@@ -1,11 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { IRoomRepository } from '../room.repository.interface';
+import {
+  FindAllBySearchRoomOptionDto,
+  IRoomRepository,
+} from '../room.repository.interface';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { fromPrismaRoomToRoomDomain } from './utis';
 import { RoomDomain, RoomStatusEnum } from '../room.domain';
 import { SearchRoomOptionInput } from '../models/search-room-option.input';
 import { Prisma } from '@prisma/client';
 import { CreateRoomDto } from '../dto/create-room.dto';
+import { PAGINATION_LIMIT } from 'src/common/config';
+import { cursorDecoder } from 'src/common/utils';
 
 @Injectable()
 export class RoomRepository implements IRoomRepository {
@@ -26,8 +31,21 @@ export class RoomRepository implements IRoomRepository {
   }
   async findAllBySearchRoomOption(
     searchOption?: SearchRoomOptionInput,
-  ): Promise<RoomDomain[]> {
+  ): Promise<FindAllBySearchRoomOptionDto> {
     const conditions: Prisma.RoomWhereInput[] = [];
+    // ユーザーID検索
+    if (searchOption?.userId) {
+      conditions.push({
+        userRooms: {
+          some: {
+            user: {
+              id: searchOption.userId,
+            },
+          },
+        },
+      });
+    }
+
     // ルーム名検索
     if (searchOption?.name) {
       conditions.push({ name: { contains: searchOption.name } });
@@ -48,12 +66,39 @@ export class RoomRepository implements IRoomRepository {
         updatedAt: searchOption.updatedAt,
       });
     }
-    const rooms = await this.prisma.room.findMany({
-      where: {
-        AND: [...conditions, { status: RoomStatusEnum.ACTIVE }],
-      },
-    });
-    return rooms.map(fromPrismaRoomToRoomDomain);
+    // afterを取得
+    if (searchOption?.after) {
+      const decodedCursor = cursorDecoder(searchOption.after);
+      conditions.push({
+        AND: [
+          { createdAt: { gt: decodedCursor.createdAt } },
+          { id: { gt: decodedCursor.id } },
+        ],
+      });
+    }
+    // 条件
+    const whereCondition: Prisma.RoomWhereInput = {
+      AND: [...conditions, { status: RoomStatusEnum.ACTIVE }],
+    };
+
+    const [totalCount, rooms] = await this.prisma.$transaction([
+      this.prisma.room.count({
+        where: whereCondition,
+      }),
+      this.prisma.room.findMany({
+        where: whereCondition,
+        orderBy: {
+          createdAt: Prisma.SortOrder.asc,
+        },
+        take: PAGINATION_LIMIT + 1, // 次ページの有無を確認するために、limit + 1件取得する
+      }),
+    ]);
+
+    return {
+      rooms: rooms.slice(0, PAGINATION_LIMIT).map(fromPrismaRoomToRoomDomain),
+      totalCount,
+      hasNextPage: rooms.length > PAGINATION_LIMIT, // 取得した件数がlimitを超えている場合は、次ページが存在する
+    };
   }
 
   async findById(id: string): Promise<RoomDomain | null> {

@@ -1,11 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { IUserRepository } from '../user.repository.interface';
+import { IUserRepository, SearchUsersDto } from '../user.repository.interface';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserInput } from '../models/create-user.input';
 import { UserStatusEnum } from '../models/user-status.enum';
 import { fromPrismaUserToUserDomain } from './utils';
 import { UserDomain } from '../user.domain';
 import { SearchUsersInput } from '../models/search-users.input';
+import { Prisma } from '@prisma/client';
+import { cursorDecoder } from 'src/common/utils';
+import { PAGINATION_LIMIT } from 'src/common/config';
 @Injectable()
 export class UserRepository implements IUserRepository {
   constructor(private readonly prisma: PrismaService) {}
@@ -53,12 +56,40 @@ export class UserRepository implements IUserRepository {
     return fromPrismaUserToUserDomain(user);
   }
 
-  async searchUsers(params?: SearchUsersInput): Promise<UserDomain[]> {
+  async searchUsers(params?: SearchUsersInput): Promise<SearchUsersDto> {
+    const searechConditions: Prisma.UserWhereInput[] = [];
+    if (params?.after) {
+      const { id, createdAt } = cursorDecoder(params.after);
+      searechConditions.push({
+        createdAt: {
+          gt: createdAt,
+        },
+        id: {
+          lt: id,
+        },
+      });
+    }
+
     const users = await this.prisma.user.findMany({
       where: {
-        ...params,
+        AND: searechConditions,
+      },
+      take: PAGINATION_LIMIT + 1, // ページングのためにlimitより1件多く取得する
+      orderBy: {
+        createdAt: Prisma.SortOrder.asc,
       },
     });
-    return users.map(fromPrismaUserToUserDomain);
+    const userDomains = users.map(fromPrismaUserToUserDomain);
+    const totalCount = await this.prisma.user.count({
+      where: {
+        AND: searechConditions,
+      },
+    });
+    const hasNextPage = userDomains.length > PAGINATION_LIMIT;
+    return {
+      users: userDomains.slice(0, PAGINATION_LIMIT),
+      totalCount,
+      hasNextPage,
+    };
   }
 }

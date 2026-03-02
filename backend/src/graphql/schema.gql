@@ -18,21 +18,6 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-type RoomNode {
-  id: ID!
-  name: String!
-  description: String!
-  status: RoomStatusEnum!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-"""ルームステータス"""
-enum RoomStatusEnum {
-  ACTIVE
-  INACTIVE
-}
-
 type UserNode {
   id: ID!
   name: String!
@@ -55,6 +40,38 @@ type CreateMessagePayload {
   message: MessageNode!
 }
 
+type MessageEdge {
+  cursor: String!
+  node: MessageNode!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  endCursor: String
+}
+
+type MessageConnection {
+  edges: [MessageEdge!]!
+  nodes: [MessageNode!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type RoomNode {
+  id: ID!
+  name: String!
+  description: String!
+  status: RoomStatusEnum!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""ルームステータス"""
+enum RoomStatusEnum {
+  ACTIVE
+  INACTIVE
+}
+
 type RegisteredUserModel {
   isRegistered: Boolean!
   isRegisteredInAnotherProvider: Boolean!
@@ -65,8 +82,32 @@ type CreateUserPayload {
   user: UserNode!
 }
 
+type UserEdge {
+  cursor: String!
+  node: UserNode!
+}
+
+type UserConnection {
+  edges: [UserEdge!]!
+  nodes: [UserNode!]!
+  pageInfo: PageInfo!
+  totalCount: Float!
+}
+
 type CreateRoomPayload {
   room: RoomNode!
+}
+
+type RoomEdge {
+  cursor: String!
+  node: RoomNode!
+}
+
+type RoomConnection {
+  edges: [RoomEdge!]!
+  nodes: [RoomNode!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
 }
 
 type UserRoomNode {
@@ -120,7 +161,7 @@ type CreateInvitationPayload {
 }
 
 type Query {
-  messages(input: SearchMessagesInput!): [MessageNode!]!
+  messages(input: SearchMessagesInput!): MessageConnection!
 
   """ユーザーが登録済みかどうかを判定します。"""
   registeredUser(input: RegisteredUserInput!): RegisteredUserModel!
@@ -129,7 +170,7 @@ type Query {
   user(userId: String!): UserNode!
 
   """ユーザー一覧情報を取得します。"""
-  users(input: SearchUsersInput): [UserNode!]!
+  users(input: SearchUsersInput): UserConnection!
 
   """指定したemailを持つユーザーを取得します。"""
   userByEmail(email: String!): UserNode!
@@ -138,17 +179,20 @@ type Query {
   me: UserNode!
 
   """ルーム一覧取得"""
-  rooms(input: SearchRoomOptionInput): [RoomNode!]!
+  rooms(input: SearchRoomOptionInput): RoomConnection!
+
+  """所属しているルーム一覧取得"""
+  myRooms(input: SearchRoomOptionInput): RoomConnection!
 
   """ルーム取得"""
-  room(id: String!): RoomNode!
+  room(id: String!): RoomNode
 }
 
 """クエリ検索用オプション"""
 input SearchMessagesInput {
+  userId: String
   roomId: String
-  limit: Float
-  offset: Float
+  after: String
 }
 
 input RegisteredUserInput {
@@ -163,13 +207,16 @@ input SearchUsersInput {
 
   """メールアドレスで部分一致検索"""
   email: String
+  after: String!
 }
 
 input SearchRoomOptionInput {
+  userId: String
   roomId: String
   name: String
   createdAt: DateTime
   updatedAt: DateTime
+  after: String
 }
 
 type Mutation {

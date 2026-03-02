@@ -3,19 +3,19 @@ import { RoomResolver } from './room.resolver';
 import { RoomRepository } from './infrastructure/room.repository';
 import { CreateRoomUsecase } from './usecase/create-room.usecase';
 import { GetRoomUsecase } from './usecase/get-room.usecase';
-import { GetRoomsUsecase } from './usecase/get-rooms.usecase';
+import { SearchRoomsUsecase } from './usecase/search-rooms.usecase';
 
 @Module({
   providers: [
     CreateRoomUsecase,
     GetRoomUsecase,
-    GetRoomsUsecase,
+    SearchRoomsUsecase,
     RoomResolver,
     {
       provide: 'IRoomRepository',
       useClass: RoomRepository,
     },
   ],
-  exports: [CreateRoomUsecase, GetRoomUsecase, GetRoomsUsecase],
+  exports: [CreateRoomUsecase, GetRoomUsecase, SearchRoomsUsecase],
 })
 export class RoomModule {}

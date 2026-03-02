@@ -1,11 +1,11 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { RoomNode } from './room.model';
+import { UserNode } from './user.model';
 
 @ObjectType()
-export class RoomEdge {
+export class UserEdge {
   @Field(() => String)
   cursor: string;
 
-  @Field(() => RoomNode)
-  node: RoomNode;
+  @Field(() => UserNode)
+  node: UserNode;
 }

@@ -177,13 +177,23 @@ type Query {
   自分が参加しているルーム一覧（ページング）
   - first/after: 前方向ページング
   """
-  myRooms(first: Int, after: String): RoomConnection!
+  myRooms(searchOptions: SearchRoomOptions): RoomConnection!
 
   """
   ルーム詳細
   - messages/members/readState は RoomNode のフィールドで取得
   """
   room(id: ID!): RoomNode
+
+  """
+  メッセージ一覧
+  """
+  messages(searchOptions: MessageSearchOptions): MessageConnection!
+
+  """
+  ユーザー一覧
+  """
+  users(searchOptions: UserSearchOptions, order: Order): UserConnection!
 }
 
 """
@@ -308,6 +318,18 @@ input CreateInvitationInput {
   inviteeUserId: ID
   inviteeEmail: String
   expiresAt: DateTime
+}
+
+input MessageSearchOption {
+  roomId: ID
+  userId: ID
+  keyword: String
+}
+
+input UserSearchOption {
+  roomId: ID
+  userId: ID
+  keyword: String
 }
 
 """
@@ -443,9 +465,33 @@ type RoomEdge {
   node: RoomNode!
 }
 
+type UserEdge {
+  cursor: String!
+  node: RoomNode!
+}
+
+type MessageEdge {
+  cursor: String!
+  node: RoomNode!
+}
+
 type RoomConnection {
   edges: [RoomEdge!]!
   nodes: [RoomNode!]!
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
+type UserConnection {
+  edges: [UserEdge]!
+  nodes: [UserNode]!
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
+type MessageConnection {
+  edges: [MessageEdge]!
+  nodes: [MessageNode]!
   pageInfo: PageInfo!
   totalCount: Int
 }
@@ -489,7 +535,7 @@ enum RoomStatus {
   INACTIVE
 }
 
-enum MessageOrderBy {
+enum OrderBy {
   CREATED_AT_DESC
   CREATED_AT_ASC
 }

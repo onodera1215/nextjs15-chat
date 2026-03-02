@@ -2,7 +2,6 @@ import { Args, Mutation, Resolver, Query, Subscription } from '@nestjs/graphql';
 import { RoomNode } from './models/room.model';
 import { CreateRoomInput } from './models/room.input';
 import { CreateRoomUsecase } from './usecase/create-room.usecase';
-import { GetRoomsUsecase } from './usecase/get-rooms.usecase';
 import { SearchRoomOptionInput } from './models/search-room-option.input';
 import { GetRoomUsecase } from './usecase/get-room.usecase';
 import { Inject } from '@nestjs/common';
@@ -10,12 +9,14 @@ import { PubSub } from 'graphql-subscriptions';
 import { CreateRoomPayload } from './models/create-room.payload';
 import { CurrentPayload } from 'src/auth/current-payload.decorator';
 import { JwtPayload } from 'src/types';
+import { RoomConnection } from './models/room.connection';
+import { SearchRoomsUsecase } from './usecase/search-rooms.usecase';
 
 @Resolver()
 export class RoomResolver {
   constructor(
     private readonly createRoomUsecase: CreateRoomUsecase,
-    private readonly getRoomsUsecase: GetRoomsUsecase,
+    private readonly searchRoomsUsecase: SearchRoomsUsecase,
     private readonly getRoomUsecase: GetRoomUsecase,
 
     @Inject('GqlPubSub')
@@ -35,14 +36,25 @@ export class RoomResolver {
     return { room };
   }
 
-  @Query(() => [RoomNode], { description: 'ルーム一覧取得' })
+  @Query(() => RoomConnection, { description: 'ルーム一覧取得' })
   async rooms(
     @Args('input', { nullable: true }) input?: SearchRoomOptionInput,
-  ): Promise<RoomNode[]> {
-    return await this.getRoomsUsecase.execute(input);
+  ): Promise<RoomConnection> {
+    return await this.searchRoomsUsecase.execute(input);
   }
 
-  @Query(() => RoomNode, { description: 'ルーム取得' })
+  @Query(() => RoomConnection, { description: '所属しているルーム一覧取得' })
+  async myRooms(
+    @CurrentPayload() payload: JwtPayload,
+    @Args('input', { nullable: true }) input?: SearchRoomOptionInput,
+  ): Promise<RoomConnection> {
+    return await this.searchRoomsUsecase.execute({
+      ...input,
+      userId: payload.sub!,
+    });
+  }
+
+  @Query(() => RoomNode, { description: 'ルーム取得', nullable: true })
   async room(
     @Args('id', { type: () => String }) id: string,
   ): Promise<RoomNode | null> {

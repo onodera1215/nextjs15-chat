@@ -64,6 +64,8 @@ export const authOptions: NextAuthConfig = {
             .setIssuer(process.env.NEST_JWT_ISS!)
             .sign(privateKey);
 
+          console.log("Generated Nest Access Token:", nestAccessToken);
+
           token.nestAccessToken = nestAccessToken;
         } catch (error) {
           console.error("JWT signing error:", error);

@@ -14,6 +14,7 @@ import { GetMeUsecase } from './usecase/get-me.usecase';
 import { GetUsersUsecase } from './usecase/get-users.usecase';
 import { SearchUsersInput } from './models/search-users.input';
 import { CreateUserPayload } from './models/create-user.payload';
+import { UserConnection } from './models/user-connection.model';
 
 @Resolver()
 export class UserResolver {
@@ -55,12 +56,12 @@ export class UserResolver {
     return await this.getUserUsecase.execute(userId);
   }
 
-  @Query(() => [UserNode], {
+  @Query(() => UserConnection, {
     description: 'ユーザー一覧情報を取得します。',
   })
   async users(
     @Args('input', { nullable: true }) input?: SearchUsersInput,
-  ): Promise<UserNode[]> {
+  ): Promise<UserConnection> {
     return await this.getUsersUsecase.execute(input);
   }
 

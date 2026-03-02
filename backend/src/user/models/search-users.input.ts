@@ -10,4 +10,7 @@ export class SearchUsersInput {
     description: 'メールアドレスで部分一致検索',
   })
   email?: string;
+  
+  @Field(() => String)
+  after?: string;
 }

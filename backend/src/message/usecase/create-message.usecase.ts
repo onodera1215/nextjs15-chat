@@ -1,7 +1,5 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { IMessageRepository } from '../message.repository.interface';
-import { CreateMessageInput } from '../models/create-message.input';
-import { JwtPayload } from 'src/types';
 import { CreateMessageDto } from '../dto/create-message.dto';
 
 @Injectable()
