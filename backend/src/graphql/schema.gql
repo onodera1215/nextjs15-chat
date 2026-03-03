@@ -244,6 +244,7 @@ type Mutation {
 input CreateMessageInput {
   body: String!
   roomId: String!
+  senderId: String!
 }
 
 input CreateUserInput {

@@ -27,7 +27,7 @@ export class SearchMessageUsecase {
         cursor: cursorEncoder({ id: message.id, createdAt: message.createdAt }),
         node: message,
       })),
-      nodes: messages,
+      nodes: messages ?? [],
       pageInfo: {
         hasNextPage,
         endCursor,

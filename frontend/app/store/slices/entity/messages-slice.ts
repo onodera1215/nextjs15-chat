@@ -1,4 +1,8 @@
-import { MessageConnection, MessageNode } from "@/graphql/graphql";
+import {
+  MessageConnection,
+  MessageNode,
+  SearchMessagesInput,
+} from "@/graphql/graphql";
 import { createApolloClient } from "@/lib/client/utils";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import gql from "graphql-tag";
@@ -62,14 +66,18 @@ export const messagesSlice = createSlice({
 const { getMessages: getMessagesAction } = messagesSlice.actions;
 export const queryMessagesThunk = createAsyncThunk(
   "entity/message/queryMessages",
-  async ({ roomId }: { roomId: string }, thunkAPI) => {
+  async ({ roomId, after }: SearchMessagesInput, thunkAPI) => {
     const apolloClient = createApolloClient();
     apolloClient
-      .query<{ messageConnection: MessageConnection }>({
-        variables: { input: { roomId } },
+      .query<{ messages: MessageConnection }>({
+        variables: { input: { roomId, after } },
         query: gql`
           query GetMessages($input: SearchMessagesInput!) {
             messages(input: $input) {
+              pageInfo {
+                hasNextPage
+                endCursor
+              }
               nodes {
                 id
                 body
@@ -86,7 +94,7 @@ export const queryMessagesThunk = createAsyncThunk(
         fetchPolicy: "no-cache",
       })
       .then((response) => {
-        const messages = response?.data?.messageConnection?.nodes;
+        const messages = response?.data?.messages.nodes;
         if (!messages) {
           return;
         }

@@ -24,7 +24,7 @@ function createWsLinkSingleton(token: string) {
         },
         retryAttempts: 10,
         lazy: true,
-      })
+      }),
     );
     return link;
   }
@@ -63,7 +63,7 @@ export function createApolloClient() {
       );
     },
     wsLink,
-    httpLink
+    httpLink,
   );
 
   if (!apolloClient) {
@@ -104,3 +104,33 @@ export function getTokenStorage() {
 
 export const toLocalDateString = (date: Date): string =>
   dayjs(date).format("YYYY年MM月DD日 HH時mm分");
+
+/**
+ * cursorをエンコードする関数
+ * @param {{ id: string; createdAt: Date }} cursor
+ * @returns {string}
+ */
+export function cursorEncoder(cursor: { id: string; createdAt: Date }): string {
+  return Buffer.from(JSON.stringify(cursor)).toString("base64");
+}
+
+/**
+ * 一番上なら top、一番下なら bottom、その他は scrolling の文字列を返す
+ *
+ * @param {UIEvent} event
+ * @returns {String} 'top' | 'bottom' | 'scrolling'
+ */
+export const getScrollVerticalPosition = (e: Event) => {
+  const { scrollHeight, scrollTop, clientHeight } = e.target as HTMLElement;
+
+  const isScrollTop = scrollTop === 0;
+  const isScrollBottom = scrollHeight - clientHeight === scrollTop;
+
+  if (isScrollTop) {
+    return "top";
+  } else if (isScrollBottom) {
+    return "bottom";
+  } else {
+    return "scrolling";
+  }
+};

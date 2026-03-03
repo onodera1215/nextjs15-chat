@@ -32,6 +32,7 @@ export type CreateInvitationPayload = {
 export type CreateMessageInput = {
   body: Scalars['String']['input'];
   roomId: Scalars['String']['input'];
+  senderId: Scalars['String']['input'];
 };
 
 export type CreateMessagePayload = {
@@ -388,7 +389,7 @@ export type CreateMessageMutationVariables = Exact<{
 }>;
 
 
-export type CreateMessageMutation = { __typename?: 'Mutation', createMessage: { __typename?: 'CreateMessagePayload', message: { __typename?: 'MessageNode', id: string, body: string, roomId: string, senderId: string, createdAt: any, updatedAt: any } } };
+export type CreateMessageMutation = { __typename?: 'Mutation', createMessage: { __typename?: 'CreateMessagePayload', message: { __typename?: 'MessageNode', id: string, body: string, roomId: string, createdAt: any, updatedAt: any } } };
 
 export type CreateUserMutationVariables = Exact<{
   input: CreateUserInput;
@@ -414,7 +415,7 @@ export type GetMessagesQueryVariables = Exact<{
 }>;
 
 
-export type GetMessagesQuery = { __typename?: 'Query', messages: { __typename?: 'MessageConnection', nodes: Array<{ __typename?: 'MessageNode', id: string, body: string, roomId: string, sender: { __typename?: 'UserNode', id: string, name: string, icon: string } }> } };
+export type GetMessagesQuery = { __typename?: 'Query', messages: { __typename?: 'MessageConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, nodes: Array<{ __typename?: 'MessageNode', id: string, body: string, roomId: string, sender: { __typename?: 'UserNode', id: string, name: string, icon: string } }> } };
 
 export type OnMessageCreatedSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
@@ -461,7 +462,6 @@ export const CreateMessageDocument = new TypedDocumentString(`
       id
       body
       roomId
-      senderId
       createdAt
       updatedAt
     }
@@ -512,6 +512,10 @@ export const GetMeDocument = new TypedDocumentString(`
 export const GetMessagesDocument = new TypedDocumentString(`
     query GetMessages($input: SearchMessagesInput!) {
   messages(input: $input) {
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
     nodes {
       id
       body

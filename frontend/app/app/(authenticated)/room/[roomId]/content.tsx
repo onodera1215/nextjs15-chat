@@ -8,10 +8,10 @@ import { useMutation, } from "@apollo/client/react";
 import { queryRoomsThunk, useRoomSelector } from "@/store/slices/entity/rooms-slice";
 import gql from "graphql-tag";
 import { PlayIcon } from "lucide-react";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { useMeSelector } from "@/store/slices/entity/me-slice";
 import { queryMessagesThunk, useMessagesSelector } from "@/store/slices/entity/messages-slice";
-import { toLocalDateString } from "@/lib/client/utils";
+import { cursorEncoder, getScrollVerticalPosition, toLocalDateString } from "@/lib/client/utils";
 
 interface Props {
   roomId: string;
@@ -24,7 +24,6 @@ mutation CreateMessage($input: CreateMessageInput!) {
       id
       body
       roomId
-      senderId
       createdAt
       updatedAt
     }
@@ -39,10 +38,33 @@ export default function Content({ roomId }: Props) {
   const dispatch = useAppDispatch();
   const messages = useMessagesSelector(roomId);
   const room = useRoomSelector(roomId);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const handleScrollTop = (e: Event) => {
+    const position = getScrollVerticalPosition(e);
+    if (["top"].includes(position) && messages.length > 0) {
+      const cursor = { id: messages[0].id, createdAt: messages[0].createdAt };
+      const encodedCursor = cursorEncoder(cursor);
+      console.log("encodedCursor:", encodedCursor);
+      dispatch(queryMessagesThunk({ roomId, after: encodedCursor }));
+    }
+  }
 
   useEffect(() => {
     dispatch(queryMessagesThunk({ roomId }));
     dispatch(queryRoomsThunk());
+
+    if (contentRef.current) {
+      contentRef.current.addEventListener("scroll", handleScrollTop);
+    }
+
+    return () => {
+      if (contentRef.current) {
+        contentRef.current.removeEventListener("scroll", handleScrollTop);
+      }
+    }
+
+
   }, [roomId, dispatch]);
 
   /**
@@ -65,7 +87,7 @@ export default function Content({ roomId }: Props) {
   }
 
   return (
-    <div className="grid grid-rows-[5rem_1fr_4vh] h-full overflow-scroll">
+    <div className="grid grid-rows-[5rem_1fr_4vh] h-full overflow-scroll" ref={contentRef}>
       <AuthenticatedPageTitle title={room.name} />
       <section className="m-4">
         {messages.map((message) => (

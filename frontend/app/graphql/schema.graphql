@@ -17,6 +17,7 @@ type CreateInvitationPayload {
 input CreateMessageInput {
   body: String!
   roomId: String!
+  senderId: String!
 }
 
 type CreateMessagePayload {
