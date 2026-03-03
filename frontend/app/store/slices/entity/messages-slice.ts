@@ -1,4 +1,4 @@
-import { MessageNode } from "@/graphql/graphql";
+import { MessageConnection, MessageNode } from "@/graphql/graphql";
 import { createApolloClient } from "@/lib/client/utils";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import gql from "graphql-tag";
@@ -65,29 +65,28 @@ export const queryMessagesThunk = createAsyncThunk(
   async ({ roomId }: { roomId: string }, thunkAPI) => {
     const apolloClient = createApolloClient();
     apolloClient
-      .query<{ messages: MessageNode[] }>({
+      .query<{ messageConnection: MessageConnection }>({
+        variables: { input: { roomId } },
         query: gql`
           query GetMessages($input: SearchMessagesInput!) {
             messages(input: $input) {
-              id
-              body
-              roomId
-              senderId
-              sender {
+              nodes {
                 id
-                name
-                icon
+                body
+                roomId
+                sender {
+                  id
+                  name
+                  icon
+                }
               }
-              createdAt
-              updatedAt
             }
           }
         `,
-        variables: { input: { roomId } },
         fetchPolicy: "no-cache",
       })
       .then((response) => {
-        const messages = response?.data?.messages;
+        const messages = response?.data?.messageConnection?.nodes;
         if (!messages) {
           return;
         }
@@ -96,14 +95,14 @@ export const queryMessagesThunk = createAsyncThunk(
       .catch((err) => {
         throw new Error(`Query error: ${err.message}`);
       });
-  }
+  },
 );
 export const useMessagesSelector = (roomId: string) => {
   const ids = useAppSelector(
-    (state) => state.messagesReducer.messages.idsByRoomId[roomId] || []
+    (state) => state.messagesReducer.messages.idsByRoomId[roomId] || [],
   );
   return useAppSelector((state) =>
-    ids.map((id) => state.messagesReducer.messages.byId[id])
+    ids.map((id) => state.messagesReducer.messages.byId[id]),
   );
 };
 
@@ -158,5 +157,5 @@ export const startEntitySubscriptions = createAsyncThunk(
         },
       });
     subscribers.set("messageSubscription", messageSubscription);
-  }
+  },
 );

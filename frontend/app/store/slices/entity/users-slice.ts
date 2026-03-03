@@ -1,4 +1,4 @@
-import { UserNode } from "@/graphql/graphql";
+import { UserConnection, UserNode } from "@/graphql/graphql";
 import { createApolloClient } from "@/lib/client/utils";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import gql from "graphql-tag";
@@ -43,25 +43,23 @@ export const queryUsersThunk = createAsyncThunk(
   async (_, thunkAPI) => {
     const apolloClient = createApolloClient();
     apolloClient
-      .query<{ users: UserNode[] }>({
+      .query<{ users: UserConnection }>({
+        variables: { input: {} },
         query: gql`
-          query GetUsers {
-            users {
-              id
-              name
-              email
-              oauthProvider
-              oauthProviderAccountId
-              status
-              createdAt
-              updatedAt
+          query GetUsers($input: SearchUsersInput!) {
+            users(input: $input) {
+              nodes {
+                id
+                name
+                icon
+              }
             }
           }
         `,
         fetchPolicy: "no-cache",
       })
       .then((response) => {
-        const users = response?.data?.users;
+        const users = response?.data?.users?.nodes;
         if (!users) {
           return;
         }
@@ -70,7 +68,7 @@ export const queryUsersThunk = createAsyncThunk(
       .catch((err) => {
         throw new Error(`Query error: ${err.message}`);
       });
-  }
+  },
 );
 export const useUsersSelector = () =>
   useAppSelector((state) => state.usersReducer.users);

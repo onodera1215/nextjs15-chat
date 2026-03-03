@@ -5,20 +5,13 @@ schema {
 }
 
 input CreateInvitationInput {
-  expiresAt: DateTime!
-  """招待を受け取るユーザーのメールアドレス"""
-  inviteeEmail: String
-  inviteeUserId: ID!
+  email: String
+  inviteeUserId: String!
   roomId: String!
 }
 
 type CreateInvitationPayload {
-  expiresAt: DateTime!
-  """招待を受け取るユーザーのメールアドレス"""
-  inviteeEmail: String
-  """招待したユーザーのユーザーID"""
-  inviteeUserId: ID!
-  roomId: String!
+  invitation: InvitationNode!
 }
 
 input CreateMessageInput {
@@ -34,6 +27,10 @@ input CreateRoomInput {
   description: String!
   name: String!
   status: RoomStatusEnum!
+}
+
+type CreateRoomPayload {
+  room: RoomNode!
 }
 
 input CreateUserInput {
@@ -53,10 +50,22 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type InvitationNode {
+  createdAt: DateTime!
+  email: String
+  expiresAt: DateTime!
+  id: ID!
+  inviteeUserId: ID!
+  inviterUserId: ID!
+  roomId: ID!
+  usedAt: DateTime
+}
+
 input JoinRoomInput {
   """招待経由の場合に使う"""
   invitationToken: String
   roomId: String!
+  roomRoleId: RoomRole!
 }
 
 type JoinRoomPayload {
@@ -82,6 +91,18 @@ type MarkRoomReadPayload {
   readState: RoomReadState!
 }
 
+type MessageConnection {
+  edges: [MessageEdge!]!
+  nodes: [MessageNode!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type MessageEdge {
+  cursor: String!
+  node: MessageNode!
+}
+
 type MessageNode {
   body: String!
   createdAt: DateTime!
@@ -94,11 +115,11 @@ type MessageNode {
 }
 
 type Mutation {
-  """招待トークン発行"""
+  """招待用レコード作成"""
   createInvitation(input: CreateInvitationInput!): CreateInvitationPayload!
   createMessage(input: CreateMessageInput!): CreateMessagePayload!
   """ルーム新規作成"""
-  createRoom(input: CreateRoomInput!): RoomNode!
+  createRoom(input: CreateRoomInput!): CreateRoomPayload!
   """ユーザー新規作成"""
   createUser(input: CreateUserInput!): CreateUserPayload!
   """ルーム参加"""
@@ -109,22 +130,29 @@ type Mutation {
   markRoomRead(input: MarkRoomReadInput!): MarkRoomReadPayload!
 }
 
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+}
+
 type Query {
   """ログインユーザーの情報を取得します"""
   me: UserNode!
-  messages(input: SearchMessagesInput!): [MessageNode!]!
+  messages(input: SearchMessagesInput!): MessageConnection!
+  """所属しているルーム一覧取得"""
+  myRooms(input: SearchRoomOptionInput): RoomConnection!
   """ユーザーが登録済みかどうかを判定します。"""
   registeredUser(input: RegisteredUserInput!): RegisteredUserModel!
   """ルーム取得"""
-  room(id: String!): RoomNode!
+  room(id: String!): RoomNode
   """ルーム一覧取得"""
-  rooms(input: SearchRoomOptionInput): [RoomNode!]!
+  rooms(input: SearchRoomOptionInput): RoomConnection!
   """指定したIDのユーザーを取得します。"""
   user(userId: String!): UserNode!
   """指定したemailを持つユーザーを取得します。"""
   userByEmail(email: String!): UserNode!
   """ユーザー一覧情報を取得します。"""
-  users(input: SearchUsersInput): [UserNode!]!
+  users(input: SearchUsersInput): UserConnection!
 }
 
 input RegisteredUserInput {
@@ -136,6 +164,18 @@ type RegisteredUserModel {
   isRegistered: Boolean!
   isRegisteredInAnotherProvider: Boolean!
   user: UserNode
+}
+
+type RoomConnection {
+  edges: [RoomEdge!]!
+  nodes: [RoomNode!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type RoomEdge {
+  cursor: String!
+  node: RoomNode!
 }
 
 type RoomNode {
@@ -151,7 +191,7 @@ type RoomReadState {
   lastReadAt: DateTime!
   roomId: ID!
   """未読メッセージ数(厳密な数はqueryで取得すること)"""
-  unreadCount: Float!
+  unreadCount: Int!
   userId: ID!
 }
 
@@ -168,20 +208,23 @@ enum RoomStatusEnum {
 
 """クエリ検索用オプション"""
 input SearchMessagesInput {
-  limit: Float
-  offset: Float
+  after: String
   roomId: String
+  userId: String
 }
 
 input SearchRoomOptionInput {
+  after: String
   createdAt: DateTime
   name: String
   roomId: String
   updatedAt: DateTime
+  userId: String
 }
 
 """ユーザー検索オプション"""
 input SearchUsersInput {
+  after: String
   """メールアドレスで部分一致検索"""
   email: String
   """名前で部分一致検索"""
@@ -192,6 +235,18 @@ type Subscription {
   messageCreated: MessageNode!
   roomCreated: RoomNode!
   userSignedUp: UserNode!
+}
+
+type UserConnection {
+  edges: [UserEdge!]!
+  nodes: [UserNode!]!
+  pageInfo: PageInfo!
+  totalCount: Float!
+}
+
+type UserEdge {
+  cursor: String!
+  node: UserNode!
 }
 
 type UserNode {
@@ -207,8 +262,8 @@ type UserNode {
 }
 
 type UserRoomNode {
+  joinViaUserId: String
   joinedAt: DateTime!
-  leftViaUserId: String
   role: RoomRole!
   roomId: String!
   userId: String!

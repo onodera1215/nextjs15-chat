@@ -1,4 +1,4 @@
-import { RoomNode } from "@/graphql/graphql";
+import { RoomConnection, RoomNode } from "@/graphql/graphql";
 import { createApolloClient } from "@/lib/client/utils";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import gql from "graphql-tag";
@@ -43,23 +43,26 @@ export const queryRoomsThunk = createAsyncThunk(
   async (_, thunkAPI) => {
     const apolloClient = createApolloClient();
     apolloClient
-      .query<{ rooms: RoomNode[] }>({
+      .query<{ rooms: RoomConnection }>({
+        variables: { input: {} },
         query: gql`
-          query GetRooms {
-            rooms {
-              id
-              name
-              description
-              status
-              createdAt
-              updatedAt
+          query GetRooms($input: SearchRoomOptionInput) {
+            rooms(input: $input) {
+              edges {
+                cursor
+              }
+              nodes {
+                id
+                name
+              }
+              totalCount
             }
           }
         `,
         fetchPolicy: "no-cache",
       })
       .then((response) => {
-        const rooms = response?.data?.rooms;
+        const rooms = response?.data?.rooms?.nodes;
         if (!rooms) {
           return;
         }
@@ -68,7 +71,7 @@ export const queryRoomsThunk = createAsyncThunk(
       .catch((err) => {
         throw new Error(`Query error: ${err.message}`);
       });
-  }
+  },
 );
 export const useRoomsSelector = () =>
   useAppSelector((state) => state.roomsReducer.rooms);

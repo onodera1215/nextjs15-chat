@@ -207,7 +207,7 @@ input SearchUsersInput {
 
   """メールアドレスで部分一致検索"""
   email: String
-  after: String!
+  after: String
 }
 
 input SearchRoomOptionInput {
