@@ -207,7 +207,7 @@ input SearchUsersInput {
 
   """メールアドレスで部分一致検索"""
   email: String
-  after: String!
+  after: String
 }
 
 input SearchRoomOptionInput {
@@ -244,6 +244,7 @@ type Mutation {
 input CreateMessageInput {
   body: String!
   roomId: String!
+  senderId: String!
 }
 
 input CreateUserInput {

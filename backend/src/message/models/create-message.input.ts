@@ -7,4 +7,7 @@ export class CreateMessageInput {
 
   @Field(() => String)
   roomId: string;
+
+  @Field(() => String)
+  senderId: string;
 }

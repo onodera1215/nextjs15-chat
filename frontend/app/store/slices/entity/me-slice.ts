@@ -39,6 +39,7 @@ export const queryMeThunk = createAsyncThunk(
               id
               name
               email
+              icon
               oauthProvider
               oauthProviderAccountId
               status
@@ -59,7 +60,7 @@ export const queryMeThunk = createAsyncThunk(
       .catch((err) => {
         throw new Error(`Query error: ${err.message}`);
       });
-  }
+  },
 );
 export const useMeSelector = (): UserNode => {
   const me = useAppSelector((state) => state.meReducer.me);

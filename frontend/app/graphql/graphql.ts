@@ -19,26 +19,20 @@ export type Scalars = {
 };
 
 export type CreateInvitationInput = {
-  expiresAt: Scalars['DateTime']['input'];
-  /** 招待を受け取るユーザーのメールアドレス */
-  inviteeEmail?: InputMaybe<Scalars['String']['input']>;
-  inviteeUserId: Scalars['ID']['input'];
+  email?: InputMaybe<Scalars['String']['input']>;
+  inviteeUserId: Scalars['String']['input'];
   roomId: Scalars['String']['input'];
 };
 
 export type CreateInvitationPayload = {
   __typename?: 'CreateInvitationPayload';
-  expiresAt: Scalars['DateTime']['output'];
-  /** 招待を受け取るユーザーのメールアドレス */
-  inviteeEmail?: Maybe<Scalars['String']['output']>;
-  /** 招待したユーザーのユーザーID */
-  inviteeUserId: Scalars['ID']['output'];
-  roomId: Scalars['String']['output'];
+  invitation: InvitationNode;
 };
 
 export type CreateMessageInput = {
   body: Scalars['String']['input'];
   roomId: Scalars['String']['input'];
+  senderId: Scalars['String']['input'];
 };
 
 export type CreateMessagePayload = {
@@ -50,6 +44,11 @@ export type CreateRoomInput = {
   description: Scalars['String']['input'];
   name: Scalars['String']['input'];
   status: RoomStatusEnum;
+};
+
+export type CreateRoomPayload = {
+  __typename?: 'CreateRoomPayload';
+  room: RoomNode;
 };
 
 export type CreateUserInput = {
@@ -65,10 +64,23 @@ export type CreateUserPayload = {
   user: UserNode;
 };
 
+export type InvitationNode = {
+  __typename?: 'InvitationNode';
+  createdAt: Scalars['DateTime']['output'];
+  email?: Maybe<Scalars['String']['output']>;
+  expiresAt: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  inviteeUserId: Scalars['ID']['output'];
+  inviterUserId: Scalars['ID']['output'];
+  roomId: Scalars['ID']['output'];
+  usedAt?: Maybe<Scalars['DateTime']['output']>;
+};
+
 export type JoinRoomInput = {
   /** 招待経由の場合に使う */
   invitationToken?: InputMaybe<Scalars['String']['input']>;
   roomId: Scalars['String']['input'];
+  roomRoleId: RoomRole;
 };
 
 export type JoinRoomPayload = {
@@ -97,6 +109,20 @@ export type MarkRoomReadPayload = {
   readState: RoomReadState;
 };
 
+export type MessageConnection = {
+  __typename?: 'MessageConnection';
+  edges: Array<MessageEdge>;
+  nodes: Array<MessageNode>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type MessageEdge = {
+  __typename?: 'MessageEdge';
+  cursor: Scalars['String']['output'];
+  node: MessageNode;
+};
+
 export type MessageNode = {
   __typename?: 'MessageNode';
   body: Scalars['String']['output'];
@@ -111,11 +137,11 @@ export type MessageNode = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  /** 招待トークン発行 */
+  /** 招待用レコード作成 */
   createInvitation: CreateInvitationPayload;
   createMessage: CreateMessagePayload;
   /** ルーム新規作成 */
-  createRoom: RoomNode;
+  createRoom: CreateRoomPayload;
   /** ユーザー新規作成 */
   createUser: CreateUserPayload;
   /** ルーム参加 */
@@ -161,28 +187,41 @@ export type MutationMarkRoomReadArgs = {
   input: MarkRoomReadInput;
 };
 
+export type PageInfo = {
+  __typename?: 'PageInfo';
+  endCursor?: Maybe<Scalars['String']['output']>;
+  hasNextPage: Scalars['Boolean']['output'];
+};
+
 export type Query = {
   __typename?: 'Query';
   /** ログインユーザーの情報を取得します */
   me: UserNode;
-  messages: Array<MessageNode>;
+  messages: MessageConnection;
+  /** 所属しているルーム一覧取得 */
+  myRooms: RoomConnection;
   /** ユーザーが登録済みかどうかを判定します。 */
   registeredUser: RegisteredUserModel;
   /** ルーム取得 */
-  room: RoomNode;
+  room?: Maybe<RoomNode>;
   /** ルーム一覧取得 */
-  rooms: Array<RoomNode>;
+  rooms: RoomConnection;
   /** 指定したIDのユーザーを取得します。 */
   user: UserNode;
   /** 指定したemailを持つユーザーを取得します。 */
   userByEmail: UserNode;
   /** ユーザー一覧情報を取得します。 */
-  users: Array<UserNode>;
+  users: UserConnection;
 };
 
 
 export type QueryMessagesArgs = {
   input: SearchMessagesInput;
+};
+
+
+export type QueryMyRoomsArgs = {
+  input?: InputMaybe<SearchRoomOptionInput>;
 };
 
 
@@ -227,6 +266,20 @@ export type RegisteredUserModel = {
   user?: Maybe<UserNode>;
 };
 
+export type RoomConnection = {
+  __typename?: 'RoomConnection';
+  edges: Array<RoomEdge>;
+  nodes: Array<RoomNode>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type RoomEdge = {
+  __typename?: 'RoomEdge';
+  cursor: Scalars['String']['output'];
+  node: RoomNode;
+};
+
 export type RoomNode = {
   __typename?: 'RoomNode';
   createdAt: Scalars['DateTime']['output'];
@@ -242,7 +295,7 @@ export type RoomReadState = {
   lastReadAt: Scalars['DateTime']['output'];
   roomId: Scalars['ID']['output'];
   /** 未読メッセージ数(厳密な数はqueryで取得すること) */
-  unreadCount: Scalars['Float']['output'];
+  unreadCount: Scalars['Int']['output'];
   userId: Scalars['ID']['output'];
 };
 
@@ -259,20 +312,23 @@ export enum RoomStatusEnum {
 
 /** クエリ検索用オプション */
 export type SearchMessagesInput = {
-  limit?: InputMaybe<Scalars['Float']['input']>;
-  offset?: InputMaybe<Scalars['Float']['input']>;
+  after?: InputMaybe<Scalars['String']['input']>;
   roomId?: InputMaybe<Scalars['String']['input']>;
+  userId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type SearchRoomOptionInput = {
+  after?: InputMaybe<Scalars['String']['input']>;
   createdAt?: InputMaybe<Scalars['DateTime']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   roomId?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  userId?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** ユーザー検索オプション */
 export type SearchUsersInput = {
+  after?: InputMaybe<Scalars['String']['input']>;
   /** メールアドレスで部分一致検索 */
   email?: InputMaybe<Scalars['String']['input']>;
   /** 名前で部分一致検索 */
@@ -284,6 +340,20 @@ export type Subscription = {
   messageCreated: MessageNode;
   roomCreated: RoomNode;
   userSignedUp: UserNode;
+};
+
+export type UserConnection = {
+  __typename?: 'UserConnection';
+  edges: Array<UserEdge>;
+  nodes: Array<UserNode>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Float']['output'];
+};
+
+export type UserEdge = {
+  __typename?: 'UserEdge';
+  cursor: Scalars['String']['output'];
+  node: UserNode;
 };
 
 export type UserNode = {
@@ -301,8 +371,8 @@ export type UserNode = {
 
 export type UserRoomNode = {
   __typename?: 'UserRoomNode';
+  joinViaUserId?: Maybe<Scalars['String']['output']>;
   joinedAt: Scalars['DateTime']['output'];
-  leftViaUserId?: Maybe<Scalars['String']['output']>;
   role: RoomRole;
   roomId: Scalars['String']['output'];
   userId: Scalars['String']['output'];
@@ -319,7 +389,7 @@ export type CreateMessageMutationVariables = Exact<{
 }>;
 
 
-export type CreateMessageMutation = { __typename?: 'Mutation', createMessage: { __typename?: 'CreateMessagePayload', message: { __typename?: 'MessageNode', id: string, body: string, roomId: string, senderId: string, createdAt: any, updatedAt: any } } };
+export type CreateMessageMutation = { __typename?: 'Mutation', createMessage: { __typename?: 'CreateMessagePayload', message: { __typename?: 'MessageNode', id: string, body: string, roomId: string, createdAt: any, updatedAt: any } } };
 
 export type CreateUserMutationVariables = Exact<{
   input: CreateUserInput;
@@ -338,29 +408,33 @@ export type RegisteredUserQuery = { __typename?: 'Query', registeredUser: { __ty
 export type GetMeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetMeQuery = { __typename?: 'Query', me: { __typename?: 'UserNode', id: string, name: string, email: string, oauthProvider: string, oauthProviderAccountId: string, status: UserStatus, createdAt: any, updatedAt: any } };
+export type GetMeQuery = { __typename?: 'Query', me: { __typename?: 'UserNode', id: string, name: string, email: string, icon: string, oauthProvider: string, oauthProviderAccountId: string, status: UserStatus, createdAt: any, updatedAt: any } };
 
 export type GetMessagesQueryVariables = Exact<{
   input: SearchMessagesInput;
 }>;
 
 
-export type GetMessagesQuery = { __typename?: 'Query', messages: Array<{ __typename?: 'MessageNode', id: string, body: string, roomId: string, senderId: string, createdAt: any, updatedAt: any, sender: { __typename?: 'UserNode', id: string, name: string, icon: string } }> };
+export type GetMessagesQuery = { __typename?: 'Query', messages: { __typename?: 'MessageConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, nodes: Array<{ __typename?: 'MessageNode', id: string, body: string, roomId: string, sender: { __typename?: 'UserNode', id: string, name: string, icon: string } }> } };
 
 export type OnMessageCreatedSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
 export type OnMessageCreatedSubscription = { __typename?: 'Subscription', messageCreated: { __typename?: 'MessageNode', id: string, body: string, roomId: string, senderId: string, createdAt: any, updatedAt: any, sender: { __typename?: 'UserNode', id: string, name: string, icon: string } } };
 
-export type GetRoomsQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetRoomsQueryVariables = Exact<{
+  input?: InputMaybe<SearchRoomOptionInput>;
+}>;
 
 
-export type GetRoomsQuery = { __typename?: 'Query', rooms: Array<{ __typename?: 'RoomNode', id: string, name: string, description: string, status: RoomStatusEnum, createdAt: any, updatedAt: any }> };
+export type GetRoomsQuery = { __typename?: 'Query', rooms: { __typename?: 'RoomConnection', totalCount: number, edges: Array<{ __typename?: 'RoomEdge', cursor: string }>, nodes: Array<{ __typename?: 'RoomNode', id: string, name: string }> } };
 
-export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetUsersQueryVariables = Exact<{
+  input: SearchUsersInput;
+}>;
 
 
-export type GetUsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'UserNode', id: string, name: string, email: string, oauthProvider: string, oauthProviderAccountId: string, status: UserStatus, createdAt: any, updatedAt: any }> };
+export type GetUsersQuery = { __typename?: 'Query', users: { __typename?: 'UserConnection', nodes: Array<{ __typename?: 'UserNode', id: string, name: string, icon: string }> } };
 
 export class TypedDocumentString<TResult, TVariables>
   extends String
@@ -388,7 +462,6 @@ export const CreateMessageDocument = new TypedDocumentString(`
       id
       body
       roomId
-      senderId
       createdAt
       updatedAt
     }
@@ -427,6 +500,7 @@ export const GetMeDocument = new TypedDocumentString(`
     id
     name
     email
+    icon
     oauthProvider
     oauthProviderAccountId
     status
@@ -438,17 +512,20 @@ export const GetMeDocument = new TypedDocumentString(`
 export const GetMessagesDocument = new TypedDocumentString(`
     query GetMessages($input: SearchMessagesInput!) {
   messages(input: $input) {
-    id
-    body
-    roomId
-    senderId
-    sender {
-      id
-      name
-      icon
+    pageInfo {
+      hasNextPage
+      endCursor
     }
-    createdAt
-    updatedAt
+    nodes {
+      id
+      body
+      roomId
+      sender {
+        id
+        name
+        icon
+      }
+    }
   }
 }
     `) as unknown as TypedDocumentString<GetMessagesQuery, GetMessagesQueryVariables>;
@@ -470,28 +547,27 @@ export const OnMessageCreatedDocument = new TypedDocumentString(`
 }
     `) as unknown as TypedDocumentString<OnMessageCreatedSubscription, OnMessageCreatedSubscriptionVariables>;
 export const GetRoomsDocument = new TypedDocumentString(`
-    query GetRooms {
-  rooms {
-    id
-    name
-    description
-    status
-    createdAt
-    updatedAt
+    query GetRooms($input: SearchRoomOptionInput) {
+  rooms(input: $input) {
+    edges {
+      cursor
+    }
+    nodes {
+      id
+      name
+    }
+    totalCount
   }
 }
     `) as unknown as TypedDocumentString<GetRoomsQuery, GetRoomsQueryVariables>;
 export const GetUsersDocument = new TypedDocumentString(`
-    query GetUsers {
-  users {
-    id
-    name
-    email
-    oauthProvider
-    oauthProviderAccountId
-    status
-    createdAt
-    updatedAt
+    query GetUsers($input: SearchUsersInput!) {
+  users(input: $input) {
+    nodes {
+      id
+      name
+      icon
+    }
   }
 }
     `) as unknown as TypedDocumentString<GetUsersQuery, GetUsersQueryVariables>;

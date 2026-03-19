@@ -60,7 +60,7 @@ export class MessageRepository implements IMessageRepository {
         orderBy: {
           createdAt: Prisma.SortOrder.asc,
         },
-        skip: PAGINATION_LIMIT + 1,
+        take: PAGINATION_LIMIT + 1,
       }),
     ]);
 
