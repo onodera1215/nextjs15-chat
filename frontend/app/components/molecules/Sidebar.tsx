@@ -6,7 +6,7 @@ import SidebarNavigationButton from "../atoms/SidebaNavigationButtons";
 import { UserCircle } from "lucide-react";
 import SidebarHeading from "../atoms/SidebarHeading";
 import SidebarChannels from "../atoms/SidebarChannels";
-import { useRoomsSelector, } from "@/store/slices/entity/rooms-slice";
+import { useJoinedRoomsSelector } from "@/store/slices/entity/rooms-slice";
 import { useUsersSelector } from "@/store/slices/entity/users-slice";
 
 interface Props {
@@ -14,8 +14,11 @@ interface Props {
   onAddUserButtonClick: () => void;
 }
 
-export default function Sidebar({ onAddChannelButtonClick, onAddUserButtonClick }: Props) {
-  const rooms = useRoomsSelector();
+export default function Sidebar({
+  onAddChannelButtonClick,
+  onAddUserButtonClick,
+}: Props) {
+  const rooms = useJoinedRoomsSelector();
   const users = useUsersSelector();
   return (
     <aside className="bg-surface h-full relative">
@@ -40,24 +43,29 @@ export default function Sidebar({ onAddChannelButtonClick, onAddUserButtonClick 
         <nav className="col-span-7 bg-background h-full rounded-tl-lg py-4 ">
           <ul className="space-y-2 px-2">
             <li>
-              <SidebarHeading title="チャンネル" url="#" onClickAddButton={onAddChannelButtonClick} />
+              <SidebarHeading
+                title="チャンネル"
+                url="#"
+                onClickAddButton={onAddChannelButtonClick}
+              />
               <SidebarChannels
-                channels={rooms.allIds.map((id) => ({
-                  title: rooms.byId[id].name,
-                  url: `/room/${id}`,
+                channels={rooms.map((room) => ({
+                  title: room.name,
+                  url: `/room/${room.id}`,
                 }))}
               />
             </li>
             <li>
-              <SidebarHeading title="ユーザー" url="/" onClickAddButton={onAddUserButtonClick} />
+              <SidebarHeading
+                title="ユーザー"
+                url="/"
+                onClickAddButton={onAddUserButtonClick}
+              />
               <div className="ml-4">
                 <ul className="mt-2 space-y-1">
                   {users.allIds.map((id) => (
                     <li key={id}>
-                      <Link
-                        href="#"
-                        className="text-primary hover:none"
-                      >
+                      <Link href="#" className="text-primary hover:none">
                         {users.byId[id].name}
                       </Link>
                     </li>
@@ -69,7 +77,6 @@ export default function Sidebar({ onAddChannelButtonClick, onAddUserButtonClick 
         </nav>
       </div>
       <div className="absolute right-0 top-0 h-full w-px shadow-[2px_2px_2px_1px_rgba(0,0,0,0.1)]"></div>
-
     </aside>
   );
 }

@@ -69,3 +69,6 @@ export const useMeSelector = (): UserNode => {
   }
   return me;
 };
+
+export const useOptionalMeSelector = () =>
+  useAppSelector((state) => state.meReducer.me);

@@ -6,7 +6,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,7 +20,7 @@ import {
 } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Checkbox } from "@/components/ui/checkbox";
-import { UserPlus, Mail, Users } from "lucide-react";
+import { Mail, Search, Users } from "lucide-react";
 
 export type Invitee = {
   id: string;
@@ -29,96 +28,169 @@ export type Invitee = {
   email: string;
 };
 
-export type InviteRole = "member" | "admin";
+export type InvitableRoom = {
+  id: string;
+  name: string;
+};
 
 type Props = {
-  roomName: string;
+  rooms: InvitableRoom[];
   candidates: Invitee[];
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-  onSubmit?: (payload: { inviteeIds: string[]; role: InviteRole; message: string }) => Promise<void> | void;
+  onSubmit?: (payload: {
+    roomId: string;
+    inviteeIds: string[];
+  }) => Promise<void> | void;
 };
 
-export function InviteMembersDialog({ roomName, candidates, open, onOpenChange, onSubmit }: Props) {
+export function InviteMembersDialog({
+  rooms,
+  candidates,
+  open,
+  onOpenChange,
+  onSubmit,
+}: Props) {
   const [search, setSearch] = useState("");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [role, setRole] = useState<InviteRole>("member");
-  const [message, setMessage] = useState(`こんにちは！${roomName} に参加しませんか？`);
+  const [selectedRoomId, setSelectedRoomId] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
 
   const filtered = useMemo(() => {
-    const k = search.toLowerCase();
-    return candidates.filter((u) => u.name.toLowerCase().includes(k) || u.email.toLowerCase().includes(k));
+    const keyword = search.trim().toLowerCase();
+    if (!keyword) {
+      return candidates;
+    }
+
+    return candidates.filter((user) => {
+      const target = `${user.name} ${user.email}`.toLowerCase();
+      return target.includes(keyword);
+    });
   }, [search, candidates]);
 
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (!nextOpen) {
+      setSearch("");
+      setSelectedIds([]);
+      setSelectedRoomId("");
+      setSubmitting(false);
+    }
+    onOpenChange?.(nextOpen);
+  };
+
   const toggle = (id: string, checked: boolean) => {
-    setSelectedIds((prev) => (checked ? [...new Set([...prev, id])] : prev.filter((v) => v !== id)));
+    setSelectedIds((prev) =>
+      checked
+        ? [...new Set([...prev, id])]
+        : prev.filter((value) => value !== id),
+    );
   };
 
   const handleSubmit = async () => {
-    if (!selectedIds.length) return;
+    if (!selectedRoomId || selectedIds.length === 0) {
+      return;
+    }
+
     setSubmitting(true);
-    await onSubmit?.({ inviteeIds: selectedIds, role, message });
-    setSubmitting(false);
-    onOpenChange?.(false);
+    try {
+      await onSubmit?.({ roomId: selectedRoomId, inviteeIds: selectedIds });
+      handleOpenChange(false);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>
-        <Button>
-          <UserPlus className="mr-2 h-4 w-4" /> 招待
-        </Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-[680px]">
         <DialogHeader>
           <DialogTitle>ユーザーを招待</DialogTitle>
-          <DialogDescription>{roomName} にメンバーを追加</DialogDescription>
+          <DialogDescription>
+            招待先のルームを選び、参加させたいユーザーを指定します。
+          </DialogDescription>
         </DialogHeader>
 
-        <Input placeholder="検索" value={search} onChange={(e) => setSearch(e.target.value)} />
+        <Select value={selectedRoomId} onValueChange={setSelectedRoomId}>
+          <SelectTrigger>
+            <SelectValue placeholder="招待先のルームを選択" />
+          </SelectTrigger>
+          <SelectContent>
+            {rooms.map((room) => (
+              <SelectItem key={room.id} value={room.id}>
+                {room.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-        <div className="grid sm:grid-cols-2 gap-4">
-          <Input value={message} onChange={(e) => setMessage(e.target.value)} />
-          <Select value={role} onValueChange={(v: InviteRole) => setRole(v)}>
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="member">メンバー</SelectItem>
-              <SelectItem value="admin">管理者</SelectItem>
-            </SelectContent>
-          </Select>
+        <div className="relative">
+          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            className="pl-9"
+            placeholder="名前またはメールアドレスで検索"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
 
-        <ScrollArea className="h-[300px] border rounded">
-          {filtered.map((u) => {
-            const checked = selectedIds.includes(u.id);
-            return (
-              <label key={u.id} className="flex items-center gap-2 p-2 hover:bg-muted">
-                <Checkbox checked={checked} onCheckedChange={(v) => toggle(u.id, Boolean(v))} />
-                <Avatar><AvatarFallback>{u.name.slice(0, 2)}</AvatarFallback></Avatar>
-                <div className="flex-1">
-                  <div>{u.name}</div>
-                  <div className="text-xs text-muted-foreground">{u.email}</div>
-                </div>
-                {checked && <Badge>選択</Badge>}
-              </label>
-            );
-          })}
+        <ScrollArea className="h-[300px] rounded-md border">
+          <div className="p-2">
+            {filtered.length === 0 ? (
+              <div className="flex h-[260px] items-center justify-center text-sm text-muted-foreground">
+                招待できるユーザーが見つかりません。
+              </div>
+            ) : (
+              filtered.map((user) => {
+                const checked = selectedIds.includes(user.id);
+
+                return (
+                  <label
+                    key={user.id}
+                    className="mb-2 flex cursor-pointer items-center gap-3 rounded-md border px-3 py-2 hover:bg-muted/60"
+                  >
+                    <Checkbox
+                      checked={checked}
+                      onCheckedChange={(value) =>
+                        toggle(user.id, Boolean(value))
+                      }
+                    />
+                    <Avatar>
+                      <AvatarFallback>{user.name.slice(0, 2)}</AvatarFallback>
+                    </Avatar>
+                    <div className="min-w-0 flex-1">
+                      <div className="font-medium">{user.name}</div>
+                      <div className="truncate text-sm text-muted-foreground">
+                        {user.email}
+                      </div>
+                    </div>
+                    {checked ? <Badge>選択中</Badge> : null}
+                  </label>
+                );
+              })
+            )}
+          </div>
         </ScrollArea>
 
-        <div className="text-sm text-muted-foreground flex items-center gap-2">
-          <Users className="h-4 w-4" /> {selectedIds.length} 人選択
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Users className="size-4" />
+          {selectedIds.length} 人選択
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange?.(false)}>キャンセル</Button>
-          <Button onClick={handleSubmit} disabled={!selectedIds.length || submitting}>
-            <Mail className="mr-2 h-4 w-4" /> 送信
+          <Button variant="outline" onClick={() => handleOpenChange(false)}>
+            キャンセル
+          </Button>
+          <Button
+            onClick={handleSubmit}
+            disabled={!selectedRoomId || selectedIds.length === 0 || submitting}
+          >
+            <Mail className="size-4" />
+            招待を送信
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
 }
+
+export default InviteMembersDialog;
