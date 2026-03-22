@@ -1,17 +1,6 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ReduxStoreProvider from "@/store/provider";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Next.jsのすんごいチャットアプリ",
@@ -26,11 +15,7 @@ export default function RootLayout({
   return (
     <html lang="ja" data-google-analytics-opt-out="">
       <ReduxStoreProvider>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
-          {children}
-        </body>
+        <body className="antialiased">{children}</body>
       </ReduxStoreProvider>
     </html>
   );

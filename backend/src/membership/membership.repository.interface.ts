@@ -9,6 +9,7 @@ export interface IMembershipRepository {
     roomId: string,
     userId: string,
     roomRoleId: RoomRole,
+    joinedViaUserId?: string,
   ): Promise<JoinRoomPayload>;
   leaveRoom(roomId: string, userId: string): Promise<UserRoomNode>;
   upsertLastReadAt(roomId: string, userId: string): Promise<MarkRoomReadEdge>;

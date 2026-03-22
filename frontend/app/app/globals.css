@@ -18,6 +18,8 @@
   --font-size-sm: 3vw;
   --font-size-base: 4vw;
   --font-size-lg: 5vw;
+  --font-sans: "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif;
+  --font-mono: "SFMono-Regular", "Menlo", "Monaco", "Consolas", monospace;
 }
 
 /* Dark theme */
@@ -37,6 +39,8 @@
   --font-size-sm: 3vw;
   --font-size-base: 4vw;
   --font-size-lg: 5vw;
+  --font-sans: "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif;
+  --font-mono: "SFMono-Regular", "Menlo", "Monaco", "Consolas", monospace;
 }
 
 @theme {
@@ -55,4 +59,12 @@
   --font-size-sm: var(--font-size-sm);
   --font-size-base: var(--font-size-base);
   --font-size-lg: var(--font-size-lg);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
 }

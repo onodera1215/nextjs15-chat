@@ -100,18 +100,16 @@ export default function ClientComponentsWrapper({
     roomId: string;
     inviteeIds: string[];
   }) => {
-    await Promise.all(
-      inviteeIds.map((inviteeUserId) =>
-        createInvitation({
-          variables: {
-            input: {
-              roomId,
-              inviteeUserId,
-            },
+    for (const inviteeUserId of inviteeIds) {
+      await createInvitation({
+        variables: {
+          input: {
+            roomId,
+            inviteeUserId,
           },
-        }),
-      ),
-    );
+        },
+      });
+    }
   };
 
   return (

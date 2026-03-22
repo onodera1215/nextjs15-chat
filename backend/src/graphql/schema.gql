@@ -154,10 +154,17 @@ type InvitationNode {
   expiresAt: DateTime!
   usedAt: DateTime
   createdAt: DateTime!
+  roomName: String!
+  inviterName: String!
 }
 
 type CreateInvitationPayload {
   invitation: InvitationNode!
+}
+
+type AcceptInvitationPayload {
+  invitation: InvitationNode!
+  room: RoomNode!
 }
 
 type Query {
@@ -186,6 +193,9 @@ type Query {
 
   """ルーム取得"""
   room(id: String!): RoomNode
+
+  """自分宛ての未使用招待一覧"""
+  myInvitations: [InvitationNode!]!
 }
 
 """クエリ検索用オプション"""
@@ -239,6 +249,9 @@ type Mutation {
 
   """招待用レコード作成"""
   createInvitation(input: CreateInvitationInput!): CreateInvitationPayload!
+
+  """招待を承認してルームに参加する"""
+  acceptInvitation(input: AcceptInvitationInput!): AcceptInvitationPayload!
 }
 
 input CreateMessageInput {
@@ -284,6 +297,10 @@ input CreateInvitationInput {
   roomId: String!
   inviteeUserId: String!
   email: String
+}
+
+input AcceptInvitationInput {
+  invitationId: String!
 }
 
 type Subscription {

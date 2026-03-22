@@ -55,6 +55,7 @@ export function InviteMembersDialog({
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [selectedRoomId, setSelectedRoomId] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const filtered = useMemo(() => {
     const keyword = search.trim().toLowerCase();
@@ -74,6 +75,7 @@ export function InviteMembersDialog({
       setSelectedIds([]);
       setSelectedRoomId("");
       setSubmitting(false);
+      setError(null);
     }
     onOpenChange?.(nextOpen);
   };
@@ -92,9 +94,14 @@ export function InviteMembersDialog({
     }
 
     setSubmitting(true);
+    setError(null);
     try {
       await onSubmit?.({ roomId: selectedRoomId, inviteeIds: selectedIds });
       handleOpenChange(false);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "招待の作成に失敗しました。",
+      );
     } finally {
       setSubmitting(false);
     }
@@ -175,6 +182,8 @@ export function InviteMembersDialog({
           <Users className="size-4" />
           {selectedIds.length} 人選択
         </div>
+
+        {error ? <p className="text-sm text-destructive">{error}</p> : null}
 
         <DialogFooter>
           <Button variant="outline" onClick={() => handleOpenChange(false)}>
