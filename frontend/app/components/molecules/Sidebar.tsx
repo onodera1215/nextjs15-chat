@@ -35,7 +35,7 @@ export default function Sidebar() {
         <nav className="col-span-7 bg-background h-full rounded-tl-lg py-4 ">
           <ul className="space-y-2 px-2">
             <li>
-              <SidebarHeading title="チャンネル" url="#" />
+              <SidebarHeading title="チャンネル" url="#" onClickAddButton={() => console.log("clicked...")} />
               <SidebarChannels
                 channels={rooms.allIds.map((id) => ({
                   title: rooms.byId[id].name,
