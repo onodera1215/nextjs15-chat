@@ -9,7 +9,12 @@ import SidebarChannels from "../atoms/SidebarChannels";
 import { useRoomsSelector, } from "@/store/slices/entity/rooms-slice";
 import { useUsersSelector } from "@/store/slices/entity/users-slice";
 
-export default function Sidebar() {
+interface Props {
+  onAddChannelButtonClick: () => void;
+  onAddUserButtonClick: () => void;
+}
+
+export default function Sidebar({ onAddChannelButtonClick, onAddUserButtonClick }: Props) {
   const rooms = useRoomsSelector();
   const users = useUsersSelector();
   return (
@@ -35,7 +40,7 @@ export default function Sidebar() {
         <nav className="col-span-7 bg-background h-full rounded-tl-lg py-4 ">
           <ul className="space-y-2 px-2">
             <li>
-              <SidebarHeading title="チャンネル" url="#" onClickAddButton={() => console.log("clicked...")} />
+              <SidebarHeading title="チャンネル" url="#" onClickAddButton={onAddChannelButtonClick} />
               <SidebarChannels
                 channels={rooms.allIds.map((id) => ({
                   title: rooms.byId[id].name,
@@ -44,7 +49,7 @@ export default function Sidebar() {
               />
             </li>
             <li>
-              <SidebarHeading title="ユーザー" url="/" />
+              <SidebarHeading title="ユーザー" url="/" onClickAddButton={onAddUserButtonClick} />
               <div className="ml-4">
                 <ul className="mt-2 space-y-1">
                   {users.allIds.map((id) => (
@@ -64,6 +69,7 @@ export default function Sidebar() {
         </nav>
       </div>
       <div className="absolute right-0 top-0 h-full w-px shadow-[2px_2px_2px_1px_rgba(0,0,0,0.1)]"></div>
+
     </aside>
   );
 }
