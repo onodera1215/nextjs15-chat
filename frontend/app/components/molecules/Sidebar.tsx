@@ -11,11 +11,13 @@ import { useUsersSelector } from "@/store/slices/entity/users-slice";
 
 interface Props {
   onAddChannelButtonClick: () => void;
+  onJoinRoomButtonClick: () => void;
   onAddUserButtonClick: () => void;
 }
 
 export default function Sidebar({
   onAddChannelButtonClick,
+  onJoinRoomButtonClick,
   onAddUserButtonClick,
 }: Props) {
   const rooms = useJoinedRoomsSelector();
@@ -48,6 +50,15 @@ export default function Sidebar({
                 url="#"
                 onClickAddButton={onAddChannelButtonClick}
               />
+              <div className="px-2 pt-2">
+                <button
+                  type="button"
+                  onClick={onJoinRoomButtonClick}
+                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  ルームに参加
+                </button>
+              </div>
               <SidebarChannels
                 channels={rooms.map((room) => ({
                   title: room.name,

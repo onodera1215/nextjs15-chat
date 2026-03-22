@@ -3,11 +3,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { useMutation } from "@apollo/client/react";
 import gql from "graphql-tag";
-import { RoomRole } from "@/graphql/graphql";
+import { RoomRole, RoomStatusEnum } from "@/graphql/graphql";
 import Content from "../molecules/Content";
 import Sidebar from "../molecules/Sidebar";
 import AddRoomDialog from "../molecules/AddRoomDialog";
 import InviteMembersDialog from "../molecules/AddMemberDialog";
+import CreateRoomDialog from "../molecules/CreateRoomDialog";
 import { useAppDispatch } from "@/store/hooks";
 import {
   queryMeThunk,
@@ -45,6 +46,16 @@ const CreateInvitationMutationDocument = gql`
   }
 `;
 
+const CreateRoomMutationDocument = gql`
+  mutation CreateRoom($input: CreateRoomInput!) {
+    createRoom(input: $input) {
+      room {
+        id
+      }
+    }
+  }
+`;
+
 export default function ClientComponentsWrapper({
   children,
 }: {
@@ -55,10 +66,12 @@ export default function ClientComponentsWrapper({
   const joinedRooms = useJoinedRoomsSelector();
   const unjoinedRooms = useUnjoinedRoomsSelector();
   const users = useUsersSelector();
+  const [isCreateRoomDialogOpen, setIsCreateRoomDialogOpen] = useState(false);
   const [isJoinDialogOpen, setIsJoinDialogOpen] = useState(false);
   const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
   const [joinRoom] = useMutation(JoinRoomMutationDocument);
   const [createInvitation] = useMutation(CreateInvitationMutationDocument);
+  const [createRoom] = useMutation(CreateRoomMutationDocument);
 
   useEffect(() => {
     dispatch(queryMeThunk());
@@ -93,6 +106,27 @@ export default function ClientComponentsWrapper({
     dispatch(queryAvailableRoomsThunk());
   };
 
+  const handleCreateRoom = async ({
+    name,
+    description,
+  }: {
+    name: string;
+    description: string;
+  }) => {
+    await createRoom({
+      variables: {
+        input: {
+          name,
+          description,
+          status: RoomStatusEnum.Active,
+        },
+      },
+    });
+
+    dispatch(queryRoomsThunk());
+    dispatch(queryAvailableRoomsThunk());
+  };
+
   const handleInviteMembers = async ({
     roomId,
     inviteeIds,
@@ -114,6 +148,11 @@ export default function ClientComponentsWrapper({
 
   return (
     <>
+      <CreateRoomDialog
+        open={isCreateRoomDialogOpen}
+        onOpenChange={setIsCreateRoomDialogOpen}
+        onSubmit={handleCreateRoom}
+      />
       <AddRoomDialog
         open={isJoinDialogOpen}
         onOpenChange={setIsJoinDialogOpen}
@@ -134,7 +173,8 @@ export default function ClientComponentsWrapper({
       <div className="grid grid-cols-12">
         <div className="hidden bg-surface lg:col-span-3 lg:block">
           <Sidebar
-            onAddChannelButtonClick={() => setIsJoinDialogOpen(true)}
+            onAddChannelButtonClick={() => setIsCreateRoomDialogOpen(true)}
+            onJoinRoomButtonClick={() => setIsJoinDialogOpen(true)}
             onAddUserButtonClick={() => setIsInviteDialogOpen(true)}
           />
         </div>
