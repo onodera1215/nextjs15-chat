@@ -82,6 +82,7 @@ export default function Content() {
           },
         },
       });
+      // 参加後はホームの招待一覧だけでなくサイドバー用のルーム一覧も即時同期する。
       await refetch();
       dispatch(queryRoomsThunk());
       dispatch(queryAvailableRoomsThunk());

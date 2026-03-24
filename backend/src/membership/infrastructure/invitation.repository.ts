@@ -9,6 +9,8 @@ import { Prisma } from '@prisma/client';
 export class InvitationRepository implements IInvitationRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  // GraphQL の InvitationNode は関連テーブル由来の表示項目も含むため、
+  // Repository で Prisma の取得結果を一箇所に集約して整形する。
   private toInvitationNode(
     invitation: Prisma.InvitationGetPayload<{
       include: {
@@ -60,6 +62,7 @@ export class InvitationRepository implements IInvitationRepository {
         inviterUser: true,
       },
       orderBy: {
+        // 二重招待チェックでは最新の未使用招待を優先して見る。
         createdAt: 'desc',
       },
     });

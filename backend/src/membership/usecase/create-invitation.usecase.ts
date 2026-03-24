@@ -48,6 +48,7 @@ export class CreateInvitationUsecase {
       throw new BadRequestException('自分自身は招待できません');
     }
 
+    // 有効な招待を 1 件に制限して、同じ相手への重複通知と承認競合を防ぐ。
     const activeInvitation =
       await this.invitationRepository.findActiveByRoomAndInvitee(
         roomId,

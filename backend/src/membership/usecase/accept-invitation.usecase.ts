@@ -54,12 +54,15 @@ export class AcceptInvitationUsecase {
       throw new BadRequestException('既にルームのメンバーです');
     }
 
+    // 招待経由で参加した事実を membership 側に残しておくと、
+    // 後続の監査や UI 表示で「誰の招待で参加したか」を辿れる。
     await this.membershipRepository.joinRoom(
       invitation.roomId,
       userId,
       RoomRole.ROOM_MEMBER,
       invitation.inviterUserId,
     );
+    // 参加成功後に招待を使用済みに更新し、再利用を防ぐ。
     const usedInvitation = await this.invitationRepository.markUsed(invitationId);
 
     return {

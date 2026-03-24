@@ -74,6 +74,7 @@ export default function ClientComponentsWrapper({
   const [createRoom] = useMutation(CreateRoomMutationDocument);
 
   useEffect(() => {
+    // 認証後レイアウト配下で必要になる基礎データをここでまとめて同期する。
     dispatch(queryMeThunk());
     dispatch(queryRoomsThunk());
     dispatch(queryAvailableRoomsThunk());
@@ -134,6 +135,8 @@ export default function ClientComponentsWrapper({
     roomId: string;
     inviteeIds: string[];
   }) => {
+    // サーバー側が「未使用招待は 1 件まで」と判定するため、
+    // どのユーザーで失敗したかを明確にする目的で逐次実行する。
     for (const inviteeUserId of inviteeIds) {
       await createInvitation({
         variables: {

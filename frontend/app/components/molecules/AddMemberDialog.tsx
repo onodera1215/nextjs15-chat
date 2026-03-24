@@ -71,6 +71,7 @@ export function InviteMembersDialog({
 
   const handleOpenChange = (nextOpen: boolean) => {
     if (!nextOpen) {
+      // 前回の選択状態を持ち越さないように、閉じるたびに入力を初期化する。
       setSearch("");
       setSelectedIds([]);
       setSelectedRoomId("");
@@ -83,6 +84,7 @@ export function InviteMembersDialog({
   const toggle = (id: string, checked: boolean) => {
     setSelectedIds((prev) =>
       checked
+        // Checkbox の多重発火でも同じ ID が重複しないようにする。
         ? [...new Set([...prev, id])]
         : prev.filter((value) => value !== id),
     );
