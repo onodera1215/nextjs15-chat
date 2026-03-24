@@ -1,4 +1,4 @@
-import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { JoinRoomPayload } from './models/join-room.payload';
 import { CurrentPayload } from 'src/auth/current-payload.decorator';
 import { JwtPayload } from 'src/types';
@@ -13,6 +13,11 @@ import { JoinRoomUsecase } from './usecase/join-room.usecase';
 import { LeaveRoomUsecase } from './usecase/leave-room.usecase';
 import { MarkRoomReadUsecase } from './usecase/mark-room-read.usecase';
 import { CreateInvitationUsecase } from './usecase/create-invitation.usecase';
+import { InvitationNode } from './models/invitation.model';
+import { GetMyInvitationsUsecase } from './usecase/get-my-invitations.usecase';
+import { AcceptInvitationUsecase } from './usecase/accept-invitation.usecase';
+import { AcceptInvitationInput } from './models/accept-invitation.input';
+import { AcceptInvitationPayload } from './models/accept-invitation.payload';
 
 @Resolver()
 export class MembershipResolver {
@@ -21,7 +26,16 @@ export class MembershipResolver {
     private readonly leaveRoomUsecase: LeaveRoomUsecase,
     private readonly markRoomReadUsecase: MarkRoomReadUsecase,
     private readonly createInvitationUsecase: CreateInvitationUsecase,
+    private readonly getMyInvitationsUsecase: GetMyInvitationsUsecase,
+    private readonly acceptInvitationUsecase: AcceptInvitationUsecase,
   ) {}
+
+  @Query(() => [InvitationNode], { description: '自分宛ての未使用招待一覧' })
+  async myInvitations(
+    @CurrentPayload() user: JwtPayload,
+  ): Promise<InvitationNode[]> {
+    return this.getMyInvitationsUsecase.execute(user.sub!);
+  }
 
   @Mutation(() => JoinRoomPayload, { description: 'ルーム参加' })
   async joinRoom(
@@ -60,6 +74,19 @@ export class MembershipResolver {
     return await this.createInvitationUsecase.execute({
       ...input,
       inviterUserId: user.sub!,
+    });
+  }
+
+  @Mutation(() => AcceptInvitationPayload, {
+    description: '招待を承認してルームに参加する',
+  })
+  async acceptInvitation(
+    @Args('input') input: AcceptInvitationInput,
+    @CurrentPayload() user: JwtPayload,
+  ): Promise<AcceptInvitationPayload> {
+    return this.acceptInvitationUsecase.execute({
+      ...input,
+      userId: user.sub!,
     });
   }
 }

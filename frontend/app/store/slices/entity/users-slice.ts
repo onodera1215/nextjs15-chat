@@ -11,7 +11,6 @@ export interface UsersState {
   };
 }
 
-// 初期値
 const initialState: UsersState = {
   users: {
     byId: {},
@@ -34,16 +33,15 @@ export const usersSlice = createSlice({
   },
 });
 
-/**
- * ユーザー情報を取得
- */
 const { getUsers: getUsersAction } = usersSlice.actions;
+
 export const queryUsersThunk = createAsyncThunk(
   "entity/user/queryUsers",
   async (_, thunkAPI) => {
     const apolloClient = createApolloClient();
-    apolloClient
-      .query<{ users: UserConnection }>({
+
+    try {
+      const response = await apolloClient.query<{ users: UserConnection }>({
         variables: { input: {} },
         query: gql`
           query GetUsers($input: SearchUsersInput!) {
@@ -51,24 +49,27 @@ export const queryUsersThunk = createAsyncThunk(
               nodes {
                 id
                 name
+                email
                 icon
               }
             }
           }
         `,
         fetchPolicy: "no-cache",
-      })
-      .then((response) => {
-        const users = response?.data?.users?.nodes;
-        if (!users) {
-          return;
-        }
-        thunkAPI.dispatch(getUsersAction(users));
-      })
-      .catch((err) => {
-        throw new Error(`Query error: ${err.message}`);
       });
+
+      const users = response.data?.users?.nodes;
+      if (!users) {
+        return;
+      }
+
+      thunkAPI.dispatch(getUsersAction(users));
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Unknown error";
+      throw new Error(`Query error: ${message}`);
+    }
   },
 );
+
 export const useUsersSelector = () =>
   useAppSelector((state) => state.usersReducer.users);

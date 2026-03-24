@@ -8,6 +8,8 @@ import { MessageRepository } from 'src/message/infrastructure/message.repository
 import { LeaveRoomUsecase } from './usecase/leave-room.usecase';
 import { CreateInvitationUsecase } from './usecase/create-invitation.usecase';
 import { InvitationRepository } from './infrastructure/invitation.repository';
+import { GetMyInvitationsUsecase } from './usecase/get-my-invitations.usecase';
+import { AcceptInvitationUsecase } from './usecase/accept-invitation.usecase';
 
 @Module({
   providers: [
@@ -16,6 +18,8 @@ import { InvitationRepository } from './infrastructure/invitation.repository';
     MarkRoomReadUsecase,
     LeaveRoomUsecase,
     CreateInvitationUsecase,
+    GetMyInvitationsUsecase,
+    AcceptInvitationUsecase,
     {
       provide: 'IMembershipRepository',
       useClass: MembershipRepository,

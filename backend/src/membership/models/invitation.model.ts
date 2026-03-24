@@ -25,4 +25,10 @@ export class InvitationNode {
 
   @Field(() => Date)
   createdAt: Date;
+
+  @Field(() => String)
+  roomName: string;
+
+  @Field(() => String)
+  inviterName: string;
 }

@@ -23,9 +23,10 @@ export class MembershipRepository implements IMembershipRepository {
     roomId: string,
     userId: string,
     roomRoleId: RoomRole,
+    joinedViaUserId?: string,
   ): Promise<JoinRoomPayload> {
     const membership = await this.prisma.userRoom.create({
-      data: { roomId, userId, roomRoleId },
+      data: { roomId, userId, roomRoleId, joinedViaUserId },
     });
     const room = await this.prisma.room.findUnique({
       where: { id: roomId },
@@ -39,6 +40,7 @@ export class MembershipRepository implements IMembershipRepository {
           ...membership,
           role: roomRoleId,
           joinedAt: membership.createdAt,
+          joinViaUserId: membership.joinedViaUserId ?? undefined,
         },
         room: {
           ...room,

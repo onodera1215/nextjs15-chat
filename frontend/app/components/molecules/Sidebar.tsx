@@ -6,11 +6,21 @@ import SidebarNavigationButton from "../atoms/SidebaNavigationButtons";
 import { UserCircle } from "lucide-react";
 import SidebarHeading from "../atoms/SidebarHeading";
 import SidebarChannels from "../atoms/SidebarChannels";
-import { useRoomsSelector, } from "@/store/slices/entity/rooms-slice";
+import { useJoinedRoomsSelector } from "@/store/slices/entity/rooms-slice";
 import { useUsersSelector } from "@/store/slices/entity/users-slice";
 
-export default function Sidebar() {
-  const rooms = useRoomsSelector();
+interface Props {
+  onAddChannelButtonClick: () => void;
+  onJoinRoomButtonClick: () => void;
+  onAddUserButtonClick: () => void;
+}
+
+export default function Sidebar({
+  onAddChannelButtonClick,
+  onJoinRoomButtonClick,
+  onAddUserButtonClick,
+}: Props) {
+  const rooms = useJoinedRoomsSelector();
   const users = useUsersSelector();
   return (
     <aside className="bg-surface h-full relative">
@@ -35,24 +45,38 @@ export default function Sidebar() {
         <nav className="col-span-7 bg-background h-full rounded-tl-lg py-4 ">
           <ul className="space-y-2 px-2">
             <li>
-              <SidebarHeading title="チャンネル" url="#" />
+              <SidebarHeading
+                title="チャンネル"
+                url="#"
+                onClickAddButton={onAddChannelButtonClick}
+              />
+              <div className="px-2 pt-2">
+                <button
+                  type="button"
+                  onClick={onJoinRoomButtonClick}
+                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  ルームに参加
+                </button>
+              </div>
               <SidebarChannels
-                channels={rooms.allIds.map((id) => ({
-                  title: rooms.byId[id].name,
-                  url: `/room/${id}`,
+                channels={rooms.map((room) => ({
+                  title: room.name,
+                  url: `/room/${room.id}`,
                 }))}
               />
             </li>
             <li>
-              <SidebarHeading title="ユーザー" url="/" />
+              <SidebarHeading
+                title="ユーザー"
+                url="/"
+                onClickAddButton={onAddUserButtonClick}
+              />
               <div className="ml-4">
                 <ul className="mt-2 space-y-1">
                   {users.allIds.map((id) => (
                     <li key={id}>
-                      <Link
-                        href="#"
-                        className="text-primary hover:none"
-                      >
+                      <Link href="#" className="text-primary hover:none">
                         {users.byId[id].name}
                       </Link>
                     </li>
